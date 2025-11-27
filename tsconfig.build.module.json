@@ -1,12 +1,13 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "strict": true,
     "outDir": "dist/esm",
     "lib": ["ESNext", "DOM"],
     // Output to Esm module format
     // Specify ECMAScript target version
-    "target": "ES2015"
+    "target": "ES2015",
+    "verbatimModuleSyntax": false
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": [

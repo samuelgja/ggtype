@@ -14,7 +14,12 @@ import { DEFAULT_ROUTER_TIMEOUT } from '../types'
 import { AsyncStream } from '../utils/async-stream'
 import { clearMap } from '../utils/clear-map'
 import { createId } from '../utils/create-id'
-import { isErrorResult } from '../utils/is'
+import {
+  isErrorResult,
+  isHttpTransport,
+  isStreamTransport,
+  isWsTransport,
+} from '../utils/is'
 import { createController } from '../utils/stream-helpers'
 import type { ClientAction } from './router-client.types-shared'
 import type { Router } from '../types'
@@ -101,6 +106,45 @@ export function createRouterClient<
     transport: transportType = 'stream',
   } = options
 
+  // Extract transport-specific options
+  const httpMethod =
+    isHttpTransport(transportType) && 'method' in options
+      ? options.method
+      : undefined
+  const httpKeepAlive =
+    isHttpTransport(transportType) && 'keepAlive' in options
+      ? (options.keepAlive ?? false)
+      : false
+  const streamKeepAlive =
+    isStreamTransport(transportType) &&
+    'keepAlive' in options
+      ? (options.keepAlive ?? true)
+      : true
+  const maxReconnectAttempts =
+    (isStreamTransport(transportType) ||
+      isWsTransport(transportType)) &&
+    'maxReconnectAttempts' in options
+      ? (options.maxReconnectAttempts ?? 5)
+      : undefined
+  const initialReconnectDelay =
+    (isStreamTransport(transportType) ||
+      isWsTransport(transportType)) &&
+    'initialReconnectDelay' in options
+      ? (options.initialReconnectDelay ?? 1000)
+      : undefined
+  const maxReconnectDelay =
+    (isStreamTransport(transportType) ||
+      isWsTransport(transportType)) &&
+    'maxReconnectDelay' in options
+      ? (options.maxReconnectDelay ?? 30_000)
+      : undefined
+  const connectionTimeout =
+    (isStreamTransport(transportType) ||
+      isWsTransport(transportType)) &&
+    'connectionTimeout' in options
+      ? (options.connectionTimeout ?? responseTimeout)
+      : undefined
+
   const waitingResponses = clearMap<
     string,
     (data: RouterMessage) => void
@@ -114,14 +158,19 @@ export function createRouterClient<
   let headers: Record<string, string> = {}
 
   // Create connection manager for persistent WebSocket connections
-  const websocketConnectionManager =
-    transportType === 'websocket'
-      ? new WebSocketConnectionManager(
-          url,
-          responseTimeout,
-          onError,
-        )
-      : null
+  const websocketConnectionManager = isWsTransport(
+    transportType,
+  )
+    ? new WebSocketConnectionManager(
+        url,
+        responseTimeout,
+        onError,
+        maxReconnectAttempts,
+        initialReconnectDelay,
+        maxReconnectDelay,
+        connectionTimeout,
+      )
+    : null
 
   /**
    * Processes incoming client data messages from the server.
@@ -241,16 +290,18 @@ export function createRouterClient<
 
       let stream: AsyncStream<ResultForLocal<Params>>
 
-      if (transportType === 'http') {
-        const method = fetchOptions?.method ?? 'GET'
+      if (isHttpTransport(transportType)) {
+        const method =
+          fetchOptions?.method ?? httpMethod ?? 'GET'
         stream = await handleHttpTransport<R, Params>(
           url,
           requestParams,
           headers,
           onError,
           method,
+          httpKeepAlive,
         )
-      } else if (transportType === 'websocket') {
+      } else if (isWsTransport(transportType)) {
         stream = await handleWebSocketTransport<R, Params>({
           connectionManager: websocketConnectionManager!,
           params: requestParams,
@@ -268,6 +319,7 @@ export function createRouterClient<
           headers,
           onError,
           method,
+          keepAlive: streamKeepAlive,
         })
       }
 
@@ -369,18 +421,20 @@ export function createRouterClient<
         }
       }
 
-      if (transportType === 'http') {
-        const method = streamOptions?.method ?? 'GET'
+      if (isHttpTransport(transportType)) {
+        const method =
+          streamOptions?.method ?? httpMethod ?? 'GET'
         return handleHttpTransport<R, Params>(
           url,
           requestParams,
           headers,
           onError,
           method,
+          httpKeepAlive,
         )
       }
 
-      if (transportType === 'websocket') {
+      if (isWsTransport(transportType)) {
         return handleWebSocketTransport<R, Params>({
           connectionManager: websocketConnectionManager!,
           params: requestParams,
@@ -399,6 +453,7 @@ export function createRouterClient<
         headers,
         onError,
         method,
+        keepAlive: streamKeepAlive,
       })
     },
   }
@@ -415,6 +470,7 @@ export function createRouterClient<
  * @param headers - Headers to include in the request
  * @param onError - Optional error handler
  * @param method - HTTP method to use (default: 'GET')
+ * @param keepAlive - Whether to use HTTP keep-alive connections (default: false)
  * @returns An AsyncStream that yields the result once and closes
  */
 async function handleHttpTransport<
@@ -434,6 +490,7 @@ async function handleHttpTransport<
     | 'PUT'
     | 'PATCH'
     | 'DELETE' = 'GET',
+  keepAlive: boolean = false,
 ): Promise<
   AsyncStream<{
     [P in keyof Params &
@@ -464,12 +521,17 @@ async function handleHttpTransport<
           )
         }
 
+        const requestHeaders: Record<string, string> = {
+          'Content-Type': 'application/json',
+          ...headers,
+        }
+        if (keepAlive) {
+          requestHeaders['Connection'] = 'keep-alive'
+        }
+
         const response = await fetch(urlObject, {
           method,
-          headers: {
-            'Content-Type': 'application/json',
-            ...headers,
-          },
+          headers: requestHeaders,
           body: isGet ? undefined : JSON.stringify(params),
         })
 
@@ -520,6 +582,7 @@ interface HandleStreamTransportOptions<
   headers: Record<string, string>
   onError: ((error: Error) => void) | undefined
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  keepAlive?: boolean
 }
 
 /**
@@ -564,6 +627,7 @@ async function handleStreamTransport<
     headers,
     onError,
     method = 'POST',
+    keepAlive = true,
   } = options
   const { readable, writable } = new TransformStream<
     Uint8Array,
@@ -574,12 +638,17 @@ async function handleStreamTransport<
     writable,
   )
 
+  const requestHeaders: Record<string, string> = {
+    'Content-Type': 'application/octet-stream',
+    ...headers,
+  }
+  if (keepAlive) {
+    requestHeaders['Connection'] = 'keep-alive'
+  }
+
   const responsePromise = fetch(url, {
     method,
-    headers: {
-      'Content-Type': 'application/octet-stream',
-      ...headers,
-    },
+    headers: requestHeaders,
     body: readable,
     duplex: 'half',
   } as RequestInit)

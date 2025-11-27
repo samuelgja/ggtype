@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/prefer-single-boolean-return */
 import type { RouterResultNotGeneric } from '../types'
 import { isObject, isString } from '../utils/is'
 type BufferType = 'blob' | 'file'

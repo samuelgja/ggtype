@@ -116,7 +116,7 @@ export function hasStatusCode(
  * Options for creating a router client.
  * @template R - The router type
  */
-export interface RouterClientOptions<
+interface RouterClientOptionsBase<
   R extends Router<
     Record<string, ActionNotGeneric>,
     Record<string, ClientAction>
@@ -175,6 +175,93 @@ export interface RouterClientOptions<
     | void
     | Promise<ResultForWithActionResult<R, Params> | void>
 }
+
+interface RouterClientOptionsHTTP<
+  R extends Router<
+    Record<string, ActionNotGeneric>,
+    Record<string, ClientAction>
+  >,
+> extends RouterClientOptionsBase<R> {
+  transport: 'http'
+  /**
+   * HTTP method to use for requests (default: 'GET')
+   * Can be overridden per-request via FetchOptions
+   */
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  /**
+   * Whether to use HTTP keep-alive connections (default: false)
+   * When true, adds 'Connection: keep-alive' header to requests
+   */
+  keepAlive?: boolean
+}
+
+interface RouterClientOptionsStream<
+  R extends Router<
+    Record<string, ActionNotGeneric>,
+    Record<string, ClientAction>
+  >,
+> extends RouterClientOptionsBase<R> {
+  transport: 'stream'
+  /**
+   * Whether to use HTTP keep-alive connections (default: true)
+   * When true, adds 'Connection: keep-alive' header to requests
+   */
+  keepAlive?: boolean
+  /**
+   * Maximum number of reconnection attempts when connection is lost (default: 5)
+   */
+  maxReconnectAttempts?: number
+  /**
+   * Initial delay in milliseconds before first reconnection attempt (default: 1000)
+   */
+  initialReconnectDelay?: number
+  /**
+   * Maximum delay in milliseconds between reconnection attempts (default: 30000)
+   */
+  maxReconnectDelay?: number
+  /**
+   * Connection timeout in milliseconds (default: same as responseTimeout)
+   * Time to wait for initial connection establishment
+   */
+  connectionTimeout?: number
+}
+
+interface RouterClientOptionsWebSocket<
+  R extends Router<
+    Record<string, ActionNotGeneric>,
+    Record<string, ClientAction>
+  >,
+> extends RouterClientOptionsBase<R> {
+  transport: 'websocket'
+  /**
+   * Maximum number of reconnection attempts when connection is lost (default: 5)
+   */
+  maxReconnectAttempts?: number
+  /**
+   * Initial delay in milliseconds before first reconnection attempt (default: 1000)
+   */
+  initialReconnectDelay?: number
+  /**
+   * Maximum delay in milliseconds between reconnection attempts (default: 30000)
+   */
+  maxReconnectDelay?: number
+  /**
+   * Connection timeout in milliseconds (default: same as responseTimeout)
+   * Time to wait for initial connection establishment
+   */
+  connectionTimeout?: number
+  // websocket keep alive automatically handled by the protocol
+}
+
+export type RouterClientOptions<
+  R extends Router<
+    Record<string, ActionNotGeneric>,
+    Record<string, ClientAction>
+  >,
+> =
+  | RouterClientOptionsHTTP<R>
+  | RouterClientOptionsStream<R>
+  | RouterClientOptionsWebSocket<R>
 
 /**
  * Options for fetch and stream calls.

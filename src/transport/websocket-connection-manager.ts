@@ -13,9 +13,9 @@ interface ConnectionState {
   reconnectTimer: ReturnType<typeof setTimeout> | null
 }
 
-const MAX_RECONNECT_ATTEMPTS = 5
-const INITIAL_RECONNECT_DELAY = 1000
-const MAX_RECONNECT_DELAY = 30_000
+const DEFAULT_MAX_RECONNECT_ATTEMPTS = 5
+const DEFAULT_INITIAL_RECONNECT_DELAY = 1000
+const DEFAULT_MAX_RECONNECT_DELAY = 30_000
 
 type ProcessClientData = (message: RouterMessage) => void
 
@@ -27,21 +27,33 @@ type ProcessClientData = (message: RouterMessage) => void
 export class WebSocketConnectionManager {
   private connectionState: ConnectionState | null = null
   private readonly url: string
-  private readonly responseTimeout: number
+  private readonly connectionTimeout: number
   private readonly onError?: (error: Error) => void
   private processClientData: ProcessClientData | null = null
-  private reconnectDelay = INITIAL_RECONNECT_DELAY
+  private readonly maxReconnectAttempts: number
+  private readonly initialReconnectDelay: number
+  private readonly maxReconnectDelay: number
+  private reconnectDelay: number
 
   constructor(
     url: string | URL,
     responseTimeout: number,
     onError?: (error: Error) => void,
+    maxReconnectAttempts: number = DEFAULT_MAX_RECONNECT_ATTEMPTS,
+    initialReconnectDelay: number = DEFAULT_INITIAL_RECONNECT_DELAY,
+    maxReconnectDelay: number = DEFAULT_MAX_RECONNECT_DELAY,
+    connectionTimeout?: number,
   ) {
     const urlString =
       typeof url === 'string' ? url : url.toString()
     this.url = urlString.replace(/^http/, 'ws')
-    this.responseTimeout = responseTimeout
+    this.connectionTimeout =
+      connectionTimeout ?? responseTimeout
     this.onError = onError
+    this.maxReconnectAttempts = maxReconnectAttempts
+    this.initialReconnectDelay = initialReconnectDelay
+    this.maxReconnectDelay = maxReconnectDelay
+    this.reconnectDelay = initialReconnectDelay
   }
 
   /**
@@ -131,7 +143,7 @@ export class WebSocketConnectionManager {
 
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'))
-        }, this.responseTimeout)
+        }, this.connectionTimeout)
 
         ws.addEventListener('open', () => {
           clearTimeout(timeout)
@@ -214,7 +226,7 @@ export class WebSocketConnectionManager {
       })
 
       // Reset reconnect delay on successful connection
-      this.reconnectDelay = INITIAL_RECONNECT_DELAY
+      this.reconnectDelay = this.initialReconnectDelay
 
       return transport
     } catch (error) {
@@ -241,7 +253,7 @@ export class WebSocketConnectionManager {
     // If there are pending requests, try to reconnect
     if (
       pendingRequests.size > 0 &&
-      reconnectAttempts < MAX_RECONNECT_ATTEMPTS
+      reconnectAttempts < this.maxReconnectAttempts
     ) {
       this.scheduleReconnect()
     } else {
@@ -268,7 +280,7 @@ export class WebSocketConnectionManager {
       2 ** (this.connectionState.reconnectAttempts - 1)
     const delay = Math.min(
       exponentialDelay,
-      MAX_RECONNECT_DELAY,
+      this.maxReconnectDelay,
     )
 
     this.connectionState.reconnectTimer = setTimeout(() => {
@@ -285,12 +297,12 @@ export class WebSocketConnectionManager {
           if (transport && this.connectionState) {
             // Reconnection successful - reset attempts
             this.connectionState.reconnectAttempts = 0
-            this.reconnectDelay = INITIAL_RECONNECT_DELAY
+            this.reconnectDelay = this.initialReconnectDelay
           } else if (this.connectionState) {
             // Reconnection failed - schedule another attempt if we haven't exceeded max
             if (
               this.connectionState.reconnectAttempts <
-              MAX_RECONNECT_ATTEMPTS
+              this.maxReconnectAttempts
             ) {
               this.scheduleReconnect()
             } else {
@@ -304,7 +316,7 @@ export class WebSocketConnectionManager {
           if (
             this.connectionState &&
             this.connectionState.reconnectAttempts <
-              MAX_RECONNECT_ATTEMPTS
+              this.maxReconnectAttempts
           ) {
             this.scheduleReconnect()
           } else {

@@ -5,6 +5,7 @@ import type {
   OutputError,
   OutputErrorGeneric,
   OutputValidationError,
+  TransportType,
 } from '../types'
 import type { ModelNotGeneric } from '../model'
 import { AsyncStream } from './async-stream'
@@ -168,4 +169,37 @@ export function isIterable(
       Symbol.iterator
     ] === 'function'
   )
+}
+
+/**
+ * Type guard to check if a transport type is HTTP.
+ * @param transport - The transport type to check
+ * @returns True if the transport is 'http'
+ */
+export function isHttpTransport(
+  transport: TransportType | undefined,
+): transport is 'http' {
+  return transport === 'http'
+}
+
+/**
+ * Type guard to check if a transport type is Stream.
+ * @param transport - The transport type to check
+ * @returns True if the transport is 'stream'
+ */
+export function isStreamTransport(
+  transport: TransportType | undefined,
+): transport is 'stream' {
+  return transport === 'stream'
+}
+
+/**
+ * Type guard to check if a transport type is WebSocket.
+ * @param transport - The transport type to check
+ * @returns True if the transport is 'websocket'
+ */
+export function isWsTransport(
+  transport: TransportType | undefined,
+): transport is 'websocket' {
+  return transport === 'websocket'
 }
