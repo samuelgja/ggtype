@@ -1,0 +1,10 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`blob should validate a valid blob object fake blob 1`] = `
+{
+  "description": undefined,
+  "properties": {},
+  "title": undefined,
+  "type": "object",
+}
+`;

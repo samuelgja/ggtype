@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+We are using bun for all scripts, do not use npm or yarn.
+We are focusing on the desktop app, so do not use any other packages or libraries that are not related to the desktop app.
+
+Performance is much more important than readability, so do not hesitate to use any performance optimizations.
+Never use any in typescript.
+
+Tests are must have! Unit tests are must have! Integration tests are must have!
+
+Prefer descriptive names over short names. boolean variables should be prefixed with is or has (e.g. isLoading, hasError).
+
+Use the latest and greatest features of the language. Think twice before creating new features.
+
+Never update unnecessary code. Touch always code which is related to the task at hand.

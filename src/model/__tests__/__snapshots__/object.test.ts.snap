@@ -1,0 +1,129 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`object should parse object 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [
+    "name",
+  ],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`object should parse object with maximum and minimum keys 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`object should parse nested object models 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "user": {
+      "additionalProperties": false,
+      "description": undefined,
+      "properties": {
+        "age": {
+          "description": undefined,
+          "title": undefined,
+          "type": "number",
+        },
+        "name": {
+          "description": undefined,
+          "title": undefined,
+          "type": "string",
+        },
+        "user": {
+          "additionalProperties": false,
+          "description": undefined,
+          "properties": {
+            "age": {
+              "description": undefined,
+              "title": undefined,
+              "type": "number",
+            },
+            "name": {
+              "description": undefined,
+              "title": undefined,
+              "type": "string",
+            },
+          },
+          "required": [],
+          "title": undefined,
+          "type": "object",
+        },
+      },
+      "required": [],
+      "title": undefined,
+      "type": "object",
+    },
+    "value": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`object should ignore undefined properties 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;

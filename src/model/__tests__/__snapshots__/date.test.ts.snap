@@ -1,0 +1,37 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`date should date parse date time 1`] = `
+{
+  "description": undefined,
+  "format": "date-time",
+  "title": undefined,
+  "type": "string",
+}
+`;
+
+exports[`date should date parse date 1`] = `
+{
+  "description": undefined,
+  "format": "date",
+  "title": undefined,
+  "type": "string",
+}
+`;
+
+exports[`date should date parse time 1`] = `
+{
+  "description": undefined,
+  "format": "time",
+  "title": undefined,
+  "type": "string",
+}
+`;
+
+exports[`date should test date with minim and maximum 1`] = `
+{
+  "description": undefined,
+  "format": "date-time",
+  "title": undefined,
+  "type": "string",
+}
+`;

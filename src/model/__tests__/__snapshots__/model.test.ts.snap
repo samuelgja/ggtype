@@ -1,0 +1,65 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test model should create some object 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "friends": {
+      "description": undefined,
+      "items": {
+        "additionalProperties": false,
+        "description": undefined,
+        "properties": {
+          "age": {
+            "description": undefined,
+            "title": undefined,
+            "type": "number",
+          },
+          "isAdult": {
+            "description": undefined,
+            "title": undefined,
+            "type": "boolean",
+          },
+          "name": {
+            "description": undefined,
+            "title": undefined,
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+          "age",
+          "isAdult",
+        ],
+        "title": undefined,
+        "type": "object",
+      },
+      "title": undefined,
+      "type": "array",
+    },
+    "isAdult": {
+      "description": undefined,
+      "title": undefined,
+      "type": "boolean",
+    },
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [
+    "name",
+    "age",
+    "isAdult",
+  ],
+  "title": undefined,
+  "type": "object",
+}
+`;

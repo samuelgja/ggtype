@@ -1,0 +1,175 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`or should validate oneOf type 1`] = `
+{
+  "description": undefined,
+  "oneOf": [
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "boolean",
+    },
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+  ],
+  "title": undefined,
+}
+`;
+
+exports[`or should validate or type 1`] = `
+{
+  "description": undefined,
+  "oneOf": [
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "boolean",
+    },
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+  ],
+  "title": undefined,
+}
+`;
+
+exports[`or should validate or for 3 models 1`] = `
+{
+  "description": undefined,
+  "oneOf": [
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "boolean",
+    },
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    {
+      "additionalProperties": false,
+      "description": undefined,
+      "properties": {
+        "name": {
+          "description": undefined,
+          "title": undefined,
+          "type": "string",
+        },
+      },
+      "required": [],
+      "title": undefined,
+      "type": "object",
+    },
+  ],
+  "title": undefined,
+}
+`;
+
+exports[`or should parse and stringify 1`] = `
+{
+  "description": undefined,
+  "oneOf": [
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "boolean",
+    },
+    {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+  ],
+  "title": undefined,
+}
+`;
+
+exports[`or should parse json schema 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`or should parse json schema 2`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "date": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`or should parse or for two object models with shared type 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "age": {
+      "description": undefined,
+      "title": undefined,
+      "type": "number",
+    },
+    "type": {
+      "description": undefined,
+      "enum": [
+        "b",
+      ],
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`or should parse or for two object models with shared type 2`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+    "type": {
+      "description": undefined,
+      "enum": [
+        "a",
+      ],
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [],
+  "title": undefined,
+  "type": "object",
+}
+`;

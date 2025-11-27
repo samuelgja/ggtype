@@ -1,0 +1,96 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`and should validate and type 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+    "title": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [
+    "name",
+    "title",
+  ],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`and should validate and type with 3 models 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "author": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+    "name": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+    "title": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [
+    "name",
+    "title",
+  ],
+  "title": undefined,
+  "type": "object",
+}
+`;
+
+exports[`and should merge two models 1`] = `
+{
+  "additionalProperties": false,
+  "description": undefined,
+  "properties": {
+    "id": {
+      "description": undefined,
+      "title": undefined,
+      "type": "string",
+    },
+    "required": {
+      "description": undefined,
+      "items": {
+        "description": undefined,
+        "title": undefined,
+        "type": "string",
+      },
+      "title": undefined,
+      "type": "array",
+    },
+    "type": {
+      "description": undefined,
+      "enum": [
+        "text",
+        "math",
+      ],
+      "title": undefined,
+      "type": "string",
+    },
+  },
+  "required": [
+    "id",
+    "type",
+    "required",
+  ],
+  "title": undefined,
+  "type": "object",
+}
+`;

@@ -1,0 +1,19 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`number should number parse 1`] = `
+{
+  "description": undefined,
+  "title": undefined,
+  "type": "number",
+}
+`;
+
+exports[`number should number maximum and minimum 1`] = `
+{
+  "description": undefined,
+  "maximum": 10,
+  "minimum": 5,
+  "title": undefined,
+  "type": "number",
+}
+`;

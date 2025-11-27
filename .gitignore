@@ -1,0 +1,20 @@
+node_modules
+.yarn
+dist/
+clickhouse.db
+.npmrc
+node_modules/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+bunfig.toml
+
+docs/

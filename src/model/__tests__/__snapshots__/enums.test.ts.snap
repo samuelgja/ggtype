@@ -1,0 +1,25 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`enum should enum parse 1`] = `
+{
+  "description": undefined,
+  "enum": [
+    "admin",
+    "user",
+  ],
+  "title": undefined,
+  "type": "string",
+}
+`;
+
+exports[`enum should test enum only 1`] = `
+{
+  "description": undefined,
+  "enum": [
+    "admin",
+    "user",
+  ],
+  "title": undefined,
+  "type": "string",
+}
+`;

@@ -1,0 +1,11 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`string should just test parsing 1`] = `
+{
+  "description": undefined,
+  "maxLength": 3,
+  "minLength": 3,
+  "title": undefined,
+  "type": "string",
+}
+`;

@@ -1,0 +1,10 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`file should validate a valid file object fake file 1`] = `
+{
+  "description": undefined,
+  "properties": {},
+  "title": undefined,
+  "type": "object",
+}
+`;

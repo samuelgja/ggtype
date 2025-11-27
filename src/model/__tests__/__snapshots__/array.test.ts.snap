@@ -1,0 +1,27 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`array should boolean array 1`] = `
+{
+  "description": undefined,
+  "items": {
+    "description": undefined,
+    "title": undefined,
+    "type": "boolean",
+  },
+  "title": undefined,
+  "type": "array",
+}
+`;
+
+exports[`array should mixed array 1`] = `
+{
+  "description": undefined,
+  "items": {
+    "description": undefined,
+    "title": undefined,
+    "type": "boolean",
+  },
+  "title": undefined,
+  "type": "array",
+}
+`;

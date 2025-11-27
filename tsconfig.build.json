@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "dist/cjs",
+    "lib": ["ESNext", "DOM"],
+    "module": "CommonJS", // Output to CommonJS module format
+    "target": "ES2015" // Specify ECMAScript target version
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

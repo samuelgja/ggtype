@@ -1,0 +1,39 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "name": "ggtype API Documentation",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Router Client",
+    "Router",
+    "Actions",
+    "Models",
+    "Types",
+    "Utilities"
+  ],
+  "groupOrder": [
+    "Router Client",
+    "Router",
+    "Actions",
+    "Utils"
+  ],
+  "kindSortOrder": [
+    "Project",
+    "Module",
+    "Namespace",
+    "Enum",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Function",
+    "Variable"
+  ],
+  "plugin": ["typedoc-plugin-markdown"],
+  "hideBreadcrumbs": true
+}
