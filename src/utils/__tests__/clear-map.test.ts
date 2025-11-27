@@ -31,9 +31,9 @@ describe('clear-map', () => {
     await new Promise((resolve) =>
       setTimeout(resolve, wait + 10),
     )
-    expect(call).toBeCalledTimes(3)
-    expect(call).toBeCalledWith('a')
-    expect(call).toBeCalledWith('b')
-    expect(call).toBeCalledWith('x')
+    expect(call).toHaveBeenCalledTimes(3)
+    expect(call).toHaveBeenCalledWith('a')
+    expect(call).toHaveBeenCalledWith('b')
+    expect(call).toHaveBeenCalledWith('x')
   })
 })

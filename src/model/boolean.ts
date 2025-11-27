@@ -8,8 +8,9 @@ import {
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface BooleanModel<R extends boolean = false>
-  extends Model<boolean, R> {
+export interface BooleanModel<
+  R extends boolean = false,
+> extends Model<boolean, R> {
   /**
    * Marks the boolean model as required
    * @returns A new BooleanModel instance marked as required

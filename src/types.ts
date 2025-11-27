@@ -103,8 +103,9 @@ export type UnwrapStreamType<T> = T extends void
             ? U
             : T
 
-export interface ActionResultBase<T>
-  extends RouterResultNotGeneric {
+export interface ActionResultBase<
+  T,
+> extends RouterResultNotGeneric {
   /**
    * Success data with unwrapped stream types (present when status is 'ok')
    */
@@ -115,8 +116,9 @@ export interface ActionResultBase<T>
   error?: OutputError
 }
 
-export interface ActionResultOk<T>
-  extends ActionResultBase<T> {
+export interface ActionResultOk<
+  T,
+> extends ActionResultBase<T> {
   /**
    * Result status (always 'ok' for success)
    */
@@ -127,8 +129,9 @@ export interface ActionResultOk<T>
   data: UnwrapStreamType<T>
 }
 
-export interface ActionResultError<T>
-  extends ActionResultBase<T> {
+export interface ActionResultError<
+  T,
+> extends ActionResultBase<T> {
   /**
    * Result status (always 'error' for failure)
    */
@@ -189,10 +192,8 @@ export interface RouterOptions<
     string,
     ActionNotGeneric
   >,
-  ClientActions extends Record<
-    string,
-    ClientAction
-  > = Record<string, ClientAction>,
+  ClientActions extends Record<string, ClientAction> =
+    Record<string, ClientAction>,
 > {
   /**
    * Record of server actions that can be called by clients
@@ -237,8 +238,7 @@ export interface OnRequest extends RouterCallOptions {
   server?: { upgrade: (request: Request) => boolean }
 }
 
-export interface OnWebSocketMessage
-  extends RouterCallOptions {
+export interface OnWebSocketMessage extends RouterCallOptions {
   /**
    * The WebSocket instance
    */

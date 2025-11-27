@@ -6,7 +6,9 @@ describe('WebSocketTransport', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {
@@ -90,7 +92,9 @@ describe('WebSocketTransport', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {

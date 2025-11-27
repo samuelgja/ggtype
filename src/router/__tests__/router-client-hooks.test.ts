@@ -1,5 +1,4 @@
 /* eslint-disable prefer-const */
-/* eslint-disable sonarjs/sonar-no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable unicorn/prefer-at */
 import { action, m } from '../..'
@@ -61,8 +60,8 @@ describe('router client hooks and headers', () => {
           authHeader &&
           authHeader !== 'Bearer valid-token'
         ) {
-          return new Response(
-            JSON.stringify({
+          return Response.json(
+            {
               getUser: {
                 status: 'error',
                 error: {
@@ -71,7 +70,7 @@ describe('router client hooks and headers', () => {
                   code: 401,
                 },
               },
-            }),
+            },
             {
               status: 200,
               headers: {
@@ -512,6 +511,7 @@ describe('router client hooks and headers', () => {
       const stream = await client.stream(params)
 
       // Consume the stream
+      // eslint-disable-next-line sonarjs/no-unused-vars
       for await (const _ of stream) {
         // Consume all chunks
       }
@@ -643,8 +643,8 @@ describe('router client hooks and headers', () => {
             authHeader !== 'Bearer new-valid-token' &&
             authHeader !== 'Bearer valid-token'
           ) {
-            return new Response(
-              JSON.stringify({
+            return Response.json(
+              {
                 getUser: {
                   status: 'error',
                   error: {
@@ -653,7 +653,7 @@ describe('router client hooks and headers', () => {
                     code: 401,
                   },
                 },
-              }),
+              },
               {
                 status: 200,
                 headers: {

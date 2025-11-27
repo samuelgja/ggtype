@@ -384,6 +384,7 @@ export function createRouter<
     }
 
     for (const clientActionName in clientActions) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const clientAction = clientActions[clientActionName]
       type ClientParams =
         (typeof clientAction)['params']['infer']
@@ -603,12 +604,15 @@ export function createRouter<
             body = JSON.parse(queryParameter)
           } else {
             // For GET without query parameter, return empty result
-            return new Response(JSON.stringify({}), {
-              status: 200,
-              headers: {
-                'Content-Type': 'application/json',
+            return Response.json(
+              {},
+              {
+                status: 200,
+                headers: {
+                  'Content-Type': 'application/json',
+                },
               },
-            })
+            )
           }
         } else {
           // POST, PUT, PATCH, DELETE use request body
@@ -648,7 +652,7 @@ export function createRouter<
           }
         }
 
-        return new Response(JSON.stringify(result), {
+        return Response.json(result, {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
@@ -659,15 +663,16 @@ export function createRouter<
           onError,
           rawError as Error,
         )
-        const errorResult: Record<string, unknown> = {}
-        errorResult['$valid'] = {
-          error: error?.error ?? {
-            type: 'generic',
-            message: 'Unknown error',
-            code: 500,
+        const errorResult: Record<string, unknown> = {
+          ['$valid']: {
+            error: error?.error ?? {
+              type: 'generic',
+              message: 'Unknown error',
+              code: 500,
+            },
           },
         }
-        return new Response(JSON.stringify(errorResult), {
+        return Response.json(errorResult, {
           status: 400,
           headers: {
             'Content-Type': 'application/json',

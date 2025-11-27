@@ -8,8 +8,9 @@ import {
 } from './model'
 import { setModelState } from './model-state'
 
-export interface NullModel<R extends boolean = false>
-  extends Model<null, R> {
+export interface NullModel<
+  R extends boolean = false,
+> extends Model<null, R> {
   /**
    * Marks the null model as required
    * @returns A new NullModel instance marked as required

@@ -9,8 +9,9 @@ import { isFile } from '../utils/array-buffer-handler'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface FileModel<R extends boolean = false>
-  extends Model<File, R> {
+export interface FileModel<
+  R extends boolean = false,
+> extends Model<File, R> {
   /**
    * Marks the file model as required
    * @returns A new FileModel instance marked as required
@@ -71,8 +72,8 @@ export function file(): FileModel<false> {
       const schema: JSONSchema7 = {
         type: 'object',
         ...getSchemaBase(this),
+        properties: {},
       }
-      schema.properties = {}
       return setModelState({
         schema,
         $internal: this.$internals,

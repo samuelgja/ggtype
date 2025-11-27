@@ -2,8 +2,7 @@
 import type { RouterResultNotGeneric } from '../types'
 import { isObject, isString } from '../utils/is'
 type BufferType = 'blob' | 'file'
-export interface RouterMessage
-  extends RouterResultNotGeneric {
+export interface RouterMessage extends RouterResultNotGeneric {
   /**
    * Unique message identifier
    */
@@ -39,7 +38,6 @@ export interface RouterMessage
 export function isRouterMessage(
   message: unknown,
 ): message is RouterMessage {
-  // return isObject(message) && 'id' in message && 'action' in message && 'status' in message
   if (!isObject(message)) {
     return false
   }

@@ -140,7 +140,7 @@ describe('router action return types', () => {
       })
       type Router = typeof router
 
-      let server: Bun.Server | undefined
+      let server: Bun.Server<unknown> | undefined
 
       if (transport === 'stream') {
         server = Bun.serve({
@@ -160,7 +160,9 @@ describe('router action return types', () => {
           fetch(request, fetchServer) {
             if (
               router.onWebSocketMessage &&
-              fetchServer.upgrade(request)
+              fetchServer.upgrade(request, {
+                data: undefined,
+              })
             ) {
               return
             }

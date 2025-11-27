@@ -12,8 +12,9 @@ import { ValidationError } from '../utils/errors'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface DateModel<R extends boolean = false>
-  extends Model<Date, R> {
+export interface DateModel<
+  R extends boolean = false,
+> extends Model<Date, R> {
   /**
    * Marks the date model as required
    * @returns A new DateModel instance marked as required

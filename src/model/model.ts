@@ -97,8 +97,9 @@ export interface ModelInternalsNotGeneric {
    */
   onValidate?: OnValidate<never>
 }
-export interface ModelInternals<R extends boolean>
-  extends ModelInternalsNotGeneric {
+export interface ModelInternals<
+  R extends boolean,
+> extends ModelInternalsNotGeneric {
   /**
    * Whether the model field is required (type-safe boolean)
    */
@@ -164,8 +165,10 @@ export interface ModelNotGeneric extends ModelBase {
    */
   isRequired: () => ModelNotGeneric
 }
-export interface Model<T, R extends boolean = false>
-  extends ModelNotGeneric {
+export interface Model<
+  T,
+  R extends boolean = false,
+> extends ModelNotGeneric {
   /**
    * Function to parse and validate data according to the model, returning typed result
    * @param data - The data to parse

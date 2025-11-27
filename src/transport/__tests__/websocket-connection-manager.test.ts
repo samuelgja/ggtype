@@ -11,7 +11,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {
@@ -68,7 +70,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {
@@ -126,7 +130,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           connectionCount++
           return
         }
@@ -237,7 +243,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           connectionCount++
           return
         }
@@ -296,7 +304,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {
@@ -371,7 +381,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           connectionCount++
           return
         }
@@ -466,7 +478,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           // Accept connection only after a few attempts
           if (shouldAcceptConnection) {
             return
@@ -541,7 +555,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           return
         }
         return new Response('Upgrade failed', {
@@ -593,7 +609,9 @@ describe('WebSocketConnectionManager', () => {
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
-        if (fetchServer.upgrade(request)) {
+        if (
+          fetchServer.upgrade(request, { data: undefined })
+        ) {
           connectionCount++
           return
         }
@@ -695,7 +713,7 @@ describe('WebSocketConnectionManager', () => {
       fetch(request, fetchServer) {
         if (
           router.onWebSocketMessage &&
-          fetchServer.upgrade(request)
+          fetchServer.upgrade(request, { data: undefined })
         ) {
           connectionCount++
           return

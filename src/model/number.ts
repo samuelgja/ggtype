@@ -8,8 +8,9 @@ import {
 } from './model'
 import { setModelState } from './model-state'
 
-export interface NumberModel<R extends boolean = false>
-  extends Model<number, R> {
+export interface NumberModel<
+  R extends boolean = false,
+> extends Model<number, R> {
   /**
    * Sets the minimum value constraint for the number
    * @param minimum - Minimum allowed value

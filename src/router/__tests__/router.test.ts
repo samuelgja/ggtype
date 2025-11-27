@@ -125,7 +125,7 @@ describe('router', () => {
       })
       type Router = typeof router
 
-      let server: Bun.Server | undefined
+      let server: Bun.Server<unknown> | undefined
 
       if (transport === 'stream') {
         server = Bun.serve({
@@ -145,7 +145,9 @@ describe('router', () => {
           fetch(request, fetchServer) {
             if (
               router.onWebSocketMessage &&
-              fetchServer.upgrade(request)
+              fetchServer.upgrade(request, {
+                data: undefined,
+              })
             ) {
               return
             }
@@ -526,7 +528,7 @@ describe('router', () => {
         })
         type ErrorRouter = typeof errorRouter
 
-        let errorServer: Bun.Server | undefined
+        let errorServer: Bun.Server<unknown> | undefined
 
         if (transport === 'stream') {
           errorServer = Bun.serve({
@@ -546,7 +548,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 errorRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -820,7 +824,7 @@ describe('router', () => {
         })
         type SlowRouter = typeof slowRouter
 
-        let slowServer: Bun.Server | undefined
+        let slowServer: Bun.Server<unknown> | undefined
 
         if (transport === 'stream') {
           slowServer = Bun.serve({
@@ -840,7 +844,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 slowRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -997,7 +1003,7 @@ describe('router', () => {
         })
         type NullableRouter = typeof nullableRouter
 
-        let nullableServer: Bun.Server | undefined
+        let nullableServer: Bun.Server<unknown> | undefined
 
         if (transport === 'stream') {
           nullableServer = Bun.serve({
@@ -1017,7 +1023,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 nullableRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -1109,7 +1117,9 @@ describe('router', () => {
         })
         type MultiStreamRouter = typeof multiStreamRouter
 
-        let multiStreamServer: Bun.Server | undefined
+        let multiStreamServer:
+          | Bun.Server<unknown>
+          | undefined
 
         if (transport === 'stream') {
           multiStreamServer = Bun.serve({
@@ -1129,7 +1139,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 multiStreamRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -1265,7 +1277,7 @@ describe('router', () => {
           transport,
         })
 
-        let testServer: Bun.Server | undefined
+        let testServer: Bun.Server<unknown> | undefined
 
         if (transport === 'stream') {
           testServer = Bun.serve({
@@ -1285,7 +1297,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 testRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -1370,6 +1384,7 @@ describe('router', () => {
           },
         )
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const testRouter = createRouter({
           actions: { testAction },
           clientActions: {},
@@ -1477,7 +1492,9 @@ describe('router', () => {
           fetch(request, fetchServer) {
             if (
               testRouter.onWebSocketMessage &&
-              fetchServer.upgrade(request)
+              fetchServer.upgrade(request, {
+                data: undefined,
+              })
             ) {
               return
             }
@@ -1601,7 +1618,9 @@ describe('router', () => {
         })
         type EmptyStreamRouter = typeof emptyStreamRouter
 
-        let emptyStreamServer: Bun.Server | undefined
+        let emptyStreamServer:
+          | Bun.Server<unknown>
+          | undefined
 
         if (transport === 'stream') {
           emptyStreamServer = Bun.serve({
@@ -1621,7 +1640,9 @@ describe('router', () => {
             fetch(request, fetchServer) {
               if (
                 emptyStreamRouter.onWebSocketMessage &&
-                fetchServer.upgrade(request)
+                fetchServer.upgrade(request, {
+                  data: undefined,
+                })
               ) {
                 return
               }
@@ -2029,7 +2050,7 @@ describe('router', () => {
           })
           type ErrorRouter = typeof errorRouter
 
-          let errorServer: Bun.Server | undefined
+          let errorServer: Bun.Server<unknown> | undefined
 
           if (transport === 'stream') {
             errorServer = Bun.serve({
@@ -2049,7 +2070,9 @@ describe('router', () => {
               fetch(request, fetchServer) {
                 if (
                   errorRouter.onWebSocketMessage &&
-                  fetchServer.upgrade(request)
+                  fetchServer.upgrade(request, {
+                    data: undefined,
+                  })
                 ) {
                   return
                 }

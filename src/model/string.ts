@@ -9,8 +9,9 @@ import {
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface StringModel<R extends boolean = false>
-  extends Model<string, R> {
+export interface StringModel<
+  R extends boolean = false,
+> extends Model<string, R> {
   /**
    * Sets the maximum length constraint for the string
    * @param length - Maximum number of characters

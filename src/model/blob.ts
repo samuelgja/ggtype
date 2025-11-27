@@ -9,8 +9,9 @@ import { isBlob } from '../utils/array-buffer-handler'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface BlobModel<R extends boolean = false>
-  extends Model<Blob, R> {
+export interface BlobModel<
+  R extends boolean = false,
+> extends Model<Blob, R> {
   /**
    * Marks the blob model as required
    * @returns A new BlobModel instance marked as required
@@ -68,8 +69,8 @@ export function blob(): BlobModel<false> {
       const schema: JSONSchema7 = {
         type: 'object',
         ...getSchemaBase(this),
+        properties: {},
       }
-      schema.properties = {}
       return setModelState({
         schema,
         $internal: this.$internals,
