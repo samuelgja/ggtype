@@ -41,10 +41,10 @@ describe('router file upload', () => {
       // File action that uses client action
       const fileActionWithClientAction = action(
         m.file().isRequired(),
-        async ({ params, getClientActions }) => {
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
+        async ({ params, clientActions }) => {
           expect(params).toBeInstanceOf(File)
-          const { useFile } =
-            getClientActions?.<ClientActions>() ?? {}
+          const { useFile } = clientActions<ClientActions>()
           const toolFile = await useFile?.(params)
           expect(toolFile?.data).toBeInstanceOf(File)
           return toolFile?.data
@@ -54,10 +54,10 @@ describe('router file upload', () => {
       // Streaming file action
       const fileStreamAction = action(
         m.file().isRequired(),
-        async function* ({ params, getClientActions }) {
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
+        async function* ({ params, clientActions }) {
           expect(params).toBeInstanceOf(File)
-          const { useFile } =
-            getClientActions?.<ClientActions>() ?? {}
+          const { useFile } = clientActions<ClientActions>()
           const toolFile = await useFile?.(params)
           expect(toolFile?.data).toBeInstanceOf(File)
           yield toolFile?.data

@@ -6,7 +6,7 @@
 
 > **isAsyncStream**\<`T`\>(`value`): `value is AsyncStream<T>`
 
-Defined in: [src/utils/is.ts:132](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/is.ts#L132)
+Defined in: [src/utils/is.ts:177](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/is.ts#L177)
 
 Type guard to check if a value is an AsyncStream or ReadableStream.
 

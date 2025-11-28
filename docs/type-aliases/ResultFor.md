@@ -6,7 +6,7 @@
 
 > **ResultFor**\<`R`, `Params`\> = `{ [P in keyof Params]: RouterResultNotGeneric }`
 
-Defined in: [src/router/router-client.types.ts:32](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/router/router-client.types.ts#L32)
+Defined in: [src/router/router-client.types.ts:34](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/router-client.types.ts#L34)
 
 Type representing the result object with basic router results.
 

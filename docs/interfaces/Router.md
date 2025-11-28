@@ -4,7 +4,7 @@
 
 # Interface: Router\<Actions, ClientActions\>
 
-Defined in: [src/types.ts:451](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L451)
+Defined in: [src/types.ts:573](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L573)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/types.ts:451](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > `readonly` **infer**: `InferRouter`\<`Actions`, `ClientActions`\>
 
-Defined in: [src/types.ts:465](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L465)
+Defined in: [src/types.ts:587](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L587)
 
 Type inference helper for router types
 
@@ -40,7 +40,7 @@ Type inference helper for router types
 
 > `readonly` **onRequest**: (`options`) => `Promise`\<`Response`\>
 
-Defined in: [src/types.ts:444](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L444)
+Defined in: [src/types.ts:566](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L566)
 
 Handles HTTP requests for the router
 
@@ -68,7 +68,7 @@ A Response object for the HTTP request
 
 > `readonly` `optional` **onWebSocketMessage**: (`options`) => `Promise`\<`void`\>
 
-Defined in: [src/types.ts:459](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L459)
+Defined in: [src/types.ts:581](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L581)
 
 Handles WebSocket messages for the router (only available for WebSocket transport)
 

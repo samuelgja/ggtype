@@ -9,6 +9,7 @@ import { ValidationError } from '../utils/errors'
 /**
  * Extracts and types the context object from an unknown value.
  * This is a type-safe way to access the context passed to actions.
+ * @group Router
  * @template T - The expected type of the context
  * @param ctx - The context value (typically unknown)
  * @returns The context cast to type T
@@ -39,11 +40,17 @@ export function getCtx<T>(ctx: unknown): T {
   return ctx as T
 }
 
+/**
+ * @group Router
+ */
 export type ReturnValue =
   | ModelNotGeneric['infer']
   | void
   | null
 
+/**
+ * @group Router
+ */
 export interface ActionCbParameters<
   M extends ModelNotGeneric = ModelNotGeneric,
 > {
@@ -56,19 +63,26 @@ export interface ActionCbParameters<
    */
   readonly ctx?: unknown
   /**
-   * Function to get client actions for bidirectional communication
+   * Function to get client actions for bidirectional communication.
+   * Always available - returns empty object if no client actions are defined.
    */
-  readonly getClientActions?: <
+  readonly clientActions: <
     ClientActions extends Record<string, ClientAction>,
   >() => ClientCallableActions<ClientActions>
 }
 
+/**
+ * @group Router
+ */
 export type ActionFn<
   M extends ModelNotGeneric = ModelNotGeneric,
 > = (
   parameters: ActionCbParameters<M>,
 ) => Awaited<ReturnValue>
 
+/**
+ * @group Router
+ */
 export type Action<
   M extends ModelNotGeneric = ModelNotGeneric,
   F extends ActionFn<M> = ActionFn,
@@ -83,6 +97,9 @@ export type Action<
   run: F
 }
 
+/**
+ * @group Router
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ActionNotGeneric = Action<ModelNotGeneric, any>
 type InferActionRun<Run> = Run extends (
@@ -95,6 +112,7 @@ type InferActionRun<Run> = Run extends (
  * The action automatically validates parameters against the provided model before execution.
  * If validation fails, a ValidationError is thrown. The action can optionally receive
  * context and client actions for bidirectional communication.
+ * @group Router
  * @template Model - The model type for parameter validation
  * @template Callback - The callback function type
  * @param parameterModel - The model to validate parameters against
@@ -123,20 +141,18 @@ type InferActionRun<Run> = Run extends (
  * })
  *
  * // Action with context and client actions
- * const updateUser = action(userParams, async ({ params, ctx, getClientActions }) => {
+ * const updateUser = action(userParams, async ({ params, ctx, clientActions }) => {
  *   const user = ctx?.user
  *   if (!user) {
  *     throw new Error('Unauthorized')
  *   }
  *
- *   // Call client action for notification
- *   const clientActions = getClientActions?.()
- *   if (clientActions) {
- *     await clientActions.showNotification({
- *       message: 'User updated!',
- *       type: 'success',
- *     })
- *   }
+ *   // Call client action for notification (always available - returns empty object if not defined)
+ *   const { showNotification } = clientActions()
+ *   await showNotification?.({
+ *     message: 'User updated!',
+ *     type: 'success',
+ *   })
  *
  *   return { ...params, updatedAt: new Date() }
  * })
@@ -155,7 +171,7 @@ export function action<
   const actionFunction = (({
     params,
     ctx,
-    getClientActions,
+    clientActions: clientActions,
   }: ActionCbParameters<Model>) => {
     const errors = validate(params)
     if (errors) {
@@ -167,7 +183,7 @@ export function action<
     return run({
       params: parsedParams,
       ctx,
-      getClientActions,
+      clientActions,
     })
   }) as InferActionRun<Run>
   return {

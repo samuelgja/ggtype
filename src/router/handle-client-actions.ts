@@ -12,6 +12,7 @@ import type {
 /**
  * Helper function to define client action models with proper typing.
  * This is a type-only function that returns the input unchanged, used for type inference.
+ * @group Router
  * @template T - The client actions record type
  * @param data - The client actions record to define
  * @returns The same data with proper typing
@@ -55,6 +56,7 @@ export function defineClientActionsSchema<
  * Creates a handler function for processing client action messages.
  * Parses incoming messages, validates them, executes the corresponding client action,
  * and returns a serialized response. Handles errors and converts them to proper error messages.
+ * @group Router
  * @template Actions - The client actions record type
  * @param clientActions - Record of client action handlers
  * @returns An async function that processes raw messages and returns serialized responses

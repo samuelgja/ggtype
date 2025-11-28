@@ -6,7 +6,7 @@
 
 > **handleClientActions**\<`Actions`\>(`clientActions`): (`rawMessage`) => `Promise`\<`string`\>
 
-Defined in: [src/router/handle-client-actions.ts:33](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/router/handle-client-actions.ts#L33)
+Defined in: [src/router/handle-client-actions.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/handle-client-actions.ts#L64)
 
 Creates a handler function for processing client action messages.
 Parses incoming messages, validates them, executes the corresponding client action,

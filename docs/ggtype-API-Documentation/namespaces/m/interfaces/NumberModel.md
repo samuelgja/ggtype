@@ -4,7 +4,7 @@
 
 # Interface: NumberModel\<R\>
 
-Defined in: [src/model/number.ts:11](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L11)
+Defined in: [src/model/number.ts:11](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L11)
 
 ## Extends
 
@@ -22,7 +22,7 @@ Defined in: [src/model/number.ts:11](https://github.com/samuelgja/ggtype/blob/b1
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -36,7 +36,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:64](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L64)
+Defined in: [src/model/number.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L64)
 
 Sets a human-readable description for the model
 
@@ -64,7 +64,7 @@ A new NumberModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -112,7 +112,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `number`
 
-Defined in: [src/model/number.ts:52](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L52)
+Defined in: [src/model/number.ts:52](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L52)
 
 Inferred TypeScript type for the number model (always number)
 
@@ -126,7 +126,7 @@ Inferred TypeScript type for the number model (always number)
 
 > `readonly` **isRequired**: () => `NumberModel`\<`true`\>
 
-Defined in: [src/model/number.ts:40](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L40)
+Defined in: [src/model/number.ts:40](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L40)
 
 Marks the number model as required
 
@@ -146,7 +146,7 @@ A new NumberModel instance marked as required
 
 > `readonly` **maximum**: (`maximum`) => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:25](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L25)
+Defined in: [src/model/number.ts:25](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L25)
 
 Sets the maximum value constraint for the number
 
@@ -170,7 +170,7 @@ A new NumberModel instance with the constraint
 
 > `readonly` **minimum**: (`minimum`) => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:19](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L19)
+Defined in: [src/model/number.ts:19](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L19)
 
 Sets the minimum value constraint for the number
 
@@ -194,7 +194,7 @@ A new NumberModel instance with the constraint
 
 > `readonly` **negative**: () => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:35](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L35)
+Defined in: [src/model/number.ts:35](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L35)
 
 Validates that the number is negative (less than 0)
 
@@ -210,7 +210,7 @@ A new NumberModel instance with negative validation
 
 > `readonly` **onParse**: (`data`) => `number`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -238,7 +238,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -262,7 +262,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **positive**: () => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:30](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L30)
+Defined in: [src/model/number.ts:30](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L30)
 
 Validates that the number is positive (greater than 0)
 
@@ -278,7 +278,7 @@ A new NumberModel instance with positive validation
 
 > `readonly` **title**: (`name`) => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:58](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L58)
+Defined in: [src/model/number.ts:58](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L58)
 
 Sets a human-readable title for the model
 
@@ -306,7 +306,7 @@ A new NumberModel instance with the updated title
 
 > `readonly` **validate**: (`onValidate`) => `NumberModel`\<`R`\>
 
-Defined in: [src/model/number.ts:46](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/number.ts#L46)
+Defined in: [src/model/number.ts:46](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/number.ts#L46)
 
 Adds custom validation logic to the model
 

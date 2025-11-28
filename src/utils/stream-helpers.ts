@@ -2,6 +2,8 @@
  * Creates a wrapper around a ReadableStream controller that prevents operations after closure.
  * Wraps the controller's enqueue, close, and error methods to check if the stream is already closed,
  * preventing errors from operations on closed streams.
+ * @group Utils
+ * @internal
  * @template Result - The type of data in the stream
  * @param controller - The ReadableStream controller to wrap
  * @returns A wrapped controller with closure protection
@@ -40,6 +42,8 @@ export function createController<Result>(
 /**
  * Marks each item in an async iterable with an `isLast` flag indicating if it's the last item.
  * This is useful for streaming operations where the client needs to know when the stream has ended.
+ * @group Utils
+ * @internal
  * @template T - The type of items in the iterable
  * @param iterable - The async iterable to process
  * @yields {object} An object containing the value and an optional `isLast` boolean flag

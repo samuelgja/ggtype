@@ -4,7 +4,7 @@
 
 # Interface: FileModel\<R\>
 
-Defined in: [src/model/file.ts:12](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/file.ts#L12)
+Defined in: [src/model/file.ts:12](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/file.ts#L12)
 
 ## Extends
 
@@ -22,7 +22,7 @@ Defined in: [src/model/file.ts:12](https://github.com/samuelgja/ggtype/blob/b1d8
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -36,7 +36,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `FileModel`\<`R`\>
 
-Defined in: [src/model/file.ts:35](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/file.ts#L35)
+Defined in: [src/model/file.ts:35](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/file.ts#L35)
 
 Sets a human-readable description for the model
 
@@ -64,7 +64,7 @@ A new FileModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -112,7 +112,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `File`
 
-Defined in: [src/model/file.ts:23](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/file.ts#L23)
+Defined in: [src/model/file.ts:23](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/file.ts#L23)
 
 Inferred TypeScript type for the file model (always File)
 
@@ -126,7 +126,7 @@ Inferred TypeScript type for the file model (always File)
 
 > `readonly` **isRequired**: () => `FileModel`\<`true`\>
 
-Defined in: [src/model/file.ts:19](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/file.ts#L19)
+Defined in: [src/model/file.ts:19](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/file.ts#L19)
 
 Marks the file model as required
 
@@ -146,7 +146,7 @@ A new FileModel instance marked as required
 
 > `readonly` **onParse**: (`data`) => `File`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -174,7 +174,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -198,7 +198,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **title**: (`name`) => `FileModel`\<`R`\>
 
-Defined in: [src/model/file.ts:29](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/file.ts#L29)
+Defined in: [src/model/file.ts:29](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/file.ts#L29)
 
 Sets a human-readable title for the model
 

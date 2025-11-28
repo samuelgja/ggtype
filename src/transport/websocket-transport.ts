@@ -33,6 +33,10 @@ type WebSocketLike =
 
 const WebSocketOpen = 1
 
+/**
+ * @group Utils
+ * @internal
+ */
 export class WebSocketTransport implements Transport {
   private ws: WebSocketLike
   private buffer = new BufferQueue()

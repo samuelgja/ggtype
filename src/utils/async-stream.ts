@@ -35,6 +35,9 @@ class AsyncStreamIterator<T> {
   }
 }
 
+/**
+ * @group Utils
+ */
 export class AsyncStream<T>
   extends ReadableStream<T>
   implements AsyncIterable<T>

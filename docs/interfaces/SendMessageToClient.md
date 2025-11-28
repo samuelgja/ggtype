@@ -4,7 +4,7 @@
 
 # Interface: SendMessageToClient
 
-Defined in: [src/types.ts:285](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L285)
+Defined in: [src/types.ts:354](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L354)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [src/types.ts:285](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > **action**: `string`
 
-Defined in: [src/types.ts:289](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L289)
+Defined in: [src/types.ts:358](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L358)
 
 The action name
 
@@ -22,7 +22,7 @@ The action name
 
 > `optional` **clientId**: `string`
 
-Defined in: [src/types.ts:297](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L297)
+Defined in: [src/types.ts:366](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L366)
 
 The client ID to send the message to
 
@@ -32,7 +32,7 @@ The client ID to send the message to
 
 > **data**: `unknown`
 
-Defined in: [src/types.ts:293](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L293)
+Defined in: [src/types.ts:362](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L362)
 
 The data to send (can be File, Blob, or any serializable value)
 
@@ -42,7 +42,7 @@ The data to send (can be File, Blob, or any serializable value)
 
 > `optional` **id**: `string`
 
-Defined in: [src/types.ts:301](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L301)
+Defined in: [src/types.ts:370](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L370)
 
 Optional message ID (will be generated if not provided)
 
@@ -52,7 +52,7 @@ Optional message ID (will be generated if not provided)
 
 > `optional` **isLast**: `boolean`
 
-Defined in: [src/types.ts:305](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L305)
+Defined in: [src/types.ts:374](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L374)
 
 Whether this is the last message in a stream
 
@@ -62,7 +62,7 @@ Whether this is the last message in a stream
 
 > **send**: (`message`) => `void`
 
-Defined in: [src/types.ts:309](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L309)
+Defined in: [src/types.ts:378](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L378)
 
 Function to send a raw message (not used in current implementation)
 

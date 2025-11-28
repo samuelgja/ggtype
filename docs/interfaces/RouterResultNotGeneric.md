@@ -4,7 +4,7 @@
 
 # Interface: RouterResultNotGeneric
 
-Defined in: [src/types.ts:77](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L77)
+Defined in: [src/types.ts:119](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L119)
 
 ## Extended by
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:77](https://github.com/samuelgja/ggtype/blob/b1d8fef81
 
 > `optional` **data**: `unknown`
 
-Defined in: [src/types.ts:85](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L85)
+Defined in: [src/types.ts:127](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L127)
 
 Success data (present when status is 'ok')
 
@@ -26,7 +26,7 @@ Success data (present when status is 'ok')
 
 > `optional` **error**: [`OutputError`](../type-aliases/OutputError.md)
 
-Defined in: [src/types.ts:89](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L89)
+Defined in: [src/types.ts:131](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L131)
 
 Error information (present when status is 'error')
 
@@ -36,6 +36,6 @@ Error information (present when status is 'error')
 
 > **status**: [`ResultStatus`](../type-aliases/ResultStatus.md)
 
-Defined in: [src/types.ts:81](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L81)
+Defined in: [src/types.ts:123](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L123)
 
 Result status: 'ok' for success, 'error' for failure

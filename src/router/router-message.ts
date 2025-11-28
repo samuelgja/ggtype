@@ -1,6 +1,9 @@
 import type { RouterResultNotGeneric } from '../types'
 import { isObject, isString } from '../utils/is'
 type BufferType = 'blob' | 'file'
+/**
+ * @group Router
+ */
 export interface RouterMessage extends RouterResultNotGeneric {
   /**
    * Unique message identifier
@@ -31,6 +34,7 @@ export interface RouterMessage extends RouterResultNotGeneric {
 /**
  * Type guard to check if a value is a valid RouterMessage.
  * Validates that the message is an object with required string properties: id, action, and status.
+ * @group Router
  * @param message - The value to check
  * @returns True if the value is a valid RouterMessage, false otherwise
  */

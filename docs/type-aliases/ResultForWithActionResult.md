@@ -6,7 +6,7 @@
 
 > **ResultForWithActionResult**\<`R`, `Params`\> = `{ [P in keyof Params & keyof R["infer"]["serverActions"]]: ActionResult<R["infer"]["serverActions"][P]["result"]> }`
 
-Defined in: [src/router/router-client.types.ts:47](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/router/router-client.types.ts#L47)
+Defined in: [src/router/router-client.types.ts:50](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/router-client.types.ts#L50)
 
 Type representing the result object with action results (includes unwrapped stream types).
 

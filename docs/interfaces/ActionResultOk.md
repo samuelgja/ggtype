@@ -4,7 +4,7 @@
 
 # Interface: ActionResultOk\<T\>
 
-Defined in: [src/types.ts:119](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L119)
+Defined in: [src/types.ts:164](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L164)
 
 ## Extends
 
@@ -22,7 +22,7 @@ Defined in: [src/types.ts:119](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
 
-Defined in: [src/types.ts:129](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L129)
+Defined in: [src/types.ts:174](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L174)
 
 Success data with unwrapped stream types
 
@@ -36,7 +36,7 @@ Success data with unwrapped stream types
 
 > `optional` **error**: [`OutputError`](../type-aliases/OutputError.md)
 
-Defined in: [src/types.ts:116](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L116)
+Defined in: [src/types.ts:161](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L161)
 
 Error information (present when status is 'error')
 
@@ -50,7 +50,7 @@ Error information (present when status is 'error')
 
 > **status**: `"ok"`
 
-Defined in: [src/types.ts:125](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L125)
+Defined in: [src/types.ts:170](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L170)
 
 Result status (always 'ok' for success)
 

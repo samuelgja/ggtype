@@ -18,6 +18,8 @@ interface RateLimiter {
  * Creates a rate limiter function that enforces maximum execution frequency.
  * Tracks function calls within a time window and blocks execution if the limit is exceeded.
  * When blocked, throws an error and automatically unblocks after the block duration.
+ * @group Utils
+ * @internal
  * @param options - Rate limiter configuration options
  * @param options.maxRunPerWindow - Maximum number of calls allowed per window (default: 10)
  * @param options.windowMs - Time window in milliseconds (default: 1000)
@@ -90,6 +92,8 @@ export function rateLimiter(
  * Creates a rate limiter that tracks rate limits per unique value.
  * Each unique value gets its own rate limiter instance, allowing different
  * rate limits for different keys/identifiers.
+ * @group Utils
+ * @internal
  * @template T - The value type to track rate limits for
  * @param options - Rate limiter configuration options
  * @param options.maxRunPerWindow - Maximum number of calls allowed per window (default: 10)

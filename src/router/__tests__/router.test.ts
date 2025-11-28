@@ -42,9 +42,11 @@ describe('router', () => {
 
       const deleteUser = action(
         m.string().isRequired(),
-        async ({ params, getClientActions }) => {
-          const { useTool } =
-            getClientActions?.<ClientActions>() ?? {}
+        async ({
+          params,
+          clientActions: clientActions,
+        }) => {
+          const { useTool } = clientActions<ClientActions>()
           const toolResult = await useTool?.({
             tool: 'delete',
             user: params,
@@ -68,10 +70,12 @@ describe('router', () => {
 
       const fileActionGetFileByTool = action(
         m.file().isRequired(),
-        async ({ params, getClientActions }) => {
+        async ({
+          params,
+          clientActions: clientActions,
+        }) => {
           expect(params).toBeInstanceOf(File)
-          const { useFile } =
-            getClientActions?.<ClientActions>() ?? {}
+          const { useFile } = clientActions<ClientActions>()
           const toolFile = await useFile?.(params)
           expect(toolFile?.data).toBeInstanceOf(File)
           return toolFile?.data
@@ -80,10 +84,12 @@ describe('router', () => {
 
       const fileStream = action(
         m.file().isRequired(),
-        async function* ({ params, getClientActions }) {
+        async function* ({
+          params,
+          clientActions: clientActions,
+        }) {
           expect(params).toBeInstanceOf(File)
-          const { useFile } =
-            getClientActions?.<ClientActions>() ?? {}
+          const { useFile } = clientActions<ClientActions>()
           const toolFile = await useFile?.(params)
           expect(toolFile?.data).toBeInstanceOf(File)
           yield toolFile?.data
@@ -93,9 +99,8 @@ describe('router', () => {
 
       const streamUser = action(
         m.string().isRequired(),
-        async function* ({ getClientActions }) {
-          const { useTool } =
-            getClientActions?.<ClientActions>() ?? {}
+        async function* ({ clientActions: clientActions }) {
+          const { useTool } = clientActions<ClientActions>()
           const toolResult = await useTool?.({
             tool: 'tool-one',
             user: 'user-one',
@@ -807,9 +812,12 @@ describe('router', () => {
       it('should handle client action timeout', async () => {
         const slowClientAction = action(
           m.string().isRequired(),
-          async ({ params, getClientActions }) => {
+          async ({
+            params,
+            clientActions: clientActions,
+          }) => {
             const { useTool } =
-              getClientActions?.<ClientActions>() ?? {}
+              clientActions<ClientActions>()
             // Client action will timeout
             await useTool?.({ tool: 'slow', user: params })
             return 'Should not reach here'
@@ -1261,9 +1269,12 @@ describe('router', () => {
         // This test verifies Bug 1 fix: error responses should preserve the original action field
         const testAction = action(
           m.string().isRequired(),
-          async ({ params, getClientActions }) => {
+          async ({
+            params,
+            clientActions: clientActions,
+          }) => {
             const { useTool } =
-              getClientActions?.<ClientActions>() ?? {}
+              clientActions<ClientActions>()
             // This will trigger a client action that throws an error
             await useTool?.({ tool: 'test', user: params })
             return 'should not reach here'

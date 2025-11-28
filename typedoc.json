@@ -3,7 +3,7 @@
   "entryPoints": ["src/index.ts"],
   "out": "docs",
   "name": "ggtype API Documentation",
-  "readme": "README.md",
+  "readme": "none",
   "includeVersion": true,
   "excludePrivate": true,
   "excludeProtected": true,
@@ -17,12 +17,7 @@
     "Types",
     "Utilities"
   ],
-  "groupOrder": [
-    "Router Client",
-    "Router",
-    "Actions",
-    "Utils"
-  ],
+  "groupOrder": ["Router", "Client", "Utils", "*"],
   "kindSortOrder": [
     "Project",
     "Module",

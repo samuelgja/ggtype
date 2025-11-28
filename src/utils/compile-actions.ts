@@ -34,6 +34,8 @@ function compileSchemaAndCheck(
  * Compiles a set of actions into a JSON schema and generates standalone validation code.
  * Creates a schema from all action models and compiles it, optionally writing the standalone
  * validation code to a file for use without AJV dependency.
+ * @group Utils
+ * @internal
  * @template A - The actions record type
  * @param compilePath - File path to write the standalone validation code
  * @param actions - Record of actions to compile

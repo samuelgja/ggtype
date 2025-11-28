@@ -6,7 +6,7 @@
 
 > **isGenericError**(`error`): `error is OutputErrorGeneric`
 
-Defined in: [src/utils/is.ts:121](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/is.ts#L121)
+Defined in: [src/utils/is.ts:165](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/is.ts#L165)
 
 Type guard to check if an error is a generic error.
 

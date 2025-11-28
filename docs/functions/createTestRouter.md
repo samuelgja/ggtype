@@ -6,7 +6,7 @@
 
 > **createTestRouter**\<`Actions`, `ClientActions`\>(`actions`, `clientActions`, `clientActionHandlers`, `options?`): [`TestRouter`](../interfaces/TestRouter.md)\<`Actions`\>
 
-Defined in: [src/utils/router-test-utils.ts:89](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/router-test-utils.ts#L89)
+Defined in: [src/utils/router-test-utils.ts:138](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/router-test-utils.ts#L138)
 
 Creates a test router with both server and client for testing purposes.
 Sets up a local server (HTTP stream or WebSocket) and a client connected to it,
@@ -63,3 +63,47 @@ Optional test router configuration
 [`TestRouter`](../interfaces/TestRouter.md)\<`Actions`\>
 
 A test router with actions and cleanup function
+
+## Example
+
+```ts
+import { action, createTestRouter, defineClientActionsSchema, m } from 'ggtype'
+
+// Define actions
+const getUser = action(
+  m.object({ id: m.string().isRequired() }),
+  async ({ params }) => ({ id: params.id, name: 'John' })
+)
+
+// Define client actions
+const clientActions = defineClientActionsSchema({
+  showNotification: {
+    params: m.object({ message: m.string().isRequired() }),
+    return: m.object({ acknowledged: m.boolean() }),
+  },
+})
+
+// Create test router
+const testRouter = createTestRouter(
+  { getUser },
+  clientActions,
+  {
+    showNotification: async (params) => {
+      console.log('Notification:', params.message)
+      return { acknowledged: true }
+    },
+  },
+  { transport: 'stream' }
+)
+
+// Test actions
+const stream = await testRouter.actions.getUser({ id: '123' })
+for await (const result of stream) {
+  if (result.getUser?.status === 'ok') {
+    console.log('User:', result.getUser.data)
+  }
+}
+
+// Cleanup
+testRouter.cleanup()
+```

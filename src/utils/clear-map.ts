@@ -66,6 +66,8 @@ export interface ClearMap<K, V> {
  * Creates a map-like data structure that automatically expires entries after a specified time.
  * Entries are checked and removed periodically based on the checkIntervalMs setting.
  * Supports optional cleanup callbacks when entries expire.
+ * @group Utils
+ * @internal
  * @template K - The key type
  * @template V - The value type
  * @param options - Configuration options for the clear map

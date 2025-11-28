@@ -6,4 +6,4 @@
 
 > **ResultStatus** = `"ok"` \| `"error"`
 
-Defined in: [src/types.ts:75](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L75)
+Defined in: [src/types.ts:114](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L114)

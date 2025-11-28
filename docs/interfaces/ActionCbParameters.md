@@ -4,7 +4,7 @@
 
 # Interface: ActionCbParameters\<M\>
 
-Defined in: [src/action/action.ts:25](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L25)
+Defined in: [src/action/action.ts:54](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L54)
 
 ## Type Parameters
 
@@ -14,23 +14,14 @@ Defined in: [src/action/action.ts:25](https://github.com/samuelgja/ggtype/blob/b
 
 ## Properties
 
-### ctx?
+### clientActions()
 
-> `readonly` `optional` **ctx**: `unknown`
+> `readonly` **clientActions**: \<`ClientActions`\>() => `ClientCallableActions`\<`ClientActions`\>
 
-Defined in: [src/action/action.ts:35](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L35)
+Defined in: [src/action/action.ts:69](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L69)
 
-Optional context object passed from the router
-
-***
-
-### getClientActions()?
-
-> `readonly` `optional` **getClientActions**: \<`ClientActions`\>() => `ClientCallableActions`\<`ClientActions`\>
-
-Defined in: [src/action/action.ts:39](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L39)
-
-Function to get client actions for bidirectional communication
+Function to get client actions for bidirectional communication.
+Always available - returns empty object if no client actions are defined.
 
 #### Type Parameters
 
@@ -44,10 +35,20 @@ Function to get client actions for bidirectional communication
 
 ***
 
+### ctx?
+
+> `readonly` `optional` **ctx**: `unknown`
+
+Defined in: [src/action/action.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L64)
+
+Optional context object passed from the router
+
+***
+
 ### params
 
 > `readonly` **params**: `M`\[`"infer"`\]
 
-Defined in: [src/action/action.ts:31](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L31)
+Defined in: [src/action/action.ts:60](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L60)
 
 Validated and parsed action parameters

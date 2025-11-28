@@ -6,7 +6,7 @@
 
 > **compileModelAndCheck**\<`T`\>(`model`): (`data`) => `ErrorObject`\<`string`, `Record`\<`string`, `any`\>, `unknown`\>[] \| `null`
 
-Defined in: [src/utils/compile-model.ts:95](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/compile-model.ts#L95)
+Defined in: [src/utils/compile-model.ts:97](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/compile-model.ts#L97)
 
 Compiles a model into a validation function that checks data against the model's schema.
 Uses AJV to compile the model's schema reference and returns a function that validates data.

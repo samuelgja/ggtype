@@ -6,7 +6,7 @@
 
 > **isObject**(`value`): `value is Record<string, unknown>`
 
-Defined in: [src/utils/is.ts:17](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/is.ts#L17)
+Defined in: [src/utils/is.ts:18](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/is.ts#L18)
 
 Type guard to check if a value is a plain object (not null, not array).
 

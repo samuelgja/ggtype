@@ -7,6 +7,10 @@ const decoder = new TextDecoder()
 const MSG_TYPE_JSON = 0
 const MSG_TYPE_JSON_WITH_BINARY = 1
 
+/**
+ * @group Utils
+ * @internal
+ */
 export interface Transport {
   /**
    * Reads a router message from the transport
@@ -24,6 +28,10 @@ export interface Transport {
   close: () => Promise<void>
 }
 
+/**
+ * @group Utils
+ * @internal
+ */
 export class HttpStreamTransport implements Transport {
   private reader: ReadableStreamDefaultReader<Uint8Array> | null
   private writer: WritableStreamDefaultWriter<Uint8Array> | null

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable no-shadow */
-/* eslint-disable jsdoc/require-jsdoc */
 import { action, m, type TransportType } from '../..'
 import { createRouter } from '../router'
 import { createRouterClient } from '../router-client'
@@ -222,7 +219,7 @@ describe('router action return types', () => {
 
         expect(messages.length).toBeGreaterThan(0)
         const normalResult = messages.find(
-          (m) => m.normalAction,
+          (message) => message.normalAction,
         )
         expect(normalResult?.normalAction?.status).toBe(
           'ok',
@@ -250,7 +247,7 @@ describe('router action return types', () => {
         }
 
         const generatorResults = messages.filter(
-          (m) => m.generatorAction,
+          (message) => message.generatorAction,
         )
         expect(
           generatorResults.length,
@@ -291,7 +288,7 @@ describe('router action return types', () => {
         }
 
         const asyncGenResults = messages.filter(
-          (m) => m.asyncGeneratorAction,
+          (message) => message.asyncGeneratorAction,
         )
         expect(
           asyncGenResults.length,
@@ -326,7 +323,7 @@ describe('router action return types', () => {
         }
 
         const readableResults = messages.filter(
-          (m) => m.readableStreamAction,
+          (message) => message.readableStreamAction,
         )
         expect(
           readableResults.length,
@@ -361,7 +358,7 @@ describe('router action return types', () => {
         }
 
         const asyncStreamResults = messages.filter(
-          (m) => m.asyncStreamAction,
+          (message) => message.asyncStreamAction,
         )
         expect(
           asyncStreamResults.length,
@@ -397,7 +394,7 @@ describe('router action return types', () => {
 
         // Empty stream should still send a completion message
         const emptyResults = messages.filter(
-          (m) => m.emptyStreamAction,
+          (message) => message.emptyStreamAction,
         )
         expect(emptyResults.length).toBeGreaterThanOrEqual(
           1,
@@ -427,7 +424,7 @@ describe('router action return types', () => {
         }
 
         const singleResults = messages.filter(
-          (m) => m.singleValueStreamAction,
+          (message) => message.singleValueStreamAction,
         )
         expect(singleResults.length).toBeGreaterThanOrEqual(
           1,
@@ -461,7 +458,7 @@ describe('router action return types', () => {
 
         // Normal action should have single result
         const normalResults = messages.filter(
-          (m) => m.normalAction,
+          (message) => message.normalAction,
         )
         expect(normalResults.length).toBeGreaterThan(0)
         expect(normalResults[0]?.normalAction?.status).toBe(
@@ -473,13 +470,13 @@ describe('router action return types', () => {
 
         // Generator should have multiple results
         const genResults = messages.filter(
-          (m) => m.generatorAction,
+          (message) => message.generatorAction,
         )
         expect(genResults.length).toBeGreaterThanOrEqual(3)
 
         // Async generator should have multiple results
         const asyncGenResults = messages.filter(
-          (m) => m.asyncGeneratorAction,
+          (message) => message.asyncGeneratorAction,
         )
         expect(
           asyncGenResults.length,
@@ -487,7 +484,7 @@ describe('router action return types', () => {
 
         // ReadableStream should have multiple results
         const readableResults = messages.filter(
-          (m) => m.readableStreamAction,
+          (message) => message.readableStreamAction,
         )
         expect(
           readableResults.length,
@@ -495,7 +492,7 @@ describe('router action return types', () => {
 
         // AsyncStream should have multiple results
         const asyncStreamResults = messages.filter(
-          (m) => m.asyncStreamAction,
+          (message) => message.asyncStreamAction,
         )
         expect(
           asyncStreamResults.length,
@@ -503,7 +500,7 @@ describe('router action return types', () => {
 
         // Single value stream should have one result
         const singleResults = messages.filter(
-          (m) => m.singleValueStreamAction,
+          (message) => message.singleValueStreamAction,
         )
         expect(singleResults.length).toBeGreaterThanOrEqual(
           1,

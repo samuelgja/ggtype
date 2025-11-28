@@ -15,7 +15,7 @@ import { AsyncStream } from '../utils/async-stream'
 import { clearMap } from '../utils/clear-map'
 import { createId } from '../utils/create-id'
 import {
-  isErrorResult,
+  isError,
   isHttpTransport,
   isStreamTransport,
   isWsTransport,
@@ -46,6 +46,7 @@ export type {
 
 /**
  * Handles an error by throwing it if it's not a stream closing error.
+ * @internal
  * @param error - The error to handle
  */
 function handleThisError(error: unknown) {
@@ -69,6 +70,7 @@ function handleThisError(error: unknown) {
  * The client handles sending requests to the server, waiting for responses,
  * and processing streaming results. Supports HTTP, HTTP stream, and WebSocket transports.
  * Client actions can be called from the server, enabling bidirectional RPC communication.
+ * @group Client
  * @template R - The router type
  * @param options - Router client configuration options
  * @returns A router client with fetch and stream methods for executing server actions
@@ -248,6 +250,22 @@ export function createRouterClient<
 
   type ResultForLocal<Params extends ParamsIt<R>> =
     ResultForWithActionResult<R, Params>
+
+  // Helper type for single action fetch result
+  type SingleActionFetchResult<
+    ActionName extends keyof R['infer']['serverActions'],
+  > = ActionResult<
+    R['infer']['serverActions'][ActionName]['result']
+  >
+
+  // Helper type for single action stream result
+  type SingleActionStreamResult<
+    ActionName extends keyof R['infer']['serverActions'],
+  > = AsyncStream<{
+    [K in ActionName]: ActionResult<
+      R['infer']['serverActions'][K]['result']
+    >
+  }>
 
   // Create client object first so methods can reference each other
   const client = {
@@ -476,6 +494,93 @@ export function createRouterClient<
         keepAlive: streamKeepAlive,
       })
     },
+
+    /**
+     * Sugar methods for calling individual actions.
+     * Each action name is available as a method that calls fetch() with just that action.
+     * @example
+     * ```ts
+     * const { getUser } = client.fetchActions
+     * const result = await getUser({ id: '123' })
+     * if (isSuccess(result)) {
+     *   console.log(result.data)
+     * }
+     * ```
+     */
+    fetchActions: new Proxy(
+      {} as {
+        [ActionName in keyof R['infer']['serverActions']]: (
+          params: R['infer']['serverActions'][ActionName]['params'],
+          options?: FetchOptions<R>,
+        ) => Promise<SingleActionFetchResult<ActionName>>
+      },
+      {
+        get(_target, actionName: string) {
+          return async (
+            params: unknown,
+            fetchActionsOptions?: FetchOptions<R>,
+          ): Promise<
+            SingleActionFetchResult<
+              keyof R['infer']['serverActions']
+            >
+          > => {
+            const result = await client.fetch(
+              { [actionName]: params } as ParamsIt<R>,
+              fetchActionsOptions,
+            )
+            return (result as Record<string, unknown>)[
+              actionName
+            ] as SingleActionFetchResult<
+              keyof R['infer']['serverActions']
+            >
+          }
+        },
+      },
+    ),
+
+    /**
+     * Sugar methods for streaming individual actions.
+     * Each action name is available as a method that calls stream() with just that action.
+     * @example
+     * ```ts
+     * const { searchUsers } = client.streamActions
+     * const stream = await searchUsers({ query: 'john' })
+     * for await (const result of stream) {
+     *   if (isSuccess(result.searchUsers)) {
+     *     console.log(result.searchUsers.data)
+     *   }
+     * }
+     * ```
+     */
+    streamActions: new Proxy(
+      {} as {
+        [ActionName in keyof R['infer']['serverActions']]: (
+          params: R['infer']['serverActions'][ActionName]['params'],
+          options?: FetchOptions<R>,
+        ) => Promise<SingleActionStreamResult<ActionName>>
+      },
+      {
+        get(_target, actionName: string) {
+          return async (
+            params: unknown,
+            streamActionsOptions?: FetchOptions<R>,
+          ): Promise<
+            SingleActionStreamResult<
+              keyof R['infer']['serverActions']
+            >
+          > => {
+            return client.stream(
+              { [actionName]: params } as ParamsIt<R>,
+              streamActionsOptions,
+            ) as Promise<
+              SingleActionStreamResult<
+                keyof R['infer']['serverActions']
+              >
+            >
+          }
+        },
+      },
+    ),
   }
 
   return client
@@ -728,7 +833,7 @@ async function handleStreamTransport<
                   `Client action not found: ${incomingMessage.action}`,
                 )
               }
-              if (isErrorResult(incomingMessage)) {
+              if (isError(incomingMessage)) {
                 controller.enqueue({
                   [incomingMessage.action]:
                     incomingMessage.error,
@@ -802,7 +907,7 @@ async function handleStreamTransport<
           const { isLast } = incomingMessage
           const isErrorAndNotClient =
             !incomingMessage.clientId &&
-            isErrorResult(incomingMessage)
+            isError(incomingMessage)
           const isFinish = isLast || isErrorAndNotClient
 
           const result: RouterResultNotGeneric = {
@@ -1037,7 +1142,7 @@ async function handleWebSocketTransport<
                   `Client action not found: ${incomingMessage.action}`,
                 )
               }
-              if (isErrorResult(incomingMessage)) {
+              if (isError(incomingMessage)) {
                 controller.enqueue({
                   [incomingMessage.action]:
                     incomingMessage.error,
@@ -1090,7 +1195,7 @@ async function handleWebSocketTransport<
           const { isLast } = incomingMessage
           const isErrorAndNotClient =
             !incomingMessage.clientId &&
-            isErrorResult(incomingMessage)
+            isError(incomingMessage)
           const isFinish = isLast || isErrorAndNotClient
 
           const result: RouterResultNotGeneric = {

@@ -6,7 +6,7 @@
 
 > **Action**\<`M`, `F`\> = `object`
 
-Defined in: [src/action/action.ts:50](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L50)
+Defined in: [src/action/action.ts:86](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L86)
 
 ## Type Parameters
 
@@ -24,7 +24,7 @@ Defined in: [src/action/action.ts:50](https://github.com/samuelgja/ggtype/blob/b
 
 > **model**: `M`
 
-Defined in: [src/action/action.ts:57](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L57)
+Defined in: [src/action/action.ts:93](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L93)
 
 The model used for parameter validation
 
@@ -34,6 +34,6 @@ The model used for parameter validation
 
 > **run**: `F`
 
-Defined in: [src/action/action.ts:61](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/action/action.ts#L61)
+Defined in: [src/action/action.ts:97](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/action/action.ts#L97)
 
 The action execution function

@@ -13,6 +13,7 @@ export * from './transport'
 /**
  * Extracts the inferred TypeScript type from a model.
  * This utility type extracts the runtime type that a model validates.
+ * @group Utils
  * @template T - The model type with an `infer` property
  * @example
  * ```ts

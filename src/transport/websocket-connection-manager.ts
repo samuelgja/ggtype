@@ -23,6 +23,8 @@ type ProcessClientData = (message: RouterMessage) => void
  * Manages a persistent WebSocket connection for router client communication.
  * Handles connection lifecycle, reconnection logic, and message routing.
  * Creates connections lazily on first use and keeps them alive for reuse.
+ * @group Utils
+ * @internal
  */
 export class WebSocketConnectionManager {
   private connectionState: ConnectionState | null = null

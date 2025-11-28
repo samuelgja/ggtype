@@ -8,6 +8,7 @@ import { ErrorWithCode, ValidationError } from './errors'
  * Handles errors by processing them through an error handler and converting them to RouterResult format.
  * Processes ValidationError, ErrorWithCode, and generic Error instances, converting them to
  * standardized error responses. Returns undefined if the error handler suppresses the error.
+ * @group Utils
  * @param onError - Error handler function that processes raw errors
  * @param rawError - The raw error that occurred
  * @returns A RouterResult with error status, or undefined if the error was suppressed

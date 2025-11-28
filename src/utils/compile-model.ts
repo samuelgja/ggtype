@@ -29,10 +29,11 @@ addFormats(AJV, {
 /**
  * Compiles a model for testing purposes, validating both full and compact schemas.
  * Creates validation functions for both the full schema and schema with references.
+ * @group Utils
+ * @internal
  * @template T - The model type
  * @param model - The model to compile for testing
  * @returns A validation function that checks both full and compact schemas
- * @internal
  */
 export function compileTestModel<T extends ModelNotGeneric>(
   model: T,
@@ -88,6 +89,7 @@ export function compileTestModel<T extends ModelNotGeneric>(
  * Compiles a model into a validation function that checks data against the model's schema.
  * Uses AJV to compile the model's schema reference and returns a function that validates data.
  * Returns validation errors if the data doesn't match the schema, or null if valid.
+ * @group Utils
  * @template T - The model type
  * @param model - The model to compile
  * @returns A validation function that returns validation errors or null

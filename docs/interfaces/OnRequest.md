@@ -4,7 +4,7 @@
 
 # Interface: OnRequest
 
-Defined in: [src/types.ts:226](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L226)
+Defined in: [src/types.ts:286](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L286)
 
 ## Extends
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:226](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > `optional` **ctx**: `unknown`
 
-Defined in: [src/types.ts:234](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L234)
+Defined in: [src/types.ts:294](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L294)
 
 The context object to pass to actions
 
@@ -30,7 +30,7 @@ The context object to pass to actions
 
 > `readonly` `optional` **onError**: (`error`) => [`AppError`](../type-aliases/AppError.md)
 
-Defined in: [src/types.ts:187](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L187)
+Defined in: [src/types.ts:238](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L238)
 
 Optional error handler function that processes errors
 
@@ -58,7 +58,7 @@ The processed error, or undefined to suppress it
 
 > **request**: `Request`
 
-Defined in: [src/types.ts:230](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L230)
+Defined in: [src/types.ts:290](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L290)
 
 The incoming HTTP request
 
@@ -68,7 +68,7 @@ The incoming HTTP request
 
 > `optional` **server**: `object`
 
-Defined in: [src/types.ts:238](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L238)
+Defined in: [src/types.ts:298](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L298)
 
 Optional server instance for WebSocket upgrades
 

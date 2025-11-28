@@ -37,9 +37,9 @@ describe('router-test-utils', () => {
 
       const deleteUser = action(
         m.string().isRequired(),
-        async ({ params, getClientActions }) => {
-          const { useTool } =
-            getClientActions?.<ClientActions>() ?? {}
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
+        async ({ params, clientActions }) => {
+          const { useTool } = clientActions<ClientActions>()
           const toolResult = await useTool?.({
             tool: 'delete',
             user: params,
@@ -63,9 +63,9 @@ describe('router-test-utils', () => {
 
       const streamUser = action(
         m.string().isRequired(),
-        async function* ({ getClientActions }) {
-          const { useTool } =
-            getClientActions?.<ClientActions>() ?? {}
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
+        async function* ({ clientActions }) {
+          const { useTool } = clientActions<ClientActions>()
           const toolResult = await useTool?.({
             tool: 'tool-one',
             user: 'user-one',

@@ -4,7 +4,36 @@
 
 # Class: ValidationError
 
-Defined in: [src/utils/errors.ts:11](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L11)
+Defined in: [src/utils/errors.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L64)
+
+Error class for validation failures.
+Thrown automatically when action parameters fail validation.
+Can also be thrown manually for custom validation logic.
+
+## Example
+
+```ts
+import { action, ValidationError, m } from 'ggtype'
+
+const createUser = action(
+  m.object({ email: m.string().isRequired() }),
+  async ({ params }) => {
+    // Custom validation
+    if (params.email.includes('spam')) {
+      throw new ValidationError([
+        {
+          instancePath: '/email',
+          schemaPath: '#/properties/email',
+          keyword: 'custom',
+          message: 'Email domain not allowed',
+        },
+      ])
+    }
+
+    return { email: params.email }
+  }
+)
+```
 
 ## Extends
 
@@ -16,7 +45,7 @@ Defined in: [src/utils/errors.ts:11](https://github.com/samuelgja/ggtype/blob/b1
 
 > **new ValidationError**(`errors?`): `ValidationError`
 
-Defined in: [src/utils/errors.ts:12](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L12)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L65)
 
 #### Parameters
 
@@ -160,7 +189,7 @@ The cause of the error.
 
 > `optional` **errors**: `ErrorObject`\<`string`, `Record`\<`string`, `any`\>, `unknown`\>[]
 
-Defined in: [src/utils/errors.ts:12](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L12)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L65)
 
 ***
 

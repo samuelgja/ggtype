@@ -6,7 +6,7 @@
 
 > **ParamsIt**\<`R`\> = `{ [P in keyof R["infer"]["serverActions"]]?: R["infer"]["serverActions"][P]["params"] }`
 
-Defined in: [src/router/router-client.types.ts:18](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/router/router-client.types.ts#L18)
+Defined in: [src/router/router-client.types.ts:19](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/router-client.types.ts#L19)
 
 Type representing the parameters object for router client fetch/stream calls.
 Maps action names to their parameter types.

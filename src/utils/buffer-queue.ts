@@ -1,6 +1,8 @@
 /**
  * A queue for buffering Uint8Array chunks with efficient read operations.
  * Supports peeking at data without consuming it and reading specific amounts of data.
+ * @group Utils
+ * @internal
  */
 export class BufferQueue {
   private chunks: Uint8Array[] = []

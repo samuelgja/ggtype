@@ -139,7 +139,20 @@ export default [
       ],
 
       // Override jsdoc recommended rules as needed
-      'jsdoc/require-jsdoc': 'error',
+      'jsdoc/require-jsdoc': 'off',
+      'jsdoc/check-alignment': 'off',
+      'jsdoc/check-indentation': 'off',
+      'jsdoc/check-param-names': 'off',
+      'jsdoc/check-tag-names': 'off',
+      'jsdoc/check-types': 'off',
+      'jsdoc/implements-on-classes': 'off',
+      'jsdoc/match-description': 'off',
+      'jsdoc/newline-after-description': 'off',
+      'jsdoc/no-types': 'off',
+      'jsdoc/require-description': 'off',
+      'jsdoc/require-param': 'off',
+      'jsdoc/require-returns': 'off',
+      'jsdoc/valid-types': 'off',
     },
   },
 ]

@@ -4,7 +4,7 @@
 
 # Interface: OutputErrorGeneric
 
-Defined in: [src/types.ts:37](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L37)
+Defined in: [src/types.ts:67](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L67)
 
 ## Extends
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:37](https://github.com/samuelgja/ggtype/blob/b1d8fef81
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [src/types.ts:30](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L30)
+Defined in: [src/types.ts:57](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L57)
 
 Optional cause of the error
 
@@ -30,7 +30,7 @@ Optional cause of the error
 
 > `readonly` **code**: `number`
 
-Defined in: [src/types.ts:34](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L34)
+Defined in: [src/types.ts:61](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L61)
 
 HTTP status code
 
@@ -44,7 +44,7 @@ HTTP status code
 
 > `readonly` **message**: `string`
 
-Defined in: [src/types.ts:45](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L45)
+Defined in: [src/types.ts:75](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L75)
 
 Human-readable error message
 
@@ -54,7 +54,7 @@ Human-readable error message
 
 > `readonly` **type**: `"generic"`
 
-Defined in: [src/types.ts:41](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L41)
+Defined in: [src/types.ts:71](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L71)
 
 Error type identifier (always 'generic')
 

@@ -6,7 +6,7 @@
 
 > **array**\<`T`\>(`list`): [`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `false`\>
 
-Defined in: [src/model/array.ts:70](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/array.ts#L70)
+Defined in: [src/model/array.ts:88](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/array.ts#L88)
 
 Creates an array model for validation and type inference.
 Returns a model that validates arrays of items matching the provided model type,
@@ -33,3 +33,23 @@ The model to validate each array item against
 [`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `false`\>
 
 An ArrayModel instance for validating arrays of the specified type
+
+## Example
+
+```ts
+import { m } from 'ggtype'
+
+// Array of strings
+const tags = m.array(m.string()).isRequired()
+
+// Array of numbers
+const scores = m.array(m.number()).minItems(1).maxItems(10)
+
+// Array of objects
+const users = m.array(
+  m.object({
+    id: m.string().isRequired(),
+    name: m.string().isRequired(),
+  })
+).isRequired()
+```

@@ -4,7 +4,7 @@
 
 # Interface: RouterOptions\<Actions, ClientActions\>
 
-Defined in: [src/types.ts:190](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L190)
+Defined in: [src/types.ts:244](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L244)
 
 ## Type Parameters
 
@@ -22,7 +22,7 @@ Defined in: [src/types.ts:190](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > `readonly` `optional` **clientActions**: `ClientActions`
 
-Defined in: [src/types.ts:205](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L205)
+Defined in: [src/types.ts:259](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L259)
 
 Record of client actions that can be called by the server
 
@@ -32,7 +32,7 @@ Record of client actions that can be called by the server
 
 > `readonly` `optional` **responseTimeout**: `number`
 
-Defined in: [src/types.ts:209](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L209)
+Defined in: [src/types.ts:263](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L263)
 
 Timeout in milliseconds for waiting responses (default: 60000)
 
@@ -42,7 +42,7 @@ Timeout in milliseconds for waiting responses (default: 60000)
 
 > `readonly` **serverActions**: `Actions`
 
-Defined in: [src/types.ts:201](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L201)
+Defined in: [src/types.ts:255](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L255)
 
 Record of server actions that can be called by clients
 
@@ -52,6 +52,6 @@ Record of server actions that can be called by clients
 
 > `readonly` `optional` **transport**: [`TransportType`](../type-aliases/TransportType.md)
 
-Defined in: [src/types.ts:213](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L213)
+Defined in: [src/types.ts:267](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L267)
 
 Transport type: 'stream', 'websocket', or 'http' (default: 'stream')

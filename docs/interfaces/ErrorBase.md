@@ -4,7 +4,7 @@
 
 # Interface: ErrorBase
 
-Defined in: [src/types.ts:22](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L22)
+Defined in: [src/types.ts:49](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L49)
 
 ## Extended by
 
@@ -17,7 +17,7 @@ Defined in: [src/types.ts:22](https://github.com/samuelgja/ggtype/blob/b1d8fef81
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [src/types.ts:30](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L30)
+Defined in: [src/types.ts:57](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L57)
 
 Optional cause of the error
 
@@ -27,7 +27,7 @@ Optional cause of the error
 
 > `readonly` **code**: `number`
 
-Defined in: [src/types.ts:34](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L34)
+Defined in: [src/types.ts:61](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L61)
 
 HTTP status code
 
@@ -37,6 +37,6 @@ HTTP status code
 
 > `readonly` **type**: `string`
 
-Defined in: [src/types.ts:26](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L26)
+Defined in: [src/types.ts:53](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L53)
 
 Error type identifier

@@ -6,6 +6,9 @@ import type {
 import type { ModelNotGeneric } from '../model'
 import type { RouterMessage } from './router-message'
 
+/**
+ * @group Client
+ */
 export interface ClientAction {
   /**
    * Model for validating client action parameters
@@ -17,6 +20,9 @@ export interface ClientAction {
   readonly return: ModelNotGeneric
 }
 
+/**
+ * @group Client
+ */
 export interface ClientActionResult<
   T extends ClientAction,
 > {
@@ -34,6 +40,9 @@ export interface ClientActionResult<
   error?: OutputError
 }
 
+/**
+ * @group Client
+ */
 export type ClientCallableActions<
   T extends Record<string, ClientAction>,
 > = {
@@ -42,6 +51,9 @@ export type ClientCallableActions<
   ) => Promise<ClientActionResult<T[K]>>
 }
 
+/**
+ * @group Client
+ */
 export type ClientCallableActionsBefore<
   T extends Record<string, ClientAction>,
 > = {
@@ -52,6 +64,9 @@ export type ClientCallableActionsBefore<
   ) => Promise<ClientActionResult<T[K]>>
 }
 
+/**
+ * @group Client
+ */
 export type ClientCallableActionsFromClient<
   T extends Record<string, ClientAction>,
 > = {

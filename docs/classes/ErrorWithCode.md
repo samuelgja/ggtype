@@ -4,7 +4,31 @@
 
 # Class: ErrorWithCode
 
-Defined in: [src/utils/errors.ts:3](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L3)
+Defined in: [src/utils/errors.ts:27](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L27)
+
+Error class with an HTTP status code.
+Useful for returning errors with specific status codes from actions.
+
+## Example
+
+```ts
+import { action, ErrorWithCode, m } from 'ggtype'
+
+const deleteUser = action(
+  m.object({ id: m.string().isRequired() }),
+  async ({ params, ctx }) => {
+    if (!ctx?.user) {
+      throw new ErrorWithCode('Unauthorized', 401)
+    }
+
+    if (params.id !== ctx.user.id) {
+      throw new ErrorWithCode('Forbidden', 403)
+    }
+
+    return { success: true }
+  }
+)
+```
 
 ## Extends
 
@@ -16,7 +40,7 @@ Defined in: [src/utils/errors.ts:3](https://github.com/samuelgja/ggtype/blob/b1d
 
 > **new ErrorWithCode**(`message`, `code`): `ErrorWithCode`
 
-Defined in: [src/utils/errors.ts:5](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L5)
+Defined in: [src/utils/errors.ts:29](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L29)
 
 #### Parameters
 
@@ -164,7 +188,7 @@ The cause of the error.
 
 > `readonly` **code**: `number`
 
-Defined in: [src/utils/errors.ts:4](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/errors.ts#L4)
+Defined in: [src/utils/errors.ts:28](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L28)
 
 ***
 

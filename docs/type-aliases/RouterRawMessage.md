@@ -6,4 +6,4 @@
 
 > **RouterRawMessage** = `string` \| `Bun.BufferSource`
 
-Defined in: [src/types.ts:220](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L220)
+Defined in: [src/types.ts:277](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L277)

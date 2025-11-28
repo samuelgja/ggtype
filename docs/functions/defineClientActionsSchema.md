@@ -6,7 +6,7 @@
 
 > **defineClientActionsSchema**\<`T`\>(`data`): `T`
 
-Defined in: [src/router/handle-client-actions.ts:19](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/router/handle-client-actions.ts#L19)
+Defined in: [src/router/handle-client-actions.ts:49](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/handle-client-actions.ts#L49)
 
 Helper function to define client action models with proper typing.
 This is a type-only function that returns the input unchanged, used for type inference.
@@ -32,3 +32,34 @@ The client actions record to define
 `T`
 
 The same data with proper typing
+
+## Example
+
+```ts
+import { defineClientActionsSchema, m } from 'ggtype'
+
+// Define client actions schema for server-side
+const clientActions = defineClientActionsSchema({
+  showNotification: {
+    params: m.object({
+      message: m.string().isRequired(),
+      type: m.string().isRequired(),
+    }),
+    return: m.object({ acknowledged: m.boolean() }),
+  },
+  updateUI: {
+    params: m.object({
+      component: m.string().isRequired(),
+      data: m.record(m.string()),
+    }),
+    return: m.object({ success: m.boolean() }),
+  },
+})
+
+// Use with createRouter
+const router = createRouter({
+  serverActions: { getUser: action(...), createUser: action(...) },
+  clientActions,
+  transport: 'stream',
+})
+```

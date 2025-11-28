@@ -3,6 +3,8 @@
  * Creates a debounced version of a function that delays execution until after wait milliseconds
  * have elapsed since the last time it was invoked. Useful for limiting the rate of function calls,
  * such as for search inputs or resize handlers.
+ * @group Utils
+ * @internal
  * @template T - The function type
  * @param function_ - The function to debounce
  * @param wait - The number of milliseconds to delay

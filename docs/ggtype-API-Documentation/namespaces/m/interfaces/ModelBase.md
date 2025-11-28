@@ -4,7 +4,7 @@
 
 # Interface: ModelBase
 
-Defined in: [src/model/model.ts:120](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L120)
+Defined in: [src/model/model.ts:120](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L120)
 
 ## Extended by
 
@@ -16,7 +16,7 @@ Defined in: [src/model/model.ts:120](https://github.com/samuelgja/ggtype/blob/b1
 
 > **$internals**: [`ModelInternalsNotGeneric`](ModelInternalsNotGeneric.md)
 
-Defined in: [src/model/model.ts:128](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L128)
+Defined in: [src/model/model.ts:128](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L128)
 
 Internal model configuration and metadata
 
@@ -26,7 +26,7 @@ Internal model configuration and metadata
 
 > **description**: (`description`) => [`ModelNotGeneric`](ModelNotGeneric.md)
 
-Defined in: [src/model/model.ts:140](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L140)
+Defined in: [src/model/model.ts:140](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L140)
 
 Sets a human-readable description for the model
 
@@ -50,7 +50,7 @@ A new model instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -74,7 +74,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -90,7 +90,7 @@ The JSON Schema object with $defs for referenced models
 
 > **infer**: `unknown`
 
-Defined in: [src/model/model.ts:124](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L124)
+Defined in: [src/model/model.ts:124](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L124)
 
 Inferred TypeScript type for the model
 
@@ -100,7 +100,7 @@ Inferred TypeScript type for the model
 
 > **title**: (`name`) => [`ModelNotGeneric`](ModelNotGeneric.md)
 
-Defined in: [src/model/model.ts:134](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L134)
+Defined in: [src/model/model.ts:134](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L134)
 
 Sets a human-readable title for the model
 

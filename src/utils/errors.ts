@@ -3,6 +3,7 @@ import type { ErrorObject } from 'ajv'
 /**
  * Error class with an HTTP status code.
  * Useful for returning errors with specific status codes from actions.
+ * @group Utils
  * @example
  * ```ts
  * import { action, ErrorWithCode, m } from 'ggtype'
@@ -35,6 +36,7 @@ export class ErrorWithCode extends Error {
  * Error class for validation failures.
  * Thrown automatically when action parameters fail validation.
  * Can also be thrown manually for custom validation logic.
+ * @group Utils
  * @example
  * ```ts
  * import { action, ValidationError, m } from 'ggtype'

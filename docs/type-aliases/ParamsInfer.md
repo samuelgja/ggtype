@@ -6,7 +6,9 @@
 
 > **ParamsInfer**\<`T`, `K`\> = `T` *extends* `object` ? `K` *extends* keyof `SA` ? `SA`\[`K`\] *extends* `object` ? `P` : `never` : `never` : `K` *extends* keyof `T` ? `T`\[`K`\] *extends* `object` ? `P` : `never` : `never`
 
-Defined in: [src/types.ts:392](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L392)
+Defined in: [src/types.ts:489](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L489)
+
+Extracts the parameter type for a specific action from a router type.
 
 ## Type Parameters
 
@@ -14,6 +16,27 @@ Defined in: [src/types.ts:392](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 `T` *extends* `RouterInferLike`
 
+The router type (RouterInfer or RouterInferNotGeneric)
+
 ### K
 
 `K` *extends* keyof `T` \| keyof `T` *extends* `object` ? `SA` : `never`
+
+The action name
+
+## Example
+
+```ts
+import { createRouter, type ParamsInfer } from 'ggtype'
+
+const router = createRouter({
+  serverActions: {
+    getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({})),
+  },
+  clientActions: {},
+})
+
+type Router = typeof router.infer
+type GetUserParams = ParamsInfer<Router, 'getUser'>
+// Result: { id: string }
+```

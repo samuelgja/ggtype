@@ -4,7 +4,7 @@
 
 # Interface: DateModel\<R\>
 
-Defined in: [src/model/date.ts:15](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L15)
+Defined in: [src/model/date.ts:15](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L15)
 
 ## Extends
 
@@ -22,7 +22,7 @@ Defined in: [src/model/date.ts:15](https://github.com/samuelgja/ggtype/blob/b1d8
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -36,7 +36,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:91](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L91)
+Defined in: [src/model/date.ts:91](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L91)
 
 Sets a human-readable description for the model
 
@@ -64,7 +64,7 @@ A new DateModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -112,7 +112,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `Date`
 
-Defined in: [src/model/date.ts:26](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L26)
+Defined in: [src/model/date.ts:26](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L26)
 
 Inferred TypeScript type for the date model (always Date)
 
@@ -126,7 +126,7 @@ Inferred TypeScript type for the date model (always Date)
 
 > `readonly` **isDate**: () => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:42](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L42)
+Defined in: [src/model/date.ts:42](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L42)
 
 Validates the date as a date value (YYYY-MM-DD format)
 
@@ -142,7 +142,7 @@ A new DateModel instance with date format validation
 
 > `readonly` **isDateTime**: () => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:47](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L47)
+Defined in: [src/model/date.ts:47](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L47)
 
 Validates the date as a date-time value (ISO 8601 format)
 
@@ -158,7 +158,7 @@ A new DateModel instance with date-time format validation
 
 > `readonly` **isRequired**: () => `DateModel`\<`true`\>
 
-Defined in: [src/model/date.ts:22](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L22)
+Defined in: [src/model/date.ts:22](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L22)
 
 Marks the date model as required
 
@@ -178,7 +178,7 @@ A new DateModel instance marked as required
 
 > `readonly` **isTime**: () => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:37](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L37)
+Defined in: [src/model/date.ts:37](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L37)
 
 Validates the date as a time value (HH:mm:ss format)
 
@@ -194,7 +194,7 @@ A new DateModel instance with time format validation
 
 > `readonly` **maximum**: (`value`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:59](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L59)
+Defined in: [src/model/date.ts:59](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L59)
 
 Sets the maximum date constraint
 
@@ -218,7 +218,7 @@ A new DateModel instance with the constraint
 
 > `readonly` **maximumTimestamp**: (`value`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:71](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L71)
+Defined in: [src/model/date.ts:71](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L71)
 
 Sets the maximum date constraint using a Unix timestamp
 
@@ -242,7 +242,7 @@ A new DateModel instance with the constraint
 
 > `readonly` **minimum**: (`value`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:53](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L53)
+Defined in: [src/model/date.ts:53](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L53)
 
 Sets the minimum date constraint
 
@@ -266,7 +266,7 @@ A new DateModel instance with the constraint
 
 > `readonly` **minimumTimestamp**: (`value`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:65](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L65)
+Defined in: [src/model/date.ts:65](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L65)
 
 Sets the minimum date constraint using a Unix timestamp
 
@@ -290,7 +290,7 @@ A new DateModel instance with the constraint
 
 > `readonly` **onParse**: (`data`) => `Date`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -318,7 +318,7 @@ The parsed and validated data of type T
 
 > `readonly` **onStringify**: (`data`) => `string`
 
-Defined in: [src/model/date.ts:32](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L32)
+Defined in: [src/model/date.ts:32](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L32)
 
 Converts a Date to a string representation based on the format (time, date, or date-time)
 
@@ -346,7 +346,7 @@ String representation of the date
 
 > `readonly` **title**: (`name`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:85](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L85)
+Defined in: [src/model/date.ts:85](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L85)
 
 Sets a human-readable title for the model
 
@@ -374,7 +374,7 @@ A new DateModel instance with the updated title
 
 > `readonly` **validate**: (`onValidate`) => `DateModel`\<`R`\>
 
-Defined in: [src/model/date.ts:77](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/date.ts#L77)
+Defined in: [src/model/date.ts:77](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/date.ts#L77)
 
 Adds custom validation logic to the model
 

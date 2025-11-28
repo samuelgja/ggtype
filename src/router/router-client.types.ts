@@ -13,6 +13,7 @@ import type {
 /**
  * Type representing the parameters object for router client fetch/stream calls.
  * Maps action names to their parameter types.
+ * @group Client
  * @template R - The router type
  */
 type ParamsIt<
@@ -26,6 +27,7 @@ type ParamsIt<
 
 /**
  * Type representing the result object with basic router results.
+ * @group Client
  * @template R - The router type
  * @template Params - The parameters type
  */
@@ -41,6 +43,7 @@ type ResultFor<
 
 /**
  * Type representing the result object with action results (includes unwrapped stream types).
+ * @group Client
  * @template R - The router type
  * @template Params - The parameters type
  */
@@ -83,6 +86,7 @@ type HasStatusCodeResult =
  *   return json
  * }
  * ```
+ * @group Client
  * @param result - The result object from a router client fetch
  * @param code - The HTTP status code to check for
  * @returns True if any result has an error with the specified status code
@@ -253,6 +257,9 @@ interface RouterClientOptionsWebSocket<
   // websocket keep alive automatically handled by the protocol
 }
 
+/**
+ * @group Client
+ */
 export type RouterClientOptions<
   R extends Router<
     Record<string, ActionNotGeneric>,
@@ -265,6 +272,7 @@ export type RouterClientOptions<
 
 /**
  * Options for fetch and stream calls.
+ * @group Client
  * @template R - The router type
  */
 export interface FetchOptions<

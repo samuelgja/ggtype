@@ -11,6 +11,7 @@ import type { ModelNotGeneric } from '../model'
 import { AsyncStream } from './async-stream'
 /**
  * Type guard to check if a value is a plain object (not null, not array).
+ * @group Utils
  * @param value - The value to check
  * @returns True if the value is a plain object
  */
@@ -25,6 +26,7 @@ export function isObject(
 }
 /**
  * Type guard to check if a value is a string.
+ * @group Utils
  * @param value - The value to check
  * @returns True if the value is a string
  */
@@ -33,6 +35,7 @@ export function isString(value: unknown): value is string {
 }
 /**
  * Type guard to check if a value is a number.
+ * @group Utils
  * @param value - The value to check
  * @returns True if the value is a number
  */
@@ -43,6 +46,7 @@ export function isNumber(value: unknown): value is number {
 /**
  * Type guard to check if a value is a model instance.
  * Checks for the presence of $internals with isModel property.
+ * @group Utils
  * @param value - The value to check
  * @returns True if the value is a model instance
  */
@@ -71,12 +75,13 @@ export function isModel(
 
 /**
  * Type guard to check if a router result is an error result.
+ * @group Utils
  * @template T - The error type
  * @param result - The router result to check
  * @returns True if the result has error status
  * @example
  * ```ts
- * import { createRouterClient, isErrorResult } from 'ggtype'
+ * import { createRouterClient, isError } from 'ggtype'
  *
  * const client = createRouterClient({
  *   url: 'http://localhost:3000',
@@ -87,13 +92,13 @@ export function isModel(
  *   getUser: { id: '123' },
  * })
  *
- * if (isErrorResult(results.getUser)) {
+ * if (isError(results.getUser)) {
  *   // TypeScript knows results.getUser.error exists
  *   console.error('Error:', results.getUser.error.message)
  * }
  * ```
  */
-export function isErrorResult<T>(
+export function isError<T>(
   result: RouterResultNotGeneric,
 ): result is ActionResultError<T> {
   if (!result) {
@@ -104,12 +109,13 @@ export function isErrorResult<T>(
 
 /**
  * Type guard to check if a router result is a success result.
+ * @group Utils
  * @template T - The data type
  * @param result - The router result to check
  * @returns True if the result has ok status
  * @example
  * ```ts
- * import { createRouterClient, isOkResult } from 'ggtype'
+ * import { createRouterClient, isSuccess } from 'ggtype'
  *
  * const client = createRouterClient({
  *   url: 'http://localhost:3000',
@@ -120,13 +126,13 @@ export function isErrorResult<T>(
  *   getUser: { id: '123' },
  * })
  *
- * if (isOkResult(results.getUser)) {
+ * if (isSuccess(results.getUser)) {
  *   // TypeScript knows results.getUser.data exists
  *   console.log('User:', results.getUser.data)
  * }
  * ```
  */
-export function isOkResult<T>(
+export function isSuccess<T>(
   result: RouterResultNotGeneric,
 ): result is ActionResultOk<T> {
   if (!result) {
@@ -137,6 +143,7 @@ export function isOkResult<T>(
 
 /**
  * Type guard to check if an error is a validation error.
+ * @group Utils
  * @param error - The error to check
  * @returns True if the error is a validation error
  */
@@ -151,6 +158,7 @@ export function isValidationError(
 
 /**
  * Type guard to check if an error is a generic error.
+ * @group Utils
  * @param error - The error to check
  * @returns True if the error is a generic error
  */
@@ -161,6 +169,7 @@ export function isGenericError(
 }
 /**
  * Type guard to check if a value is an AsyncStream or ReadableStream.
+ * @group Utils
  * @template T - The stream item type
  * @param value - The value to check
  * @returns True if the value is an AsyncStream or ReadableStream
@@ -176,6 +185,7 @@ export function isAsyncStream<T>(
 
 /**
  * Type guard to check if a value is an async iterable.
+ * @group Utils
  * @template T - The iterable item type
  * @param object - The value to check
  * @returns True if the value is an async iterable
@@ -193,6 +203,7 @@ export function isAsyncIterable<T>(
 
 /**
  * Type guard to check if a value is an iterable.
+ * @group Utils
  * @param object - The value to check
  * @returns True if the value is an iterable
  */
@@ -209,6 +220,7 @@ export function isIterable(
 
 /**
  * Type guard to check if a transport type is HTTP.
+ * @group Utils
  * @param transport - The transport type to check
  * @returns True if the transport is 'http'
  */
@@ -220,6 +232,7 @@ export function isHttpTransport(
 
 /**
  * Type guard to check if a transport type is Stream.
+ * @group Utils
  * @param transport - The transport type to check
  * @returns True if the transport is 'stream'
  */
@@ -231,6 +244,7 @@ export function isStreamTransport(
 
 /**
  * Type guard to check if a transport type is WebSocket.
+ * @group Utils
  * @param transport - The transport type to check
  * @returns True if the transport is 'websocket'
  */

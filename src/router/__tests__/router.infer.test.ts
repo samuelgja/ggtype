@@ -2,6 +2,7 @@
 import {
   action,
   m,
+  NOOP_CLIENT_ACTIONS,
   type Infer,
   type ParamsInfer,
   type ResultInfer,
@@ -18,6 +19,7 @@ describe('router infer - just ts checks', () => {
     const TEST = 'HELLO'
     const actionResult = actionItem.run({
       params: { id: '123' },
+      clientActions: NOOP_CLIENT_ACTIONS,
     })
     if (TEST === actionResult) {
       console.log('test is equal to res')
@@ -66,6 +68,7 @@ describe('router infer - just ts checks', () => {
     )
     const actionTestResult = actionTest.run({
       params: { id: '123' },
+      clientActions: NOOP_CLIENT_ACTIONS,
     })
     console.log(actionTestResult.id)
     console.log(actionTestResult.name)

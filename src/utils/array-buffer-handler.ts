@@ -101,6 +101,8 @@ export async function fromArrayBuffer(
 
 /**
  * Type guard to check if a value is an ArrayBuffer or Buffer.
+ * @group Utils
+ * @internal
  * @param input - The value to check
  * @returns True if the value is an ArrayBuffer or Buffer
  */
@@ -114,6 +116,8 @@ export function isArrayBuffer(
 
 /**
  * Type guard to check if a value is a File.
+ * @group Utils
+ * @internal
  * @param input - The value to check
  * @returns True if the value is a File
  */
@@ -122,6 +126,8 @@ export function isFile(input: unknown): input is File {
 }
 /**
  * Type guard to check if a value is a Blob.
+ * @group Utils
+ * @internal
  * @param input - The value to check
  * @returns True if the value is a Blob
  */
@@ -131,6 +137,8 @@ export function isBlob(input: unknown): input is Blob {
 
 /**
  * Type guard to check if a value is a File or Blob (Input type).
+ * @group Utils
+ * @internal
  * @param input - The value to check
  * @returns True if the value is a File or Blob
  */

@@ -4,7 +4,7 @@
 
 # Interface: OnWebSocketMessage
 
-Defined in: [src/types.ts:241](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L241)
+Defined in: [src/types.ts:304](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L304)
 
 ## Extends
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:241](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > `optional` **ctx**: `unknown`
 
-Defined in: [src/types.ts:253](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L253)
+Defined in: [src/types.ts:316](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L316)
 
 The context object to pass to actions
 
@@ -30,7 +30,7 @@ The context object to pass to actions
 
 > **message**: `unknown`
 
-Defined in: [src/types.ts:249](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L249)
+Defined in: [src/types.ts:312](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L312)
 
 The incoming message (Uint8Array, ArrayBuffer, or Blob)
 
@@ -40,7 +40,7 @@ The incoming message (Uint8Array, ArrayBuffer, or Blob)
 
 > `readonly` `optional` **onError**: (`error`) => [`AppError`](../type-aliases/AppError.md)
 
-Defined in: [src/types.ts:187](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L187)
+Defined in: [src/types.ts:238](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L238)
 
 Optional error handler function that processes errors
 
@@ -68,6 +68,6 @@ The processed error, or undefined to suppress it
 
 > **ws**: `ServerWebSocket`\<`unknown`\>
 
-Defined in: [src/types.ts:245](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L245)
+Defined in: [src/types.ts:308](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L308)
 
 The WebSocket instance

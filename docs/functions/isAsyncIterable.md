@@ -6,7 +6,7 @@
 
 > **isAsyncIterable**\<`T`\>(`object`): `object is AsyncIterable<T, any, any>`
 
-Defined in: [src/utils/is.ts:147](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/utils/is.ts#L147)
+Defined in: [src/utils/is.ts:193](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/is.ts#L193)
 
 Type guard to check if a value is an async iterable.
 

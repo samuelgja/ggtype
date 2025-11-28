@@ -6,7 +6,7 @@
 
 > **copyModel**\<`T`\>(`model`): `T`
 
-Defined in: [src/model/model.ts:262](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L262)
+Defined in: [src/model/model.ts:262](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L262)
 
 Creates a deep copy of a model with a new unique ID.
 Copies all model properties and internals, but assigns a new unique ID to the copy.

@@ -6,7 +6,7 @@
 
 > **RouterInfer**\<`R`\> = `{ [K in keyof R["infer"]["serverActions"]]: { params: R["infer"]["serverActions"][K]["params"]; result: ActionResult<R["infer"]["serverActions"][K]["result"]> } }` & [`RouterInferNotGeneric`](RouterInferNotGeneric.md)
 
-Defined in: [src/types.ts:367](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L367)
+Defined in: [src/types.ts:443](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L443)
 
 Converts router's serverActions to a format compatible with Client (RouterInferNotGeneric).
 This type wraps router action results in ActionResultNotGeneric format.

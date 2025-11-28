@@ -4,7 +4,7 @@
 
 # Interface: RouterCallOptions
 
-Defined in: [src/types.ts:177](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L177)
+Defined in: [src/types.ts:228](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L228)
 
 ## Extended by
 
@@ -17,7 +17,7 @@ Defined in: [src/types.ts:177](https://github.com/samuelgja/ggtype/blob/b1d8fef8
 
 > `readonly` `optional` **ctx**: `unknown`
 
-Defined in: [src/types.ts:181](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L181)
+Defined in: [src/types.ts:232](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L232)
 
 Optional context object to pass to actions
 
@@ -27,7 +27,7 @@ Optional context object to pass to actions
 
 > `readonly` `optional` **onError**: (`error`) => [`AppError`](../type-aliases/AppError.md)
 
-Defined in: [src/types.ts:187](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/types.ts#L187)
+Defined in: [src/types.ts:238](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L238)
 
 Optional error handler function that processes errors
 

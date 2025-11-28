@@ -12,6 +12,9 @@ import type { AsyncStream } from './async-stream'
 import { createRouter } from '../router/router'
 import { createRouterClient } from '../router/router-client'
 
+/**
+ * @group Utils
+ */
 export interface TestRouterOptions {
   /**
    * Timeout in milliseconds for waiting responses (default: 60000)
@@ -52,6 +55,9 @@ type TestRouterActions<
   >
 }
 
+/**
+ * @group Utils
+ */
 export interface TestRouter<
   Actions extends Record<string, ActionNotGeneric>,
 > {
@@ -75,6 +81,7 @@ export interface TestRouter<
  * While we could use in-memory streams to avoid the server, using Bun.serve ensures
  * we test the real integration path including HTTP request/response handling.
  * For WebSocket transport, Bun.serve is required.
+ * @group Utils
  * @template Actions - The server actions record type
  * @template ClientActions - The client actions record type
  * @param actions - Record of server actions

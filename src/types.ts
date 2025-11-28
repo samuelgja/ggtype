@@ -4,21 +4,48 @@ import type {
   ActionNotGeneric,
 } from './action/action'
 import type { AsyncStream } from './utils/async-stream'
-import type { ClientAction } from './router/router-client.types-shared'
+import type {
+  ClientAction,
+  ClientCallableActions,
+} from './router/router-client.types-shared'
 
 // ============================================================================
 // Constants
 // ============================================================================
 
+/**
+ * @group Utils
+ */
 export const NOOP_ON_ERROR = (error: Error): Error => error
+
+/**
+ * NOOP callback for client actions that returns an empty object.
+ * Used when no client actions are defined.
+ * @group Utils
+ */
+export const NOOP_CLIENT_ACTIONS = <
+  ClientActions extends Record<string, ClientAction>,
+>(): ClientCallableActions<ClientActions> => {
+  return {} as ClientCallableActions<ClientActions>
+}
+
+/**
+ * @group Utils
+ */
 export const DEFAULT_ROUTER_TIMEOUT = 60 * 1000
 
 // ============================================================================
 // Error Types
 // ============================================================================
 
+/**
+ * @group Utils
+ */
 export type AppError = ValidationError | Error
 
+/**
+ * @group Utils
+ */
 export interface ErrorBase {
   /**
    * Error type identifier
@@ -34,6 +61,9 @@ export interface ErrorBase {
   readonly code: number
 }
 
+/**
+ * @group Utils
+ */
 export interface OutputErrorGeneric extends ErrorBase {
   /**
    * Error type identifier (always 'generic')
@@ -45,6 +75,9 @@ export interface OutputErrorGeneric extends ErrorBase {
   readonly message: string
 }
 
+/**
+ * @group Utils
+ */
 export interface OutputValidationError extends ErrorBase {
   /**
    * Error type identifier (always 'validation')
@@ -64,6 +97,9 @@ export interface OutputValidationError extends ErrorBase {
   >[]
 }
 
+/**
+ * @group Utils
+ */
 export type OutputError =
   | OutputErrorGeneric
   | OutputValidationError
@@ -72,8 +108,14 @@ export type OutputError =
 // Result Types
 // ============================================================================
 
+/**
+ * @group Utils
+ */
 export type ResultStatus = 'ok' | 'error'
 
+/**
+ * @group Utils
+ */
 export interface RouterResultNotGeneric {
   /**
    * Result status: 'ok' for success, 'error' for failure
@@ -89,6 +131,9 @@ export interface RouterResultNotGeneric {
   error?: OutputError
 }
 
+/**
+ * @group Utils
+ */
 export type UnwrapStreamType<T> = T extends void
   ? void
   : T extends ReadableStream<infer U>
@@ -172,8 +217,14 @@ export type ActionsParams<
 // Router Configuration Types
 // ============================================================================
 
+/**
+ * @group Utils
+ */
 export type TransportType = 'stream' | 'websocket' | 'http'
 
+/**
+ * @group Router
+ */
 export interface RouterCallOptions {
   /**
    * Optional context object to pass to actions
@@ -187,6 +238,9 @@ export interface RouterCallOptions {
   readonly onError?: (error: AppError) => AppError
 }
 
+/**
+ * @group Router
+ */
 export interface RouterOptions<
   Actions extends Record<string, ActionNotGeneric> = Record<
     string,
@@ -217,12 +271,18 @@ export interface RouterOptions<
 // Message Types
 // ============================================================================
 
+/**
+ * @group Router
+ */
 export type RouterRawMessage = string | Bun.BufferSource
 
 // ============================================================================
 // Request/Message Handling Types
 // ============================================================================
 
+/**
+ * @group Router
+ */
 export interface OnRequest extends RouterCallOptions {
   /**
    * The incoming HTTP request
@@ -238,6 +298,9 @@ export interface OnRequest extends RouterCallOptions {
   server?: { upgrade: (request: Request) => boolean }
 }
 
+/**
+ * @group Router
+ */
 export interface OnWebSocketMessage extends RouterCallOptions {
   /**
    * The WebSocket instance
@@ -253,6 +316,9 @@ export interface OnWebSocketMessage extends RouterCallOptions {
   ctx?: unknown
 }
 
+/**
+ * @group Router
+ */
 export interface SendErrorOptions {
   /**
    * Error handler function that processes raw errors
@@ -282,6 +348,9 @@ export interface SendErrorOptions {
   send: (message: RouterRawMessage) => void
 }
 
+/**
+ * @group Router
+ */
 export interface SendMessageToClient {
   /**
    * The action name
@@ -309,6 +378,9 @@ export interface SendMessageToClient {
   send: (message: RouterRawMessage) => void
 }
 
+/**
+ * @group Router
+ */
 export interface HandleStream {
   /**
    * Error handler function
@@ -336,6 +408,9 @@ export interface HandleStream {
 // Router Inference Types
 // ============================================================================
 
+/**
+ * @group Router
+ */
 export type RouterInferNotGeneric = Record<
   string,
   {
@@ -363,6 +438,7 @@ type InferRouter<
  * Converts router's serverActions to a format compatible with Client (RouterInferNotGeneric).
  * This type wraps router action results in ActionResultNotGeneric format.
  * The params are preserved exactly as they are inferred from the router to ensure type compatibility.
+ * @group Router
  */
 export type RouterInfer<
   R extends Router<
@@ -391,6 +467,7 @@ type RouterInferLike =
 
 /**
  * Extracts the parameter type for a specific action from a router type.
+ * @group Router
  * @template T - The router type (RouterInfer or RouterInferNotGeneric)
  * @template K - The action name
  * @example
@@ -433,6 +510,7 @@ export type ParamsInfer<
 /**
  * Extracts the result type for a specific action from a router type.
  * Returns the ActionResult type (ok/error union) for the action.
+ * @group Router
  * @template T - The router type (RouterInfer or RouterInferNotGeneric)
  * @template K - The action name
  * @example

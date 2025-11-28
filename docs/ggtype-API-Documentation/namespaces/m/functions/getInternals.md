@@ -6,7 +6,7 @@
 
 > **getInternals**(): `any`
 
-Defined in: [src/model/model.ts:245](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L245)
+Defined in: [src/model/model.ts:245](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L245)
 
 Creates default model internals with a unique ID.
 Returns a new internals object with default values for model configuration.

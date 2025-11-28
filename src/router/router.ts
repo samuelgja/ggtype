@@ -1,6 +1,7 @@
 import { type ActionNotGeneric } from '../action/action'
 import {
   NOOP_ON_ERROR,
+  NOOP_CLIENT_ACTIONS,
   type RouterResultNotGeneric,
 } from '../types'
 import { handleError } from '../utils/handle-error'
@@ -49,6 +50,7 @@ const PROCESSORS_SYMBOL = Symbol('processors')
  * Sends an error message to the client via the transport layer.
  * Processes the raw error through the error handler, creates a RouterMessage with error details,
  * and sends it to the client. If the error handler suppresses the error, nothing is sent.
+ * @internal
  * @param options - Options containing error handling configuration and transport
  * @returns The processed error result, or undefined if the error was suppressed
  */
@@ -86,6 +88,7 @@ function sendErrorMessage(
  * both HTTP stream and WebSocket transports. It handles action execution, error handling,
  * and response management with timeout support. Server actions can call client actions
  * and wait for their responses, enabling full bidirectional RPC communication.
+ * @group Router
  * @template Actions - The type of server actions record
  * @template ClientActions - The type of client actions record
  * @param options - Router configuration options
@@ -142,7 +145,7 @@ export function createRouter<
 ): Router<Actions, ClientActions> {
   const {
     serverActions,
-    clientActions,
+    clientActions: clientActionsSchema,
     responseTimeout = DEFAULT_ROUTER_TIMEOUT,
     transport: transportType = 'stream',
   } = options
@@ -245,65 +248,97 @@ export function createRouter<
 
   const clientFunctionsBefore: ClientCallableActionsBefore<ClientActions> =
     {} as ClientCallableActionsBefore<ClientActions>
-  for (const clientActionName in clientActions) {
-    const clientId = createId()
-    const clientAction = clientActions[clientActionName]
-    type ClientParams =
-      (typeof clientAction)['params']['infer']
-    const validateResponse = compileModelAndCheck(
-      clientAction.return,
-    )
+  if (clientActionsSchema) {
+    for (const clientActionName in clientActionsSchema) {
+      const clientId = createId()
+      const clientAction =
+        clientActionsSchema[clientActionName]
+      type ClientParams =
+        (typeof clientAction)['params']['infer']
+      const validateResponse = compileModelAndCheck(
+        clientAction.return,
+      )
 
-    const createResponseHandler = (
-      resolve: (
-        value: ClientActionResult<typeof clientAction>,
-      ) => void,
-      transport: Transport,
-      currentClientId: string,
-      currentId: string,
-    ) => {
-      return (responseMessage: RouterMessage) => {
-        try {
-          if (!responseMessage.clientId) {
-            throw new Error(
-              'Response is not a ClientAction',
+      const createResponseHandler = (
+        resolve: (
+          value: ClientActionResult<typeof clientAction>,
+        ) => void,
+        transport: Transport,
+        currentClientId: string,
+        currentId: string,
+      ) => {
+        return (responseMessage: RouterMessage) => {
+          try {
+            if (!responseMessage.clientId) {
+              throw new Error(
+                'Response is not a ClientAction',
+              )
+            }
+            if (responseMessage.error) {
+              resolve({
+                status: 'error',
+                error: responseMessage.error,
+              })
+              waitingResponses.delete({
+                clientId: currentClientId,
+                id: currentId,
+              })
+              return
+            }
+            const errors = validateResponse(
+              responseMessage.data,
             )
-          }
-          if (responseMessage.error) {
+            if (errors) {
+              throw new ValidationError(errors)
+            }
+
+            const parsedResponse =
+              clientAction.return.onParse(
+                responseMessage.data as never,
+              )
             resolve({
-              status: 'error',
-              error: responseMessage.error,
+              status: 'ok',
+              data: parsedResponse,
             })
             waitingResponses.delete({
               clientId: currentClientId,
               id: currentId,
             })
-            return
+          } catch (rawError) {
+            const error = sendErrorMessage({
+              onError: NOOP_ON_ERROR,
+              action: clientActionName,
+              rawError,
+              clientId: currentClientId,
+              id: currentId,
+              transport,
+              send: () => {},
+            })
+            if (!error) {
+              return
+            }
+            resolve(error)
+            waitingResponses.delete({
+              clientId: currentClientId,
+              id: currentId,
+            })
           }
-          const errors = validateResponse(
-            responseMessage.data,
-          )
-          if (errors) {
-            throw new ValidationError(errors)
-          }
+        }
+      }
 
-          const parsedResponse =
-            clientAction.return.onParse(
-              responseMessage.data as never,
-            )
-          resolve({
-            status: 'ok',
-            data: parsedResponse,
-          })
-          waitingResponses.delete({
-            clientId: currentClientId,
-            id: currentId,
-          })
-        } catch (rawError) {
+      const createTimeoutHandler = (
+        resolve: (
+          value: ClientActionResult<typeof clientAction>,
+        ) => void,
+        transport: Transport,
+        currentClientId: string,
+        currentId: string,
+      ) => {
+        return () => {
           const error = sendErrorMessage({
             onError: NOOP_ON_ERROR,
             action: clientActionName,
-            rawError,
+            rawError: new Error('Timeout'),
             clientId: currentClientId,
             id: currentId,
             transport,
@@ -319,91 +354,64 @@ export function createRouter<
           })
         }
       }
-    }
 
-    const createTimeoutHandler = (
-      resolve: (
-        value: ClientActionResult<typeof clientAction>,
-      ) => void,
-      transport: Transport,
-      currentClientId: string,
-      currentId: string,
-    ) => {
-      return () => {
-        const error = sendErrorMessage({
-          onError: NOOP_ON_ERROR,
-          action: clientActionName,
-          rawError: new Error('Timeout'),
-          clientId: currentClientId,
-          id: currentId,
-          transport,
-          send: () => {},
-        })
-        if (!error) {
-          return
-        }
-        resolve(error)
-        waitingResponses.delete({
-          clientId: currentClientId,
-          id: currentId,
+      const clientFn = async function (
+        _send: unknown,
+        fromMessage: RouterMessage & {
+          _transport?: Transport
+        },
+        parameters: ClientParams,
+      ): Promise<ClientActionResult<typeof clientAction>> {
+        const { id, _transport: transport } = fromMessage
+        if (!transport)
+          throw new Error(
+            'Transport not available in context',
+          )
+
+        return new Promise<
+          ClientActionResult<typeof clientAction>
+        >((resolve) => {
+          const responseHandler = createResponseHandler(
+            resolve,
+            transport,
+            clientId,
+            id,
+          )
+          const timeoutHandler = createTimeoutHandler(
+            resolve,
+            transport,
+            clientId,
+            id,
+          )
+
+          waitingResponses.add(
+            { clientId, id },
+            responseHandler,
+            timeoutHandler,
+          )
+
+          const message: RouterMessage = {
+            id,
+            action: clientActionName,
+            clientId,
+            status: 'ok',
+            data: parameters,
+            bufferType:
+              parameters instanceof File ||
+              parameters instanceof Blob
+                ? 'file'
+                : undefined,
+          }
+
+          transport.write(message).catch(() => {
+            // Ignore write errors
+          })
         })
       }
+      ;(clientFunctionsBefore as Record<string, unknown>)[
+        clientActionName
+      ] = clientFn
     }
-
-    const clientFn = async function (
-      _send: unknown,
-      fromMessage: RouterMessage & {
-        _transport?: Transport
-      },
-      parameters: ClientParams,
-    ): Promise<ClientActionResult<typeof clientAction>> {
-      const { id, _transport: transport } = fromMessage
-      if (!transport)
-        throw new Error(
-          'Transport not available in context',
-        )
-
-      return new Promise<
-        ClientActionResult<typeof clientAction>
-      >((resolve) => {
-        const responseHandler = createResponseHandler(
-          resolve,
-          transport,
-          clientId,
-          id,
-        )
-        const timeoutHandler = createTimeoutHandler(
-          resolve,
-          transport,
-          clientId,
-          id,
-        )
-
-        waitingResponses.add(
-          { clientId, id },
-          responseHandler,
-          timeoutHandler,
-        )
-
-        const message: RouterMessage = {
-          id,
-          action: clientActionName,
-          clientId,
-          status: 'ok',
-          data: parameters,
-          bufferType:
-            parameters instanceof File ||
-            parameters instanceof Blob
-              ? 'file'
-              : undefined,
-        }
-
-        transport.write(message).catch(() => {
-          // Ignore write errors
-        })
-      })
-    }
-    clientFunctionsBefore[clientActionName] = clientFn
   }
 
   /**
@@ -415,10 +423,14 @@ export function createRouter<
    * @param fromMessage - The router message that triggered the server action
    * @returns An object containing callable client action functions
    */
-  function getClientActions(
+  function clientActions(
     transport: Transport,
     fromMessage: RouterMessage,
   ): ClientCallableActions<ClientActions> {
+    if (!clientActionsSchema) {
+      return NOOP_CLIENT_ACTIONS<ClientActions>()
+    }
+
     const clientFunctions: ClientCallableActions<ClientActions> =
       {} as ClientCallableActions<ClientActions>
     const messageWithTransport = {
@@ -426,9 +438,10 @@ export function createRouter<
       _transport: transport,
     }
 
-    for (const clientActionName in clientActions) {
+    for (const clientActionName in clientActionsSchema) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const clientAction = clientActions[clientActionName]
+      const clientAction =
+        clientActionsSchema[clientActionName]
       type ClientParams =
         (typeof clientAction)['params']['infer']
       const clientFn = async function (
@@ -440,7 +453,9 @@ export function createRouter<
           parameters,
         )
       }
-      clientFunctions[clientActionName] = clientFn
+      ;(clientFunctions as Record<string, unknown>)[
+        clientActionName
+      ] = clientFn
     }
     return clientFunctions
   }
@@ -524,8 +539,8 @@ export function createRouter<
       const actionResult = await action.run({
         params: data,
         ctx,
-        getClientActions: () =>
-          getClientActions(transport, serverMessage),
+        clientActions: () =>
+          clientActions(transport, serverMessage),
       })
 
       if (
@@ -680,8 +695,8 @@ export function createRouter<
             const data = await action?.run({
               params: body[key],
               ctx,
-              getClientActions: () =>
-                ({}) as ClientCallableActions<ClientActions>,
+              clientActions: () =>
+                NOOP_CLIENT_ACTIONS<ClientActions>(),
             })
             result[key] = {
               status: 'ok',

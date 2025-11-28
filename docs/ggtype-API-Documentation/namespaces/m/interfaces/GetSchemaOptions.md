@@ -4,7 +4,7 @@
 
 # Interface: GetSchemaOptions
 
-Defined in: [src/model/model.ts:109](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L109)
+Defined in: [src/model/model.ts:109](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L109)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [src/model/model.ts:109](https://github.com/samuelgja/ggtype/blob/b1
 
 > `readonly` `optional` **justRef**: `boolean`
 
-Defined in: [src/model/model.ts:113](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L113)
+Defined in: [src/model/model.ts:113](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L113)
 
 Whether to return just a reference schema (default: false)
 
@@ -22,6 +22,6 @@ Whether to return just a reference schema (default: false)
 
 > `readonly` `optional` **usedRefs**: `Set`\<`string`\>
 
-Defined in: [src/model/model.ts:117](https://github.com/samuelgja/ggtype/blob/b1d8fef813b0e18224a64a5ba529782a727460b8/src/model/model.ts#L117)
+Defined in: [src/model/model.ts:117](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/model/model.ts#L117)
 
 Set of model IDs that have been referenced (used for tracking dependencies)
