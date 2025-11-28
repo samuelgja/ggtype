@@ -78,6 +78,29 @@ export interface StringModel<
  * Returns a model that validates string values with optional constraints like
  * min/max length, regex patterns, email/password formats, and custom validation.
  * @returns A StringModel instance for validating string values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Basic string
+ * const name = m.string().isRequired()
+ *
+ * // String with constraints
+ * const email = m.string()
+ *   .isEmail()
+ *   .isRequired()
+ *
+ * const password = m.string()
+ *   .minLength(8)
+ *   .isPassword()
+ *   .isRequired()
+ *
+ * const username = m.string()
+ *   .minLength(3)
+ *   .maxLength(20)
+ *   .regex(/^[a-zA-Z0-9_]+$/)
+ *   .isRequired()
+ * ```
  */
 export function string(): StringModel<false> {
   const baseModel = getBaseModel<StringModel<false>>()

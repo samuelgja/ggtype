@@ -118,6 +118,31 @@ export interface ObjectModel<
  * @template R - Whether the model is required
  * @param properties - Record of property names to their corresponding models
  * @returns An ObjectModel instance for validating objects with the specified structure
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Simple object
+ * const userParams = m.object({
+ *   id: m.string().isRequired(),
+ *   name: m.string().isRequired(),
+ *   email: m.string().isEmail().isRequired(),
+ *   age: m.number().minimum(0).maximum(120),
+ * })
+ *
+ * // Nested object
+ * const addressParams = m.object({
+ *   street: m.string().isRequired(),
+ *   city: m.string().isRequired(),
+ *   zipCode: m.string().isRequired(),
+ * })
+ *
+ * const userWithAddress = m.object({
+ *   id: m.string().isRequired(),
+ *   name: m.string().isRequired(),
+ *   address: addressParams.isRequired(),
+ * })
+ * ```
  */
 export function object<
   T extends Properties,

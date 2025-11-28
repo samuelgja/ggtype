@@ -42,6 +42,22 @@ export interface BlobModel<
  * Returns a model that validates Blob values, automatically converting ArrayBuffer
  * instances to Blob objects when needed. Supports optional required constraint.
  * @returns A BlobModel instance for validating Blob values
+ * @example
+ * ```ts
+ * import { action, m } from 'ggtype'
+ *
+ * // Blob upload action
+ * const uploadBlob = action(
+ *   m.object({
+ *     data: m.blob().isRequired(),
+ *     type: m.string().isRequired(),
+ *   }),
+ *   async ({ params }) => {
+ *     // params.data is a Blob instance
+ *     return { success: true, size: params.data.size }
+ *   }
+ * )
+ * ```
  */
 export function blob(): BlobModel<false> {
   const baseModel = getBaseModel<BlobModel<false>>()

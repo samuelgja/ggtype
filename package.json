@@ -1,6 +1,37 @@
 {
   "name": "ggtype",
-  "version": "0.4.4",
+  "version": "0.4.5",
+  "description": "High-performance TypeScript library for type-safe data validation and client-server communication with bidirectional RPC, streaming support, and multiple transport options",
+  "keywords": [
+    "typescript",
+    "validation",
+    "schema",
+    "rpc",
+    "trpc",
+    "api",
+    "client-server",
+    "bidirectional",
+    "streaming",
+    "websocket",
+    "http",
+    "type-safe",
+    "types",
+    "ajv",
+    "zod-alternative",
+    "data-validation",
+    "real-time",
+    "async-generator"
+  ],
+  "license": "MIT",
+  "author": "samuelgja",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samuelgja/ggtype.git"
+  },
+  "homepage": "https://github.com/samuelgja/ggtype#readme",
+  "bugs": {
+    "url": "https://github.com/samuelgja/ggtype/issues"
+  },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",

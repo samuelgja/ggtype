@@ -52,6 +52,26 @@ export interface AndModel<
  * @template M - Array of model types to intersect
  * @param models - Variable number of models to combine
  * @returns An AndModel instance representing the intersection of all provided models
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Base user model
+ * const userBase = m.object({
+ *   id: m.string().isRequired(),
+ *   name: m.string().isRequired(),
+ * })
+ *
+ * // Role model
+ * const roleModel = m.object({
+ *   role: m.enums('admin', 'user').isRequired(),
+ *   permissions: m.array(m.string()),
+ * })
+ *
+ * // Combined user with role
+ * const userWithRole = m.and(userBase, roleModel).isRequired()
+ * // Result: { id: string, name: string, role: 'admin' | 'user', permissions?: string[] }
+ * ```
  */
 export function and<M extends ModelNotGeneric[]>(
   ...models: M

@@ -90,6 +90,49 @@ function sendErrorMessage(
  * @template ClientActions - The type of client actions record
  * @param options - Router configuration options
  * @returns A router instance with `onRequest` and optional `onWebSocketMessage` handlers
+ * @example
+ * ```ts
+ * import { action, createRouter, defineClientActionsSchema, m } from 'ggtype'
+ *
+ * // Define actions
+ * const createUser = action(
+ *   m.object({ id: m.string().isRequired(), name: m.string().isRequired() }),
+ *   async ({ params }) => ({ ...params, createdAt: new Date() })
+ * )
+ *
+ * const getUser = action(
+ *   m.object({ id: m.string().isRequired() }),
+ *   async ({ params }) => ({ id: params.id, name: 'John' })
+ * )
+ *
+ * // Define client actions schema
+ * const clientActions = defineClientActionsSchema({
+ *   showNotification: {
+ *     params: m.object({
+ *       message: m.string().isRequired(),
+ *       type: m.string().isRequired(),
+ *     }),
+ *     return: m.object({ acknowledged: m.boolean() }),
+ *   },
+ * })
+ *
+ * // Create router
+ * const router = createRouter({
+ *   serverActions: { createUser, getUser },
+ *   clientActions,
+ *   transport: 'http', // or 'stream' or 'websocket'
+ *   responseTimeout: 60000,
+ * })
+ *
+ * // Use with Bun server
+ * Bun.serve({
+ *   port: 3000,
+ *   async fetch(request) {
+ *     const user = extractUserFromRequest(request)
+ *     return router.onRequest({ request, ctx: { user } })
+ *   },
+ * })
+ * ```
  */
 export function createRouter<
   Actions extends Record<string, ActionNotGeneric>,
@@ -98,7 +141,7 @@ export function createRouter<
   options: RouterOptions<Actions, ClientActions>,
 ): Router<Actions, ClientActions> {
   const {
-    actions,
+    serverActions,
     clientActions,
     responseTimeout = DEFAULT_ROUTER_TIMEOUT,
     transport: transportType = 'stream',
@@ -461,7 +504,7 @@ export function createRouter<
     transport: Transport,
   ): Promise<void> {
     const { id, data, action: actionName } = serverMessage
-    const action = actions[actionName]
+    const action = serverActions[actionName]
 
     if (!action) {
       sendErrorMessage({
@@ -628,7 +671,7 @@ export function createRouter<
         > = {}
 
         for (const key in body) {
-          const action = actions[key]
+          const action = serverActions[key]
           const model = action?.model
           try {
             if (!model) {

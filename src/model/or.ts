@@ -54,6 +54,19 @@ export interface OrModel<
  * @template M - Array of model types to union
  * @param models - Variable number of models to create a union from
  * @returns An OrModel instance representing the union of all provided models
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Union of string or number
+ * const idOrName = m.or(m.string(), m.number()).isRequired()
+ *
+ * // Union of different object types
+ * const userOrAdmin = m.or(
+ *   m.object({ type: m.enums('user').isRequired(), name: m.string().isRequired() }),
+ *   m.object({ type: m.enums('admin').isRequired(), role: m.string().isRequired() })
+ * ).isRequired()
+ * ```
  */
 export function or<M extends ModelNotGeneric[]>(
   ...models: M

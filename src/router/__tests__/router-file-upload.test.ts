@@ -66,7 +66,7 @@ describe('router file upload', () => {
       )
 
       const router = createRouter({
-        actions: {
+        serverActions: {
           fileAction,
           fileActionWithClientAction,
           fileStreamAction,

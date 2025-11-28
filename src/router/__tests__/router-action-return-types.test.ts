@@ -125,7 +125,7 @@ describe('router action return types', () => {
       )
 
       const router = createRouter({
-        actions: {
+        serverActions: {
           normalAction,
           generatorAction,
           asyncGeneratorAction,

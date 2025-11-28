@@ -71,6 +71,29 @@ export interface NumberModel<
  * Returns a model that validates number values with optional constraints like
  * minimum/maximum values, positive/negative checks, and custom validation.
  * @returns A NumberModel instance for validating number values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Basic number
+ * const age = m.number().isRequired()
+ *
+ * // Number with constraints
+ * const positiveAge = m.number()
+ *   .minimum(0)
+ *   .maximum(120)
+ *   .isRequired()
+ *
+ * const price = m.number()
+ *   .positive()
+ *   .minimum(0.01)
+ *   .isRequired()
+ *
+ * const score = m.number()
+ *   .minimum(0)
+ *   .maximum(100)
+ *   .isRequired()
+ * ```
  */
 export function number(): NumberModel<false> {
   const baseModel = getBaseModel<NumberModel<false>>()

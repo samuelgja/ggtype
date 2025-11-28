@@ -34,7 +34,7 @@ describe('router client hooks and headers', () => {
   )
 
   const router = createRouter({
-    actions: {
+    serverActions: {
       getUser: getUserAction,
       getError: getErrorAction,
       getForbidden: getForbiddenAction,
@@ -162,7 +162,7 @@ describe('router client hooks and headers', () => {
 
     it('should include headers in stream transport', async () => {
       const streamRouter = createRouter({
-        actions: {
+        serverActions: {
           getUser: getUserAction,
         },
         clientActions: {},
@@ -467,7 +467,7 @@ describe('router client hooks and headers', () => {
 
     it('should work with stream transport', async () => {
       const streamRouter = createRouter({
-        actions: {
+        serverActions: {
           getUser: getUserAction,
         },
         clientActions: {},
@@ -622,7 +622,7 @@ describe('router client hooks and headers', () => {
       )
 
       const authRouter = createRouter({
-        actions: {
+        serverActions: {
           getUser: getUserAction,
           refreshToken: refreshTokenAction,
         },

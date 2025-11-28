@@ -76,6 +76,24 @@ export interface EnumModel<
  * @template T - The enum string literal type
  * @param enumParameters - Array of allowed string values for the enum
  * @returns An EnumModel instance for validating enum string values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Simple enum
+ * const role = m.enums('admin', 'user', 'guest').isRequired()
+ *
+ * // Enum with default
+ * const status = m.enums('pending', 'active', 'inactive')
+ *   .default('pending')
+ *   .isRequired()
+ *
+ * // Use in object
+ * const userParams = m.object({
+ *   role: m.enums('admin', 'user').isRequired(),
+ *   status: m.enums('active', 'inactive').isRequired(),
+ * })
+ * ```
  */
 export function enums<T extends string>(
   ...enumParameters: T[]

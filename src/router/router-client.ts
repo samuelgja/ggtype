@@ -69,26 +69,46 @@ function handleThisError(error: unknown) {
  * The client handles sending requests to the server, waiting for responses,
  * and processing streaming results. Supports HTTP, HTTP stream, and WebSocket transports.
  * Client actions can be called from the server, enabling bidirectional RPC communication.
- * @example ```typescript
- * const client = createRouterClient<AppRouter>({
- *   url: 'http://localhost:3000',
- *   transport: 'http',
- *   onResponse: ({ json, runAgain }) => {
- *     if (hasStatusCode(json, 401)) {
- *       // Handle auth error and retry
- *       return runAgain()
- *     }
- *     return json
- *   }
- * })
- *
- * const result = await client.fetch({
- *   getUser: { id: '123' }
- * })
- * ```
  * @template R - The router type
  * @param options - Router client configuration options
  * @returns A router client with fetch and stream methods for executing server actions
+ * @example
+ * ```ts
+ * import { createRouterClient } from 'ggtype'
+ *
+ * // Create client with HTTP transport
+ * const client = createRouterClient({
+ *   url: 'http://localhost:3000',
+ *   transport: 'http',
+ *   defineClientActions: {
+ *     showNotification: async (params) => {
+ *       alert(params.message)
+ *       return { acknowledged: true }
+ *     },
+ *   },
+ * })
+ *
+ * // Use fetch() to wait for all results
+ * const results = await client.fetch({
+ *   getUser: { id: '123' },
+ *   createUser: { id: '456', name: 'John' },
+ * })
+ *
+ * if (results.getUser?.status === 'ok') {
+ *   console.log('User:', results.getUser.data)
+ * }
+ *
+ * // Use stream() for incremental results
+ * const stream = await client.stream({
+ *   getUser: { id: '123' },
+ * })
+ *
+ * for await (const result of stream) {
+ *   if (result.getUser?.status === 'ok') {
+ *     console.log('User:', result.getUser.data)
+ *   }
+ * }
+ * ```
  */
 export function createRouterClient<
   R extends Router<

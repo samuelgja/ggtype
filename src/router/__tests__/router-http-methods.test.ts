@@ -51,7 +51,7 @@ describe('router with http transport - HTTP methods', () => {
   })
 
   const router = createRouter({
-    actions: {
+    serverActions: {
       getUser,
       createUser,
       updateUser,
@@ -366,7 +366,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('stream transport with methods', () => {
     it('should default to POST for stream transport', async () => {
       const streamRouter = createRouter({
-        actions: {
+        serverActions: {
           createUser,
         },
         clientActions: {},
@@ -421,7 +421,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should allow PUT method for stream transport', async () => {
       const streamRouter = createRouter({
-        actions: {
+        serverActions: {
           updateUser,
         },
         clientActions: {},

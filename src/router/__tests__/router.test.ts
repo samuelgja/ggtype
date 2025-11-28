@@ -111,7 +111,7 @@ describe('router', () => {
       )
 
       const router = createRouter({
-        actions: {
+        serverActions: {
           fileAction,
           deleteUser,
           createUser,
@@ -521,7 +521,7 @@ describe('router', () => {
         )
 
         const errorRouter = createRouter({
-          actions: { errorAction },
+          serverActions: { errorAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport,
@@ -817,7 +817,7 @@ describe('router', () => {
         )
 
         const slowRouter = createRouter({
-          actions: { slowClientAction },
+          serverActions: { slowClientAction },
           clientActions,
           responseTimeout: serverTimeout,
           transport,
@@ -996,7 +996,7 @@ describe('router', () => {
         )
 
         const nullableRouter = createRouter({
-          actions: { nullableAction },
+          serverActions: { nullableAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport,
@@ -1110,7 +1110,7 @@ describe('router', () => {
         )
 
         const multiStreamRouter = createRouter({
-          actions: { multiStreamAction },
+          serverActions: { multiStreamAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport,
@@ -1271,7 +1271,7 @@ describe('router', () => {
         )
 
         const testRouter = createRouter({
-          actions: { testAction },
+          serverActions: { testAction },
           clientActions,
           responseTimeout: serverTimeout,
           transport,
@@ -1386,7 +1386,7 @@ describe('router', () => {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const testRouter = createRouter({
-          actions: { testAction },
+          serverActions: { testAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport: 'stream',
@@ -1480,7 +1480,7 @@ describe('router', () => {
         )
 
         const testRouter = createRouter({
-          actions: { testAction },
+          serverActions: { testAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport: 'websocket',
@@ -1611,7 +1611,7 @@ describe('router', () => {
         )
 
         const emptyStreamRouter = createRouter({
-          actions: { emptyStreamAction },
+          serverActions: { emptyStreamAction },
           clientActions: {},
           responseTimeout: serverTimeout,
           transport,
@@ -2043,7 +2043,7 @@ describe('router', () => {
           )
 
           const errorRouter = createRouter({
-            actions: { errorAction },
+            serverActions: { errorAction },
             clientActions: {},
             responseTimeout: serverTimeout,
             transport,

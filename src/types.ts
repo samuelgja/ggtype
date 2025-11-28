@@ -198,7 +198,7 @@ export interface RouterOptions<
   /**
    * Record of server actions that can be called by clients
    */
-  readonly actions: Actions
+  readonly serverActions: Actions
   /**
    * Record of client actions that can be called by the server
    */
@@ -389,6 +389,26 @@ type RouterInferLike =
       Record<string, ClientAction>
     >
 
+/**
+ * Extracts the parameter type for a specific action from a router type.
+ * @template T - The router type (RouterInfer or RouterInferNotGeneric)
+ * @template K - The action name
+ * @example
+ * ```ts
+ * import { createRouter, type ParamsInfer } from 'ggtype'
+ *
+ * const router = createRouter({
+ *   serverActions: {
+ *     getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({})),
+ *   },
+ *   clientActions: {},
+ * })
+ *
+ * type Router = typeof router.infer
+ * type GetUserParams = ParamsInfer<Router, 'getUser'>
+ * // Result: { id: string }
+ * ```
+ */
 export type ParamsInfer<
   T extends RouterInferLike,
   K extends
@@ -410,6 +430,30 @@ export type ParamsInfer<
       : never
     : never
 
+/**
+ * Extracts the result type for a specific action from a router type.
+ * Returns the ActionResult type (ok/error union) for the action.
+ * @template T - The router type (RouterInfer or RouterInferNotGeneric)
+ * @template K - The action name
+ * @example
+ * ```ts
+ * import { createRouter, type ResultInfer } from 'ggtype'
+ *
+ * const router = createRouter({
+ *   serverActions: {
+ *     getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({
+ *       id: params.id,
+ *       name: 'John',
+ *     })),
+ *   },
+ *   clientActions: {},
+ * })
+ *
+ * type Router = typeof router.infer
+ * type GetUserResult = ResultInfer<Router, 'getUser'>
+ * // Result: { status: 'ok', data: { id: string; name: string } } | { status: 'error', error: {...} }
+ * ```
+ */
 export type ResultInfer<
   T extends RouterInferLike,
   K extends

@@ -40,6 +40,23 @@ export interface BooleanModel<
  * Creates a boolean model for validation and type inference.
  * Returns a model that validates boolean values with optional required constraint.
  * @returns A BooleanModel instance for validating boolean values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Basic boolean
+ * const isActive = m.boolean().isRequired()
+ *
+ * // Optional boolean
+ * const isPublished = m.boolean()
+ *
+ * // Use in object
+ * const userParams = m.object({
+ *   name: m.string().isRequired(),
+ *   isActive: m.boolean().isRequired(),
+ *   isVerified: m.boolean(),
+ * })
+ * ```
  */
 export function boolean(): BooleanModel<false> {
   const baseModel = getBaseModel<BooleanModel<false>>()

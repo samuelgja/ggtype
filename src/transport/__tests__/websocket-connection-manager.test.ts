@@ -702,7 +702,7 @@ describe('WebSocketConnectionManager', () => {
     )
 
     const router = createRouter({
-      actions: { testAction },
+      serverActions: { testAction },
       clientActions: {},
       responseTimeout: 10_000,
       transport: 'websocket',

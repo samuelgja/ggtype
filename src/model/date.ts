@@ -114,6 +114,23 @@ function getDate(data: unknown) {
  * Returns a model that validates Date values with optional custom validation.
  * Supports parsing from strings, numbers (timestamps), and Date instances.
  * @returns A DateModel instance for validating Date values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Basic date
+ * const createdAt = m.date().isRequired()
+ *
+ * // Optional date
+ * const publishedAt = m.date()
+ *
+ * // Use in object
+ * const postParams = m.object({
+ *   title: m.string().isRequired(),
+ *   createdAt: m.date().isRequired(),
+ *   publishedAt: m.date(),
+ * })
+ * ```
  */
 export function date(): DateModel<false> {
   const baseModel = getBaseModel<DateModel<false>>()

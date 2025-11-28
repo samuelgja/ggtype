@@ -147,7 +147,7 @@ const clientActions = defineClientActionsSchema({
 
 // Create router
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http', // Options: 'http', 'stream', or 'websocket'
   responseTimeout: 60000,
@@ -195,7 +195,7 @@ const clientActions = defineClientActionsSchema({
 
 // Create router
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http',
   responseTimeout: 60000,
@@ -565,7 +565,7 @@ The router enables type-safe client-server communication with multiple transport
 
 ```typescript
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http',
 })
@@ -590,7 +590,7 @@ Bun.serve({
 import { Elysia } from 'elysia'
 
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http',
 })
@@ -619,7 +619,7 @@ app.listen(3000)
 
 ```typescript
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'stream',
 })
@@ -643,7 +643,7 @@ Bun.serve({
 import { Elysia } from 'elysia'
 
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'stream',
 })
@@ -672,7 +672,7 @@ app.listen(3000)
 
 ```typescript
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'websocket',
 })
@@ -714,7 +714,7 @@ import { Elysia } from 'elysia'
 import { websocket } from '@elysiajs/websocket'
 
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'websocket',
 })
@@ -990,7 +990,7 @@ const clientActions = defineClientActionsSchema({
 
 // Create router
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http',
 })
@@ -1099,7 +1099,7 @@ const clientActions = defineClientActionsSchema({
 
 // Create router
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'http',
 })
@@ -1164,7 +1164,7 @@ const clientActions = defineClientActionsSchema({
 
 // Create router with WebSocket transport
 const router = createRouter({
-  actions: serverActions,
+  serverActions: serverActions,
   clientActions,
   transport: 'websocket',
 })
@@ -1300,7 +1300,7 @@ const deleteUser = action(idParams, async ({ params }) => {
 
 // Server setup
 const router = createRouter({
-  actions: { createUser, getUser, updateUser, deleteUser },
+  serverActions: { createUser, getUser, updateUser, deleteUser },
   clientActions: {},
   transport: 'http',
 })
@@ -1477,6 +1477,8 @@ ggtype is designed for performance:
 
 ## API Reference
 
+> 📚 For complete API documentation, see the [Full API Documentation](https://github.com/samuelgja/ggtype/blob/main/docs/README.md).
+
 ### Models
 
 - `m.string()` - String model
@@ -1500,7 +1502,7 @@ ggtype is designed for performance:
 ### Router
 
 - `createRouter(options)` - Create router
-  - `options.actions` - Record of server actions that can be called by clients
+  - `options.serverActions` - Record of server actions that can be called by clients
   - `options.clientActions` - Record of client actions that can be called by the server
   - `options.transport` - `'http'`, `'stream'`, or `'websocket'` (default: 'stream')
   - `options.responseTimeout` - Timeout in milliseconds (default: 60000)
@@ -1539,6 +1541,7 @@ We welcome contributions! Please see our contributing guidelines for more inform
 
 ## Support
 
+- 📚 [API Documentation](https://github.com/samuelgja/ggtype/blob/main/docs/README.md)
 - 📖 [Documentation](https://github.com/samuelgja/ggtype)
 - 🐛 [Issue Tracker](https://github.com/samuelgja/ggtype/issues)
 - 💬 [Discussions](https://github.com/samuelgja/ggtype/discussions)

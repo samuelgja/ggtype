@@ -74,6 +74,24 @@ export function isModel(
  * @template T - The error type
  * @param result - The router result to check
  * @returns True if the result has error status
+ * @example
+ * ```ts
+ * import { createRouterClient, isErrorResult } from 'ggtype'
+ *
+ * const client = createRouterClient({
+ *   url: 'http://localhost:3000',
+ *   transport: 'http',
+ * })
+ *
+ * const results = await client.fetch({
+ *   getUser: { id: '123' },
+ * })
+ *
+ * if (isErrorResult(results.getUser)) {
+ *   // TypeScript knows results.getUser.error exists
+ *   console.error('Error:', results.getUser.error.message)
+ * }
+ * ```
  */
 export function isErrorResult<T>(
   result: RouterResultNotGeneric,
@@ -89,6 +107,24 @@ export function isErrorResult<T>(
  * @template T - The data type
  * @param result - The router result to check
  * @returns True if the result has ok status
+ * @example
+ * ```ts
+ * import { createRouterClient, isOkResult } from 'ggtype'
+ *
+ * const client = createRouterClient({
+ *   url: 'http://localhost:3000',
+ *   transport: 'http',
+ * })
+ *
+ * const results = await client.fetch({
+ *   getUser: { id: '123' },
+ * })
+ *
+ * if (isOkResult(results.getUser)) {
+ *   // TypeScript knows results.getUser.data exists
+ *   console.log('User:', results.getUser.data)
+ * }
+ * ```
  */
 export function isOkResult<T>(
   result: RouterResultNotGeneric,

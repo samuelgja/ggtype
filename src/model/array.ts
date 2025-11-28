@@ -66,6 +66,24 @@ export interface ArrayModel<
  * @template T - The model type for array items
  * @param list - The model to validate each array item against
  * @returns An ArrayModel instance for validating arrays of the specified type
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Array of strings
+ * const tags = m.array(m.string()).isRequired()
+ *
+ * // Array of numbers
+ * const scores = m.array(m.number()).minItems(1).maxItems(10)
+ *
+ * // Array of objects
+ * const users = m.array(
+ *   m.object({
+ *     id: m.string().isRequired(),
+ *     name: m.string().isRequired(),
+ *   })
+ * ).isRequired()
+ * ```
  */
 export function array<T extends ModelNotGeneric>(
   list: T,

@@ -54,6 +54,23 @@ export interface RecordModel<
  * @template M - The model type for record values
  * @param item - The model to validate each value in the record against
  * @returns A RecordModel instance for validating record objects
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Record of strings
+ * const metadata = m.record(m.string()).isRequired()
+ * // Valid: { key1: 'value1', key2: 'value2' }
+ *
+ * // Record of numbers
+ * const scores = m.record(m.number()).isRequired()
+ * // Valid: { user1: 100, user2: 200 }
+ *
+ * // Record of objects
+ * const userData = m.record(
+ *   m.object({ name: m.string().isRequired(), age: m.number() })
+ * ).isRequired()
+ * ```
  */
 export function record<M extends ModelNotGeneric>(
   item: M,

@@ -23,7 +23,7 @@ describe('router with http transport', () => {
     })
 
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
         someAction2,
         someAction3,
@@ -118,7 +118,7 @@ describe('router with http transport', () => {
     )
 
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
       },
       clientActions: {},
@@ -177,7 +177,7 @@ describe('router with http transport', () => {
     })
 
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
         someAction3,
       },
@@ -252,7 +252,7 @@ describe('router with http transport', () => {
     })
 
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
         someAction2,
         someAction3,
@@ -313,7 +313,7 @@ describe('router with http transport', () => {
     })
 
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
       },
       clientActions: {},
@@ -378,7 +378,7 @@ describe('router with http transport', () => {
 
     // HTTP transport ignores clientActions - they are not used
     const router = createRouter({
-      actions: {
+      serverActions: {
         someAction1,
       },
       clientActions: {},

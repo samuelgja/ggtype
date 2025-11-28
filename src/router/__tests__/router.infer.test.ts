@@ -24,13 +24,13 @@ describe('router infer - just ts checks', () => {
     }
 
     const routerSeparate = createRouter({
-      actions: {
+      serverActions: {
         getUser: actionItem,
       },
     })
 
     const routerInline = createRouter({
-      actions: {
+      serverActions: {
         getUser: action(
           m.object({ id: m.string().isRequired() }),
           ({ params }) => {

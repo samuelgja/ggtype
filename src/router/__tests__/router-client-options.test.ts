@@ -18,7 +18,7 @@ describe('router client options', () => {
   })
 
   const router = createRouter({
-    actions: {
+    serverActions: {
       getUser,
     },
     clientActions: {},
@@ -118,7 +118,7 @@ describe('router client options', () => {
 
   describe('Stream transport options', () => {
     const streamRouter = createRouter({
-      actions: {
+      serverActions: {
         getUser,
       },
       clientActions: {},
@@ -254,7 +254,7 @@ describe('router client options', () => {
 
   describe('WebSocket transport options', () => {
     const wsRouter = createRouter({
-      actions: {
+      serverActions: {
         getUser,
       },
       clientActions: {},

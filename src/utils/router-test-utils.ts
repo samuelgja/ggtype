@@ -85,6 +85,48 @@ export interface TestRouter<
  * @param options.transport - Transport type: 'stream' or 'websocket' (default: 'stream')
  * @param options.onError - Optional error handler
  * @returns A test router with actions and cleanup function
+ * @example
+ * ```ts
+ * import { action, createTestRouter, defineClientActionsSchema, m } from 'ggtype'
+ *
+ * // Define actions
+ * const getUser = action(
+ *   m.object({ id: m.string().isRequired() }),
+ *   async ({ params }) => ({ id: params.id, name: 'John' })
+ * )
+ *
+ * // Define client actions
+ * const clientActions = defineClientActionsSchema({
+ *   showNotification: {
+ *     params: m.object({ message: m.string().isRequired() }),
+ *     return: m.object({ acknowledged: m.boolean() }),
+ *   },
+ * })
+ *
+ * // Create test router
+ * const testRouter = createTestRouter(
+ *   { getUser },
+ *   clientActions,
+ *   {
+ *     showNotification: async (params) => {
+ *       console.log('Notification:', params.message)
+ *       return { acknowledged: true }
+ *     },
+ *   },
+ *   { transport: 'stream' }
+ * )
+ *
+ * // Test actions
+ * const stream = await testRouter.actions.getUser({ id: '123' })
+ * for await (const result of stream) {
+ *   if (result.getUser?.status === 'ok') {
+ *     console.log('User:', result.getUser.data)
+ *   }
+ * }
+ *
+ * // Cleanup
+ * testRouter.cleanup()
+ * ```
  */
 export function createTestRouter<
   Actions extends Record<string, ActionNotGeneric>,
@@ -103,7 +145,7 @@ export function createTestRouter<
   const serverTimeout = responseTimeout * 2 + 10
 
   const router = createRouter({
-    actions,
+    serverActions: actions,
     clientActions,
     responseTimeout: serverTimeout,
     transport,

@@ -15,6 +15,35 @@ import type {
  * @template T - The client actions record type
  * @param data - The client actions record to define
  * @returns The same data with proper typing
+ * @example
+ * ```ts
+ * import { defineClientActionsSchema, m } from 'ggtype'
+ *
+ * // Define client actions schema for server-side
+ * const clientActions = defineClientActionsSchema({
+ *   showNotification: {
+ *     params: m.object({
+ *       message: m.string().isRequired(),
+ *       type: m.string().isRequired(),
+ *     }),
+ *     return: m.object({ acknowledged: m.boolean() }),
+ *   },
+ *   updateUI: {
+ *     params: m.object({
+ *       component: m.string().isRequired(),
+ *       data: m.record(m.string()),
+ *     }),
+ *     return: m.object({ success: m.boolean() }),
+ *   },
+ * })
+ *
+ * // Use with createRouter
+ * const router = createRouter({
+ *   serverActions: { /* ... */ },
+ *   clientActions,
+ *   transport: 'stream',
+ * })
+ * ```
  */
 export function defineClientActionsSchema<
   T extends Record<string, ClientAction>,

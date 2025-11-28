@@ -12,6 +12,28 @@ import { ValidationError } from '../utils/errors'
  * @template T - The expected type of the context
  * @param ctx - The context value (typically unknown)
  * @returns The context cast to type T
+ * @example
+ * ```ts
+ * import { action, getCtx, m } from 'ggtype'
+ *
+ * interface UserContext {
+ *   user: { id: string; name: string }
+ * }
+ *
+ * const deleteUser = action(
+ *   m.object({ id: m.string().isRequired() }),
+ *   async ({ params, ctx }) => {
+ *     // Type-safe context extraction
+ *     const { user } = getCtx<UserContext>(ctx)
+ *
+ *     if (user.id !== params.id) {
+ *       throw new Error('Unauthorized')
+ *     }
+ *
+ *     return { success: true }
+ *   }
+ * )
+ * ```
  */
 export function getCtx<T>(ctx: unknown): T {
   return ctx as T
@@ -78,6 +100,47 @@ type InferActionRun<Run> = Run extends (
  * @param parameterModel - The model to validate parameters against
  * @param run - The callback function to execute with validated parameters
  * @returns An action object with the model and run function
+ * @example
+ * ```ts
+ * import { action, m } from 'ggtype'
+ *
+ * // Define parameter model
+ * const userParams = m.object({
+ *   id: m.string().isRequired(),
+ *   name: m.string().isRequired(),
+ *   email: m.string().isEmail().isRequired(),
+ * })
+ *
+ * // Create action with validated parameters
+ * const createUser = action(userParams, async ({ params }) => {
+ *   // params is fully typed and validated
+ *   return {
+ *     id: params.id,
+ *     name: params.name,
+ *     email: params.email,
+ *     createdAt: new Date(),
+ *   }
+ * })
+ *
+ * // Action with context and client actions
+ * const updateUser = action(userParams, async ({ params, ctx, getClientActions }) => {
+ *   const user = ctx?.user
+ *   if (!user) {
+ *     throw new Error('Unauthorized')
+ *   }
+ *
+ *   // Call client action for notification
+ *   const clientActions = getClientActions?.()
+ *   if (clientActions) {
+ *     await clientActions.showNotification({
+ *       message: 'User updated!',
+ *       type: 'success',
+ *     })
+ *   }
+ *
+ *   return { ...params, updatedAt: new Date() }
+ * })
+ * ```
  */
 export function action<
   Model extends ModelNotGeneric,

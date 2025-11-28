@@ -42,6 +42,22 @@ export interface FileModel<
  * Returns a model that validates File values, automatically converting Blob and ArrayBuffer
  * instances to File objects when needed. Supports optional required constraint.
  * @returns A FileModel instance for validating File values
+ * @example
+ * ```ts
+ * import { action, m } from 'ggtype'
+ *
+ * // File upload action
+ * const uploadFile = action(
+ *   m.object({
+ *     file: m.file().isRequired(),
+ *     name: m.string().isRequired(),
+ *   }),
+ *   async ({ params }) => {
+ *     // params.file is a File instance
+ *     return { success: true, size: params.file.size }
+ *   }
+ * )
+ * ```
  */
 export function file(): FileModel<false> {
   const baseModel = getBaseModel<FileModel<false>>()

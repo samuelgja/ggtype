@@ -40,6 +40,22 @@ export interface NullModel<
  * Creates a null model for validation and type inference.
  * Returns a model that validates null values with optional required constraint.
  * @returns A NullModel instance for validating null values
+ * @example
+ * ```ts
+ * import { m } from 'ggtype'
+ *
+ * // Nullable field
+ * const optionalField = m.nullable()
+ *
+ * // Use with or for optional values
+ * const optionalString = m.or(m.string(), m.nullable())
+ *
+ * // Use in object
+ * const userParams = m.object({
+ *   name: m.string().isRequired(),
+ *   deletedAt: m.nullable(),
+ * })
+ * ```
  */
 export function nullable(): NullModel<false> {
   const baseModel = getBaseModel<NullModel<false>>()
