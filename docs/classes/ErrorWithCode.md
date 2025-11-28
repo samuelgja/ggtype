@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
 # Class: ErrorWithCode
 
-Defined in: [src/utils/errors.ts:27](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L27)
+Defined in: [src/utils/errors.ts:27](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L27)
 
 Error class with an HTTP status code.
 Useful for returning errors with specific status codes from actions.
@@ -40,7 +40,7 @@ const deleteUser = action(
 
 > **new ErrorWithCode**(`message`, `code`): `ErrorWithCode`
 
-Defined in: [src/utils/errors.ts:29](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L29)
+Defined in: [src/utils/errors.ts:29](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L29)
 
 #### Parameters
 
@@ -188,7 +188,7 @@ The cause of the error.
 
 > `readonly` **code**: `number`
 
-Defined in: [src/utils/errors.ts:28](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L28)
+Defined in: [src/utils/errors.ts:28](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L28)
 
 ***
 

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **ResultInfer**\<`T`, `K`\> = `T` *extends* `object` ? `K` *extends* keyof `SA` ? `SA`\[`K`\] *extends* `object` ? `R` : `never` : `never` : `K` *extends* keyof `T` ? `T`\[`K`\] *extends* `object` ? `R` : `never` : `never`
 
-Defined in: [src/types.ts:535](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L535)
+Defined in: [src/types.ts:535](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L535)
 
 Extracts the result type for a specific action from a router type.
 Returns the ActionResult type (ok/error union) for the action.

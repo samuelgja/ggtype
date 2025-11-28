@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
 # Interface: SendErrorOptions
 
-Defined in: [src/types.ts:322](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L322)
+Defined in: [src/types.ts:322](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L322)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [src/types.ts:322](https://github.com/samuelgja/ggtype/blob/a9f4113b
 
 > **action**: `string`
 
-Defined in: [src/types.ts:332](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L332)
+Defined in: [src/types.ts:332](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L332)
 
 The action name associated with the error
 
@@ -22,7 +22,7 @@ The action name associated with the error
 
 > `optional` **clientId**: `string`
 
-Defined in: [src/types.ts:340](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L340)
+Defined in: [src/types.ts:340](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L340)
 
 The client ID to send the error to
 
@@ -32,7 +32,7 @@ The client ID to send the error to
 
 > `optional` **id**: `string`
 
-Defined in: [src/types.ts:344](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L344)
+Defined in: [src/types.ts:344](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L344)
 
 Optional message ID (will be generated if not provided)
 
@@ -42,7 +42,7 @@ Optional message ID (will be generated if not provided)
 
 > **onError**: (`error`) => `Error`
 
-Defined in: [src/types.ts:328](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L328)
+Defined in: [src/types.ts:328](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L328)
 
 Error handler function that processes raw errors
 
@@ -66,7 +66,7 @@ The processed error result, or undefined if the error was suppressed
 
 > **rawError**: `unknown`
 
-Defined in: [src/types.ts:336](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L336)
+Defined in: [src/types.ts:336](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L336)
 
 The raw error that occurred
 
@@ -76,7 +76,7 @@ The raw error that occurred
 
 > **send**: (`message`) => `void`
 
-Defined in: [src/types.ts:348](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L348)
+Defined in: [src/types.ts:348](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L348)
 
 Function to send a raw message (not used in current implementation)
 

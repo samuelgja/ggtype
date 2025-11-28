@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **createTestRouter**\<`Actions`, `ClientActions`\>(`actions`, `clientActions`, `clientActionHandlers`, `options?`): [`TestRouter`](../interfaces/TestRouter.md)\<`Actions`\>
 
-Defined in: [src/utils/router-test-utils.ts:138](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/router-test-utils.ts#L138)
+Defined in: [src/utils/router-test-utils.ts:138](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/router-test-utils.ts#L138)
 
 Creates a test router with both server and client for testing purposes.
 Sets up a local server (HTTP stream or WebSocket) and a client connected to it,

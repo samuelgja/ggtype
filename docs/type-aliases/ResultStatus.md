@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
@@ -6,4 +6,4 @@
 
 > **ResultStatus** = `"ok"` \| `"error"`
 
-Defined in: [src/types.ts:114](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/types.ts#L114)
+Defined in: [src/types.ts:114](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L114)

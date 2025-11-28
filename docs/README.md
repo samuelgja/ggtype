@@ -1,8 +1,8 @@
-**ggtype API Documentation v0.4.5**
+**ggtype API Documentation v0.4.7**
 
 ***
 
-# ggtype API Documentation v0.4.5
+# ggtype API Documentation v0.4.7
 
 ## Router
 

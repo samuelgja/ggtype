@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **handleClientActions**\<`Actions`\>(`clientActions`): (`rawMessage`) => `Promise`\<`string`\>
 
-Defined in: [src/router/handle-client-actions.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/router/handle-client-actions.ts#L64)
+Defined in: [src/router/handle-client-actions.ts:64](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/handle-client-actions.ts#L64)
 
 Creates a handler function for processing client action messages.
 Parses incoming messages, validates them, executes the corresponding client action,

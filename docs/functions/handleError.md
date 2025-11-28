@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **handleError**(`onError`, `rawError`): [`RouterResultNotGeneric`](../interfaces/RouterResultNotGeneric.md) \| `undefined`
 
-Defined in: [src/utils/handle-error.ts:16](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/handle-error.ts#L16)
+Defined in: [src/utils/handle-error.ts:16](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/handle-error.ts#L16)
 
 Handles errors by processing them through an error handler and converting them to RouterResult format.
 Processes ValidationError, ErrorWithCode, and generic Error instances, converting them to

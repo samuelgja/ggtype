@@ -3,7 +3,7 @@
 [![Build](https://github.com/samuelgja/ggtype/actions/workflows/build.yml/badge.svg)](https://github.com/samuelgja/ggtype/actions/workflows/build.yml) [![Code Quality Check](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml/badge.svg)](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/ggtype?label=Bundle%20size)](https://bundlephobia.com/result?p=ggtype)
 
-> 📚 **[Full API Documentation](./docs/globals.md)** | 🚀 **High-performance** | ⚡ **Type-safe** | 🔄 **Bidirectional RPC**
+> 📚 **[Full API Documentation](./docs/readme.md)** | 🚀 **High-performance** | ⚡ **Type-safe** | 🔄 **Bidirectional RPC**
 
 **Type-safe client-server communication with automatic validation and full TypeScript inference.**
 
@@ -248,7 +248,7 @@ const client = createRouterClient<Router>({
 
 ## API Reference
 
-> 📚 **[Full API Documentation](./docs/globals.md)** - Complete reference with detailed examples and type definitions.
+> 📚 **[Full API Documentation](./docs/readme.md)** - Complete reference with detailed examples and type definitions.
 
 ### Quick Reference
 
@@ -297,7 +297,7 @@ const client = createRouterClient<Router>({
 
 ## Resources
 
-- 📚 **[API Documentation](./docs/globals.md)** - Complete API reference
+- 📚 **[API Documentation](./docs/readme.md)** - Complete API reference
 - 🐛 [Issue Tracker](https://github.com/samuelgja/ggtype/issues) - Report bugs or request features
 - 💬 [Discussions](https://github.com/samuelgja/ggtype/discussions) - Ask questions and share ideas
 

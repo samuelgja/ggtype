@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.5**](../README.md)
+[**ggtype API Documentation v0.4.7**](../README.md)
 
 ***
 
 # Class: ValidationError
 
-Defined in: [src/utils/errors.ts:64](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L64)
+Defined in: [src/utils/errors.ts:64](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L64)
 
 Error class for validation failures.
 Thrown automatically when action parameters fail validation.
@@ -45,7 +45,7 @@ const createUser = action(
 
 > **new ValidationError**(`errors?`): `ValidationError`
 
-Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L65)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L65)
 
 #### Parameters
 
@@ -189,7 +189,7 @@ The cause of the error.
 
 > `optional` **errors**: `ErrorObject`\<`string`, `Record`\<`string`, `any`\>, `unknown`\>[]
 
-Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/a9f4113b173b6b76049692dd128b2e5015fe95c8/src/utils/errors.ts#L65)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L65)
 
 ***
 
