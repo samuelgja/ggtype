@@ -19,29 +19,6 @@ type Properties = {
   [key: string]: ModelNotGeneric | undefined
 }
 
-type RequiredKeys<T extends Properties> = {
-  [K in keyof T]: T[K] extends ModelNotGeneric
-    ? T[K]['$internals']['isRequired'] extends true
-      ? K
-      : never
-    : never
-}[keyof T]
-
-type NonRequiredKeys<T extends Properties> = {
-  // [K in keyof T]: T[K]['$internals']['isRequired'] extends false ? K : never
-  [K in keyof T]: T[K] extends ModelNotGeneric
-    ? T[K]['$internals']['isRequired'] extends false
-      ? K
-      : never
-    : never
-}[keyof T]
-
-type ExtractProperties<T extends Properties> = {
-  [K in keyof T]: T[K] extends ModelNotGeneric
-    ? T[K]['infer']
-    : never
-}
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export interface ObjectModel<
@@ -53,9 +30,21 @@ export interface ObjectModel<
    * Required properties are non-optional, optional properties are marked with ?
    */
   readonly infer: {
-    [K in RequiredKeys<T>]: ExtractProperties<T>[K]
+    [K in keyof T as T[K] extends ModelNotGeneric
+      ? T[K]['$internals']['isRequired'] extends true
+        ? K
+        : never
+      : never]: T[K] extends ModelNotGeneric
+      ? T[K]['infer']
+      : never
   } & {
-    [K in NonRequiredKeys<T>]?: ExtractProperties<T>[K]
+    [K in keyof T as T[K] extends ModelNotGeneric
+      ? T[K]['$internals']['isRequired'] extends false
+        ? K
+        : never
+      : never]?: T[K] extends ModelNotGeneric
+      ? T[K]['infer']
+      : never
   }
   /**
    * Sets the maximum number of keys allowed in the object
@@ -81,9 +70,21 @@ export interface ObjectModel<
    */
   readonly onParse: (
     data: {
-      [K in RequiredKeys<T>]: ExtractProperties<T>[K]
+      [K in keyof T as T[K] extends ModelNotGeneric
+        ? T[K]['$internals']['isRequired'] extends true
+          ? K
+          : never
+        : never]: T[K] extends ModelNotGeneric
+        ? T[K]['infer']
+        : never
     } & {
-      [K in NonRequiredKeys<T>]?: ExtractProperties<T>[K]
+      [K in keyof T as T[K] extends ModelNotGeneric
+        ? T[K]['$internals']['isRequired'] extends false
+          ? K
+          : never
+        : never]?: T[K] extends ModelNotGeneric
+        ? T[K]['infer']
+        : never
     },
   ) => T
   /**

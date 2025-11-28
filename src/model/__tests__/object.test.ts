@@ -29,6 +29,14 @@ describe('object', () => {
     })
     expect(isValid).toBe(true)
     expect(model.getSchema()).toMatchSnapshot()
+
+    type ModelType = typeof model
+    const testModel: ModelType['infer'] = {
+      age: 2,
+      name: 'test',
+    }
+    // eslint-disable-next-line unicorn/no-immediate-mutation
+    testModel.age = 3
   })
 
   it('should parse nested object models', () => {
