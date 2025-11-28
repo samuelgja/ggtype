@@ -77,7 +77,9 @@ type HasStatusCodeResult =
 /**
  * Checks if any result in the response has a specific status code.
  * Useful for checking authorization errors (e.g., 401) in onResponse hooks.
- * @example ```typescript
+ * @example
+ * Check for unauthorized errors in onResponse hook
+ * ```typescript
  * onResponse: ({ json, runAgain }) => {
  *   if (hasStatusCode(json, 401)) {
  *     // Handle unauthorized error
