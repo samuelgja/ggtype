@@ -39,7 +39,7 @@ import type {
  *
  * // Use with createRouter
  * const router = createRouter({
- *   serverActions: { /* ... */ },
+ *   serverActions: { getUser: action(...), createUser: action(...) },
  *   clientActions,
  *   transport: 'stream',
  * })

@@ -19,7 +19,7 @@ jobs:
               with:
                   bun-version: latest
 
-            - name: Install dependencies
+            - name: Instalal dependencies
               run: bun install
 
             - name: Type check
