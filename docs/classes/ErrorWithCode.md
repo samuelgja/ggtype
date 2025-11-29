@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Class: ErrorWithCode
 
-Defined in: [src/utils/errors.ts:27](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L27)
+Defined in: [src/utils/errors.ts:27](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L27)
 
 Error class with an HTTP status code.
 Useful for returning errors with specific status codes from actions.
@@ -15,7 +15,7 @@ Useful for returning errors with specific status codes from actions.
 import { action, ErrorWithCode, m } from 'ggtype'
 
 const deleteUser = action(
-  m.object({ id: m.string().isRequired() }),
+  m.object({ id: m.string() }),
   async ({ params, ctx }) => {
     if (!ctx?.user) {
       throw new ErrorWithCode('Unauthorized', 401)
@@ -40,7 +40,7 @@ const deleteUser = action(
 
 > **new ErrorWithCode**(`message`, `code`): `ErrorWithCode`
 
-Defined in: [src/utils/errors.ts:29](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L29)
+Defined in: [src/utils/errors.ts:29](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L29)
 
 #### Parameters
 
@@ -188,7 +188,7 @@ The cause of the error.
 
 > `readonly` **code**: `number`
 
-Defined in: [src/utils/errors.ts:28](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L28)
+Defined in: [src/utils/errors.ts:28](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L28)
 
 ***
 

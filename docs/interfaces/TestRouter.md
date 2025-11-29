@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Interface: TestRouter\<Actions\>
 
-Defined in: [src/utils/router-test-utils.ts:61](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/router-test-utils.ts#L61)
+Defined in: [src/utils/router-test-utils.ts:61](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/router-test-utils.ts#L61)
 
 ## Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: [src/utils/router-test-utils.ts:61](https://github.com/samuelgja/ggt
 
 > `readonly` **actions**: `TestRouterActions`\<`Actions`\>
 
-Defined in: [src/utils/router-test-utils.ts:67](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/router-test-utils.ts#L67)
+Defined in: [src/utils/router-test-utils.ts:67](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/router-test-utils.ts#L67)
 
 Test actions that can be called directly
 
@@ -28,7 +28,7 @@ Test actions that can be called directly
 
 > `readonly` **cleanup**: () => `void`
 
-Defined in: [src/utils/router-test-utils.ts:71](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/router-test-utils.ts#L71)
+Defined in: [src/utils/router-test-utils.ts:71](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/router-test-utils.ts#L71)
 
 Cleanup function to stop the test server
 

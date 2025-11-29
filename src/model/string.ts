@@ -10,7 +10,7 @@ import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
 export interface StringModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<string, R> {
   /**
    * Sets the maximum length constraint for the string
@@ -31,10 +31,10 @@ export interface StringModel<
    */
   readonly regex: (pattern: RegExp) => StringModel<R>
   /**
-   * Marks the string model as required
-   * @returns A new StringModel instance marked as required
+   * Marks the string model as optional
+   * @returns A new StringModel instance marked as optional
    */
-  readonly isRequired: () => StringModel<true>
+  readonly isOptional: () => StringModel<false>
   /**
    * Validates the string as an email address
    * @returns A new StringModel instance with email format validation
@@ -82,29 +82,29 @@ export interface StringModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Basic string
- * const name = m.string().isRequired()
+ * // Basic string (required by default)
+ * const name = m.string()
+ *
+ * // Optional string
+ * const nickname = m.string()
  *
  * // String with constraints
  * const email = m.string()
  *   .isEmail()
- *   .isRequired()
  *
  * const password = m.string()
  *   .minLength(8)
  *   .isPassword()
- *   .isRequired()
  *
  * const username = m.string()
  *   .minLength(3)
  *   .maxLength(20)
  *   .regex(/^[a-zA-Z0-9_]+$/)
- *   .isRequired()
  * ```
  */
-export function string(): StringModel<false> {
-  const baseModel = getBaseModel<StringModel<false>>()
-  const model: StringModel<false> = {
+export function string(): StringModel<true> {
+  const baseModel = getBaseModel<StringModel<true>>()
+  const model: StringModel<true> = {
     ...baseModel,
     $internals: baseModel.$internals,
     validate(onValidate) {
@@ -119,11 +119,11 @@ export function string(): StringModel<false> {
       }
       return data as string
     },
-    isRequired(): StringModel<true> {
+    isOptional(): StringModel<false> {
       const copied = copyModel(
         this,
-      ) as unknown as StringModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as StringModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     isEmail() {

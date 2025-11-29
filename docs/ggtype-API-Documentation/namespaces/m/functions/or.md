@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Function: or()
 
-> **or**\<`M`\>(...`models`): [`OrModel`](../interfaces/OrModel.md)\<`M`, `false`\>
+> **or**\<`M`\>(...`models`): [`OrModel`](../interfaces/OrModel.md)\<`M`, `true`\>
 
-Defined in: [src/model/or.ts:71](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/or.ts#L71)
+Defined in: [src/model/or.ts:74](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/or.ts#L74)
 
 Creates a union model that accepts any of the provided models.
 Validates data against each model in sequence, returning the first successful match.
@@ -30,7 +30,7 @@ Variable number of models to create a union from
 
 ## Returns
 
-[`OrModel`](../interfaces/OrModel.md)\<`M`, `false`\>
+[`OrModel`](../interfaces/OrModel.md)\<`M`, `true`\>
 
 An OrModel instance representing the union of all provided models
 
@@ -39,12 +39,15 @@ An OrModel instance representing the union of all provided models
 ```ts
 import { m } from 'ggtype'
 
-// Union of string or number
-const idOrName = m.or(m.string(), m.number()).isRequired()
+// Union of string or number (required by default)
+const idOrName = m.or(m.string(), m.number())
+
+// Optional union
+const optionalId = m.or(m.string(), m.number())
 
 // Union of different object types
 const userOrAdmin = m.or(
-  m.object({ type: m.enums('user').isRequired(), name: m.string().isRequired() }),
-  m.object({ type: m.enums('admin').isRequired(), role: m.string().isRequired() })
-).isRequired()
+  m.object({ type: m.enums('user'), name: m.string() }),
+  m.object({ type: m.enums('admin'), role: m.string() })
+)
 ```

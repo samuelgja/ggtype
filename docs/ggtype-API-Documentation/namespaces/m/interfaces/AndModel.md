@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Interface: AndModel\<M, R\>
 
-Defined in: [src/model/and.ts:11](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L11)
+Defined in: [src/model/and.ts:12](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L12)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/model/and.ts:11](https://github.com/samuelgja/ggtype/blob/13712
 
 ### R
 
-`R` *extends* `boolean` = `false`
+`R` *extends* `boolean` = `true`
 
 ## Properties
 
@@ -26,7 +26,7 @@ Defined in: [src/model/and.ts:11](https://github.com/samuelgja/ggtype/blob/13712
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -40,7 +40,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `AndModel`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:43](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L43)
+Defined in: [src/model/and.ts:44](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L44)
 
 Sets a human-readable description for the model
 
@@ -68,7 +68,7 @@ A new AndModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -116,7 +116,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `Intersect`\<`M`\[`number`\]\[`"infer"`\]\>
 
-Defined in: [src/model/and.ts:18](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L18)
+Defined in: [src/model/and.ts:19](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L19)
 
 Inferred TypeScript type for the intersection model (intersection of all model inferred types)
 
@@ -126,23 +126,23 @@ Inferred TypeScript type for the intersection model (intersection of all model i
 
 ***
 
-### isRequired()
+### isOptional()
 
-> `readonly` **isRequired**: () => `AndModel`\<`M`, `true`\>
+> `readonly` **isOptional**: () => `AndModel`\<`M`, `false`\>
 
-Defined in: [src/model/and.ts:23](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L23)
+Defined in: [src/model/and.ts:24](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L24)
 
-Marks the intersection model as required
+Marks the intersection model as optional
 
 #### Returns
 
-`AndModel`\<`M`, `true`\>
+`AndModel`\<`M`, `false`\>
 
-A new AndModel instance marked as required
+A new AndModel instance marked as optional
 
 #### Overrides
 
-[`Model`](Model.md).[`isRequired`](Model.md#isrequired)
+[`Model`](Model.md).[`isOptional`](Model.md#isoptional)
 
 ***
 
@@ -150,7 +150,7 @@ A new AndModel instance marked as required
 
 > `readonly` **onParse**: (`data`) => `Intersect`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -178,7 +178,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -202,7 +202,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **title**: (`name`) => `AndModel`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:37](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L37)
+Defined in: [src/model/and.ts:38](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L38)
 
 Sets a human-readable title for the model
 
@@ -230,7 +230,7 @@ A new AndModel instance with the updated title
 
 > `readonly` **validate**: (`onValidate`) => `AndModel`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:29](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L29)
+Defined in: [src/model/and.ts:30](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L30)
 
 Adds custom validation logic to the model
 

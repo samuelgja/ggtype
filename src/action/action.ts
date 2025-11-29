@@ -22,7 +22,7 @@ import { ValidationError } from '../utils/errors'
  * }
  *
  * const deleteUser = action(
- *   m.object({ id: m.string().isRequired() }),
+ *   m.object({ id: m.string() }).isOptional(),
  *   async ({ params, ctx }) => {
  *     // Type-safe context extraction
  *     const { user } = getCtx<UserContext>(ctx)
@@ -124,10 +124,10 @@ type InferActionRun<Run> = Run extends (
  *
  * // Define parameter model
  * const userParams = m.object({
- *   id: m.string().isRequired(),
- *   name: m.string().isRequired(),
- *   email: m.string().isEmail().isRequired(),
- * })
+ *   id: m.string(),
+ *   name: m.string(),
+ *   email: m.string().isEmail(),
+ * }).isOptional()
  *
  * // Create action with validated parameters
  * const createUser = action(userParams, async ({ params }) => {

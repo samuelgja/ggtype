@@ -6,9 +6,9 @@ import { createRouterClient } from '../router-client'
 
 describe('router with http transport - HTTP methods', () => {
   const userModel = object({
-    id: string().isRequired(),
-    name: string().isRequired(),
-  })
+    id: string(),
+    name: string(),
+  }).isOptional()
 
   const getUser = action(userModel, ({ params }) => {
     return {

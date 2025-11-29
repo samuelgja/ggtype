@@ -12,17 +12,17 @@ import { setModelState } from './model-state'
 
 export interface RecordModel<
   M extends ModelNotGeneric,
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<M, R> {
   /**
    * Inferred TypeScript type for the record model (object with string keys and values matching the item model)
    */
   readonly infer: Record<string, M['infer']>
   /**
-   * Marks the record model as required
-   * @returns A new RecordModel instance marked as required
+   * Marks the record model as optional
+   * @returns A new RecordModel instance marked as optional
    */
-  readonly isRequired: () => RecordModel<M, true>
+  readonly isOptional: () => RecordModel<M, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed record data
@@ -58,25 +58,28 @@ export interface RecordModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Record of strings
- * const metadata = m.record(m.string()).isRequired()
+ * // Record of strings (required by default)
+ * const metadata = m.record(m.string())
  * // Valid: { key1: 'value1', key2: 'value2' }
  *
  * // Record of numbers
- * const scores = m.record(m.number()).isRequired()
+ * const scores = m.record(m.number())
  * // Valid: { user1: 100, user2: 200 }
+ *
+ * // Optional record
+ * const optionalScores = m.record(m.number())
  *
  * // Record of objects
  * const userData = m.record(
- *   m.object({ name: m.string().isRequired(), age: m.number() })
- * ).isRequired()
+ *   m.object({ name: m.string(), age: m.number() })
+ * )
  * ```
  */
 export function record<M extends ModelNotGeneric>(
   item: M,
-): RecordModel<M, false> {
-  const baseModel = getBaseModel<RecordModel<M, false>>()
-  const model: RecordModel<M, false> = {
+): RecordModel<M, true> {
+  const baseModel = getBaseModel<RecordModel<M, true>>()
+  const model: RecordModel<M, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -120,11 +123,11 @@ export function record<M extends ModelNotGeneric>(
       }
       return parsed
     },
-    isRequired(): RecordModel<M, true> {
+    isOptional(): RecordModel<M, false> {
       const copied = copyModel(
         this,
-      ) as unknown as RecordModel<M, true>
-      copied.$internals.isRequired = true
+      ) as unknown as RecordModel<M, false>
+      copied.$internals.isRequired = false
       return copied
     },
     getSchema(options?: GetSchemaOptions) {

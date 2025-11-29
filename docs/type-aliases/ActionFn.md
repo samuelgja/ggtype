@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **ActionFn**\<`M`\> = (`parameters`) => `Awaited`\<[`ReturnValue`](ReturnValue.md)\>
 
-Defined in: [src/action/action.ts:77](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/action/action.ts#L77)
+Defined in: [src/action/action.ts:77](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L77)
 
 ## Type Parameters
 

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **createTestRouter**\<`Actions`, `ClientActions`\>(`actions`, `clientActions`, `clientActionHandlers`, `options?`): [`TestRouter`](../interfaces/TestRouter.md)\<`Actions`\>
 
-Defined in: [src/utils/router-test-utils.ts:138](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/router-test-utils.ts#L138)
+Defined in: [src/utils/router-test-utils.ts:138](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/router-test-utils.ts#L138)
 
 Creates a test router with both server and client for testing purposes.
 Sets up a local server (HTTP stream or WebSocket) and a client connected to it,
@@ -71,14 +71,14 @@ import { action, createTestRouter, defineClientActionsSchema, m } from 'ggtype'
 
 // Define actions
 const getUser = action(
-  m.object({ id: m.string().isRequired() }),
+  m.object({ id: m.string() }),
   async ({ params }) => ({ id: params.id, name: 'John' })
 )
 
 // Define client actions
 const clientActions = defineClientActionsSchema({
   showNotification: {
-    params: m.object({ message: m.string().isRequired() }),
+    params: m.object({ message: m.string() }),
     return: m.object({ acknowledged: m.boolean() }),
   },
 })

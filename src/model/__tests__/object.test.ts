@@ -6,7 +6,7 @@ import { string } from '../string'
 describe('object', () => {
   it('should parse object', () => {
     const model = object({
-      name: string().isRequired(),
+      name: string(),
       age: number(),
     })
     const isValid = compileTestModel(model)({
@@ -23,6 +23,7 @@ describe('object', () => {
     })
       .maxKeys(10)
       .minKeys(1)
+      
     const isValid = compileTestModel(model)({
       age: 2,
       name: 'test',

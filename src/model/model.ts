@@ -160,14 +160,14 @@ export interface ModelNotGeneric extends ModelBase {
    */
   onParse: (data: never) => unknown
   /**
-   * Marks the model as required
-   * @returns A new model instance marked as required
+   * Marks the model as optional
+   * @returns A new model instance marked as optional
    */
-  isRequired: () => ModelNotGeneric
+  isOptional: () => ModelNotGeneric
 }
 export interface Model<
   T,
-  R extends boolean = false,
+  R extends boolean = true,
 > extends ModelNotGeneric {
   /**
    * Function to parse and validate data according to the model, returning typed result
@@ -245,7 +245,7 @@ export function getSchemaBase(model: ModelBase) {
 export function getInternals(): any {
   return {
     id: getModelId(),
-    isRequired: false,
+    isRequired: true,
     isArray: false,
     isModel: true,
   }

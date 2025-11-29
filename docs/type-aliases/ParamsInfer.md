@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **ParamsInfer**\<`T`, `K`\> = `T` *extends* `object` ? `K` *extends* keyof `SA` ? `SA`\[`K`\] *extends* `object` ? `P` : `never` : `never` : `K` *extends* keyof `T` ? `T`\[`K`\] *extends* `object` ? `P` : `never` : `never`
 
-Defined in: [src/types.ts:489](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L489)
+Defined in: [src/types.ts:489](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L489)
 
 Extracts the parameter type for a specific action from a router type.
 
@@ -31,7 +31,7 @@ import { createRouter, type ParamsInfer } from 'ggtype'
 
 const router = createRouter({
   serverActions: {
-    getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({})),
+    getUser: action(m.object({ id: m.string() }), async ({ params }) => ({})),
   },
   clientActions: {},
 })

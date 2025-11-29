@@ -9,7 +9,7 @@ import type { ErrorObject } from 'ajv'
  * import { action, ErrorWithCode, m } from 'ggtype'
  *
  * const deleteUser = action(
- *   m.object({ id: m.string().isRequired() }),
+ *   m.object({ id: m.string() }).isOptional(),
  *   async ({ params, ctx }) => {
  *     if (!ctx?.user) {
  *       throw new ErrorWithCode('Unauthorized', 401)
@@ -42,7 +42,7 @@ export class ErrorWithCode extends Error {
  * import { action, ValidationError, m } from 'ggtype'
  *
  * const createUser = action(
- *   m.object({ email: m.string().isRequired() }),
+ *   m.object({ email: m.string() }).isOptional(),
  *   async ({ params }) => {
  *     // Custom validation
  *     if (params.email.includes('spam')) {

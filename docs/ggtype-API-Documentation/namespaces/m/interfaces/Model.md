@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Interface: Model\<T, R\>
 
-Defined in: [src/model/model.ts:168](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L168)
+Defined in: [src/model/model.ts:168](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L168)
 
 ## Extends
 
@@ -34,7 +34,7 @@ Defined in: [src/model/model.ts:168](https://github.com/samuelgja/ggtype/blob/13
 
 ### R
 
-`R` *extends* `boolean` = `false`
+`R` *extends* `boolean` = `true`
 
 ## Properties
 
@@ -42,7 +42,7 @@ Defined in: [src/model/model.ts:168](https://github.com/samuelgja/ggtype/blob/13
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -56,7 +56,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > **description**: (`description`) => [`ModelNotGeneric`](ModelNotGeneric.md)
 
-Defined in: [src/model/model.ts:140](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L140)
+Defined in: [src/model/model.ts:140](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L140)
 
 Sets a human-readable description for the model
 
@@ -84,7 +84,7 @@ A new model instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -112,7 +112,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -132,7 +132,7 @@ The JSON Schema object with $defs for referenced models
 
 > **infer**: `unknown`
 
-Defined in: [src/model/model.ts:124](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L124)
+Defined in: [src/model/model.ts:124](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L124)
 
 Inferred TypeScript type for the model
 
@@ -142,23 +142,23 @@ Inferred TypeScript type for the model
 
 ***
 
-### isRequired()
+### isOptional()
 
-> **isRequired**: () => [`ModelNotGeneric`](ModelNotGeneric.md)
+> **isOptional**: () => [`ModelNotGeneric`](ModelNotGeneric.md)
 
-Defined in: [src/model/model.ts:166](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L166)
+Defined in: [src/model/model.ts:166](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L166)
 
-Marks the model as required
+Marks the model as optional
 
 #### Returns
 
 [`ModelNotGeneric`](ModelNotGeneric.md)
 
-A new model instance marked as required
+A new model instance marked as optional
 
 #### Inherited from
 
-[`ModelNotGeneric`](ModelNotGeneric.md).[`isRequired`](ModelNotGeneric.md#isrequired)
+[`ModelNotGeneric`](ModelNotGeneric.md).[`isOptional`](ModelNotGeneric.md#isoptional)
 
 ***
 
@@ -166,7 +166,7 @@ A new model instance marked as required
 
 > `readonly` **onParse**: (`data`) => `T`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -194,7 +194,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -218,7 +218,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > **title**: (`name`) => [`ModelNotGeneric`](ModelNotGeneric.md)
 
-Defined in: [src/model/model.ts:134](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L134)
+Defined in: [src/model/model.ts:134](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L134)
 
 Sets a human-readable title for the model
 

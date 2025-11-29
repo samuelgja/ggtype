@@ -4,13 +4,13 @@ import { createTestRouter } from '../../utils/router-test-utils'
 
 const serverActions = {
   getUser: action(
-    m.object({ id: m.string().isRequired() }),
+    m.object({ id: m.string() }).isOptional(),
     async ({ params }) => {
       return { id: params.id }
     },
   ),
   streamUser: action(
-    m.string().isRequired(),
+    m.string(),
     async function* ({ params }) {
       yield { id: params }
       yield { id: params }
@@ -20,8 +20,8 @@ const serverActions = {
 }
 const clientActions = defineClientActionsSchema({
   getUser: {
-    params: m.object({ id: m.string().isRequired() }),
-    return: m.object({ id: m.string().isRequired() }),
+    params: m.object({ id: m.string() }).isOptional(),
+    return: m.object({ id: m.string() }).isOptional(),
   },
 })
 const clientActionHandlers = {

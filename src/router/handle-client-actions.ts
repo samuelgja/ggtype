@@ -24,17 +24,17 @@ import type {
  * const clientActions = defineClientActionsSchema({
  *   showNotification: {
  *     params: m.object({
- *       message: m.string().isRequired(),
- *       type: m.string().isRequired(),
- *     }),
- *     return: m.object({ acknowledged: m.boolean() }),
+ *       message: m.string(),
+ *       type: m.string(),
+ *     }).isOptional(),
+ *     return: m.object({ acknowledged: m.boolean().isOptional() }).isOptional(),
  *   },
  *   updateUI: {
  *     params: m.object({
- *       component: m.string().isRequired(),
- *       data: m.record(m.string()),
- *     }),
- *     return: m.object({ success: m.boolean() }),
+ *       component: m.string(),
+ *       data: m.record(m.string().isOptional()).isOptional(),
+ *     }).isOptional(),
+ *     return: m.object({ success: m.boolean().isOptional() }).isOptional(),
  *   },
  * })
  *

@@ -15,10 +15,9 @@ describe('enum', () => {
   })
 
   it('should test enum only', () => {
-    const model = enums('admin', 'user', 'book').only(
-      'admin',
-      'user',
-    )
+    const model = enums('admin', 'user', 'book')
+      .only('admin', 'user')
+      
 
     const isValid = compileTestModel(model)('admin')
     expect(isValid).toBe(true)

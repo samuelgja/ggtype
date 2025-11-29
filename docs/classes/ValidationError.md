@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Class: ValidationError
 
-Defined in: [src/utils/errors.ts:64](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L64)
+Defined in: [src/utils/errors.ts:64](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L64)
 
 Error class for validation failures.
 Thrown automatically when action parameters fail validation.
@@ -16,7 +16,7 @@ Can also be thrown manually for custom validation logic.
 import { action, ValidationError, m } from 'ggtype'
 
 const createUser = action(
-  m.object({ email: m.string().isRequired() }),
+  m.object({ email: m.string() }),
   async ({ params }) => {
     // Custom validation
     if (params.email.includes('spam')) {
@@ -45,7 +45,7 @@ const createUser = action(
 
 > **new ValidationError**(`errors?`): `ValidationError`
 
-Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L65)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L65)
 
 #### Parameters
 
@@ -189,7 +189,7 @@ The cause of the error.
 
 > `optional` **errors**: `ErrorObject`\<`string`, `Record`\<`string`, `any`\>, `unknown`\>[]
 
-Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/errors.ts#L65)
+Defined in: [src/utils/errors.ts:65](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/errors.ts#L65)
 
 ***
 

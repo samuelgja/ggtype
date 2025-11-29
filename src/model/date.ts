@@ -13,13 +13,13 @@ import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
 export interface DateModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<Date, R> {
   /**
-   * Marks the date model as required
-   * @returns A new DateModel instance marked as required
+   * Marks the date model as optional
+   * @returns A new DateModel instance marked as optional
    */
-  readonly isRequired: () => DateModel<true>
+  readonly isOptional: () => DateModel<false>
   /**
    * Inferred TypeScript type for the date model (always Date)
    */
@@ -118,24 +118,24 @@ function getDate(data: unknown) {
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Basic date
- * const createdAt = m.date().isRequired()
+ * // Basic date (required by default)
+ * const createdAt = m.date()
  *
  * // Optional date
  * const publishedAt = m.date()
  *
  * // Use in object
  * const postParams = m.object({
- *   title: m.string().isRequired(),
- *   createdAt: m.date().isRequired(),
+ *   title: m.string(),
+ *   createdAt: m.date(),
  *   publishedAt: m.date(),
  * })
  * ```
  */
-export function date(): DateModel<false> {
-  const baseModel = getBaseModel<DateModel<false>>()
+export function date(): DateModel<true> {
+  const baseModel = getBaseModel<DateModel<true>>()
 
-  const model: DateModel<false> = {
+  const model: DateModel<true> = {
     ...baseModel,
     validate(onValidate: (data: Date) => void) {
       const copied = copyModel(this)
@@ -215,11 +215,11 @@ export function date(): DateModel<false> {
       copied.$internals.format = 'date-time'
       return copied
     },
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as DateModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as DateModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     maximum(value: Date) {

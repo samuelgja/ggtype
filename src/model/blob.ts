@@ -10,13 +10,13 @@ import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
 export interface BlobModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<Blob, R> {
   /**
-   * Marks the blob model as required
-   * @returns A new BlobModel instance marked as required
+   * Marks the blob model as optional
+   * @returns A new BlobModel instance marked as optional
    */
-  readonly isRequired: () => BlobModel<true>
+  readonly isOptional: () => BlobModel<false>
   /**
    * Inferred TypeScript type for the blob model (always Blob)
    */
@@ -49,8 +49,8 @@ export interface BlobModel<
  * // Blob upload action
  * const uploadBlob = action(
  *   m.object({
- *     data: m.blob().isRequired(),
- *     type: m.string().isRequired(),
+ *     data: m.blob(), // Required by default
+ *     type: m.string(),
  *   }),
  *   async ({ params }) => {
  *     // params.data is a Blob instance
@@ -59,9 +59,9 @@ export interface BlobModel<
  * )
  * ```
  */
-export function blob(): BlobModel<false> {
-  const baseModel = getBaseModel<BlobModel<false>>()
-  const model: BlobModel<false> = {
+export function blob(): BlobModel<true> {
+  const baseModel = getBaseModel<BlobModel<true>>()
+  const model: BlobModel<true> = {
     ...baseModel,
     onParse: (data: unknown) => {
       if (isBlob(data)) return data as Blob
@@ -73,11 +73,11 @@ export function blob(): BlobModel<false> {
       }
       return data as Blob
     },
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as BlobModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as BlobModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
 

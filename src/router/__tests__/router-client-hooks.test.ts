@@ -10,28 +10,24 @@ import {
 } from '../router-client'
 
 describe('router client hooks and headers', () => {
-  const userModel = m.object({
-    id: m.string().isRequired(),
-    name: m.string().isRequired(),
-  })
+  const userModel = m
+    .object({
+      id: m.string(),
+      name: m.string(),
+    })
+    .isOptional()
 
   const getUserAction = action(userModel, ({ params }) => {
     return { id: params.id, name: params.name }
   })
 
-  const getErrorAction = action(
-    m.string().isRequired(),
-    () => {
-      throw new ErrorWithCode('Unauthorized', 401)
-    },
-  )
+  const getErrorAction = action(m.string(), () => {
+    throw new ErrorWithCode('Unauthorized', 401)
+  })
 
-  const getForbiddenAction = action(
-    m.string().isRequired(),
-    () => {
-      throw new ErrorWithCode('Forbidden', 403)
-    },
-  )
+  const getForbiddenAction = action(m.string(), () => {
+    throw new ErrorWithCode('Forbidden', 403)
+  })
 
   const router = createRouter({
     serverActions: {
@@ -605,7 +601,7 @@ describe('router client hooks and headers', () => {
       let retryCount = 0
 
       const refreshTokenAction = action(
-        m.object({ refreshToken: m.string().isRequired() }),
+        m.object({ refreshToken: m.string() }).isOptional(),
         ({ params }) => {
           refreshTokenCallCount++
           if (params.refreshToken === 'valid-refresh') {

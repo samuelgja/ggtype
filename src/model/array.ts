@@ -12,7 +12,7 @@ import { setModelState } from './model-state'
 
 export interface ArrayModel<
   T extends ModelNotGeneric,
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<T[], R> {
   /**
    * Sets the maximum number of items allowed in the array
@@ -31,10 +31,10 @@ export interface ArrayModel<
    */
   readonly infer: T['infer'][]
   /**
-   * Marks the array model as required
-   * @returns A new ArrayModel instance marked as required
+   * Marks the array model as optional
+   * @returns A new ArrayModel instance marked as optional
    */
-  readonly isRequired: () => ArrayModel<T, true>
+  readonly isOptional: () => ArrayModel<T, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed array data
@@ -70,26 +70,29 @@ export interface ArrayModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Array of strings
- * const tags = m.array(m.string()).isRequired()
+ * // Array of strings (required by default)
+ * const tags = m.array(m.string())
  *
  * // Array of numbers
  * const scores = m.array(m.number()).minItems(1).maxItems(10)
  *
+ * // Optional array
+ * const optionalTags = m.array(m.string())
+ *
  * // Array of objects
  * const users = m.array(
  *   m.object({
- *     id: m.string().isRequired(),
- *     name: m.string().isRequired(),
+ *     id: m.string(),
+ *     name: m.string(),
  *   })
- * ).isRequired()
+ * )
  * ```
  */
 export function array<T extends ModelNotGeneric>(
   list: T,
-): ArrayModel<T, false> {
-  const baseModel = getBaseModel<ArrayModel<T, false>>()
-  const model: ArrayModel<T, false> = {
+): ArrayModel<T, true> {
+  const baseModel = getBaseModel<ArrayModel<T, true>>()
+  const model: ArrayModel<T, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -133,11 +136,11 @@ export function array<T extends ModelNotGeneric>(
       }
       return newData
     },
-    isRequired(): ArrayModel<T, true> {
+    isOptional(): ArrayModel<T, false> {
       const copied = copyModel(
         this,
-      ) as unknown as ArrayModel<T, true>
-      copied.$internals.isRequired = true
+      ) as unknown as ArrayModel<T, false>
+      copied.$internals.isRequired = false
       return copied
     },
     maxItems(length: number) {

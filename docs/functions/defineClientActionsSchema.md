@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **defineClientActionsSchema**\<`T`\>(`data`): `T`
 
-Defined in: [src/router/handle-client-actions.ts:49](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/handle-client-actions.ts#L49)
+Defined in: [src/router/handle-client-actions.ts:49](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/handle-client-actions.ts#L49)
 
 Helper function to define client action models with proper typing.
 This is a type-only function that returns the input unchanged, used for type inference.
@@ -42,14 +42,14 @@ import { defineClientActionsSchema, m } from 'ggtype'
 const clientActions = defineClientActionsSchema({
   showNotification: {
     params: m.object({
-      message: m.string().isRequired(),
-      type: m.string().isRequired(),
+      message: m.string(),
+      type: m.string(),
     }),
     return: m.object({ acknowledged: m.boolean() }),
   },
   updateUI: {
     params: m.object({
-      component: m.string().isRequired(),
+      component: m.string(),
       data: m.record(m.string()),
     }),
     return: m.object({ success: m.boolean() }),

@@ -695,7 +695,7 @@ describe('WebSocketConnectionManager', () => {
   it('should maintain persistent connection when using router client', async () => {
     let connectionCount = 0
     const testAction = action(
-      m.string().isRequired(),
+      m.string(),
       async ({ params }) => {
         return `Result: ${params}`
       },

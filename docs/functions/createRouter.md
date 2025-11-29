@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **createRouter**\<`Actions`, `ClientActions`\>(`options`): [`Router`](../interfaces/Router.md)\<`Actions`, `ClientActions`\>
 
-Defined in: [src/router/router.ts:140](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router.ts#L140)
+Defined in: [src/router/router.ts:140](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router.ts#L140)
 
 Creates a new router instance for handling server actions and client actions.
 The router manages bidirectional communication between server and client, supporting
@@ -49,12 +49,12 @@ import { action, createRouter, defineClientActionsSchema, m } from 'ggtype'
 
 // Define actions
 const createUser = action(
-  m.object({ id: m.string().isRequired(), name: m.string().isRequired() }),
+  m.object({ id: m.string(), name: m.string() }),
   async ({ params }) => ({ ...params, createdAt: new Date() })
 )
 
 const getUser = action(
-  m.object({ id: m.string().isRequired() }),
+  m.object({ id: m.string() }),
   async ({ params }) => ({ id: params.id, name: 'John' })
 )
 
@@ -62,8 +62,8 @@ const getUser = action(
 const clientActions = defineClientActionsSchema({
   showNotification: {
     params: m.object({
-      message: m.string().isRequired(),
-      type: m.string().isRequired(),
+      message: m.string(),
+      type: m.string(),
     }),
     return: m.object({ acknowledged: m.boolean() }),
   },

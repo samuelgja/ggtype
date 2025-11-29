@@ -11,7 +11,7 @@ import { createRouter } from '../router'
 
 describe('router infer - just ts checks', () => {
   it('should infer the router', async () => {
-    const item = m.object({ id: m.string().isRequired() })
+    const item = m.object({ id: m.string() }).isOptional()
     const actionItem = action(item, ({ params }) => {
       return params.id
     })
@@ -34,19 +34,19 @@ describe('router infer - just ts checks', () => {
     const routerInline = createRouter({
       serverActions: {
         getUser: action(
-          m.object({ id: m.string().isRequired() }),
+          m.object({ id: m.string() }).isOptional(),
           ({ params }) => {
             return params.id
           },
         ),
         setUser: action(
-          m.object({ id: m.string().isRequired() }),
+          m.object({ id: m.string() }).isOptional(),
           ({ params }) => {
             return params.id
           },
         ),
         getManyItems: action(
-          m.object({ id: m.string().isRequired() }),
+          m.object({ id: m.string() }).isOptional(),
           ({ params }) => {
             return {
               name: 'item',
@@ -58,7 +58,7 @@ describe('router infer - just ts checks', () => {
     })
 
     const actionTest = action(
-      m.object({ id: m.string().isRequired() }),
+      m.object({ id: m.string() }).isOptional(),
       ({ params }) => {
         return {
           name: 'item',

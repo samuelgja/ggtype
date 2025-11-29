@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Interface: EnumModel\<T, R\>
 
-Defined in: [src/model/enums.ts:11](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L11)
+Defined in: [src/model/enums.ts:11](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L11)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/model/enums.ts:11](https://github.com/samuelgja/ggtype/blob/137
 
 ### R
 
-`R` *extends* `boolean` = `false`
+`R` *extends* `boolean` = `true`
 
 ## Properties
 
@@ -26,7 +26,7 @@ Defined in: [src/model/enums.ts:11](https://github.com/samuelgja/ggtype/blob/137
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -40,7 +40,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **default**: (`value`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:51](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L51)
+Defined in: [src/model/enums.ts:51](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L51)
 
 Sets a default value for the enum
 
@@ -64,7 +64,7 @@ A new EnumModel instance with the default value
 
 > `readonly` **description**: (`description`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:67](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L67)
+Defined in: [src/model/enums.ts:67](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L67)
 
 Sets a human-readable description for the model
 
@@ -92,7 +92,7 @@ A new EnumModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -120,7 +120,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -140,7 +140,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `T`
 
-Defined in: [src/model/enums.ts:55](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L55)
+Defined in: [src/model/enums.ts:55](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L55)
 
 Inferred TypeScript type for the enum model (string literal union)
 
@@ -150,23 +150,23 @@ Inferred TypeScript type for the enum model (string literal union)
 
 ***
 
-### isRequired()
+### isOptional()
 
-> `readonly` **isRequired**: () => `EnumModel`\<`T`, `true`\>
+> `readonly` **isOptional**: () => `EnumModel`\<`T`, `false`\>
 
-Defined in: [src/model/enums.ts:45](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L45)
+Defined in: [src/model/enums.ts:45](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L45)
 
-Marks the enum model as required
+Marks the enum model as optional
 
 #### Returns
 
-`EnumModel`\<`T`, `true`\>
+`EnumModel`\<`T`, `false`\>
 
-A new EnumModel instance marked as required
+A new EnumModel instance marked as optional
 
 #### Overrides
 
-[`Model`](Model.md).[`isRequired`](Model.md#isrequired)
+[`Model`](Model.md).[`isOptional`](Model.md#isoptional)
 
 ***
 
@@ -174,7 +174,7 @@ A new EnumModel instance marked as required
 
 > `readonly` **maxLength**: (`length`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:20](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L20)
+Defined in: [src/model/enums.ts:20](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L20)
 
 Sets the maximum length constraint for the enum string
 
@@ -198,7 +198,7 @@ A new EnumModel instance with the constraint
 
 > `readonly` **minLength**: (`length`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:26](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L26)
+Defined in: [src/model/enums.ts:26](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L26)
 
 Sets the minimum length constraint for the enum string
 
@@ -222,7 +222,7 @@ A new EnumModel instance with the constraint
 
 > `readonly` **only**: \<`N`\>(...`values`) => `EnumModel`\<`N`\[`number`\], `R`\>
 
-Defined in: [src/model/enums.ts:38](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L38)
+Defined in: [src/model/enums.ts:38](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L38)
 
 Restricts the enum to only the specified values
 
@@ -252,7 +252,7 @@ A new EnumModel instance with restricted values
 
 > `readonly` **onParse**: (`data`) => `T`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -280,7 +280,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -304,7 +304,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **pattern**: (`pattern`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:32](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L32)
+Defined in: [src/model/enums.ts:32](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L32)
 
 Sets a regular expression pattern for enum validation
 
@@ -328,7 +328,7 @@ A new EnumModel instance with the pattern constraint
 
 > `readonly` **title**: (`name`) => `EnumModel`\<`T`, `R`\>
 
-Defined in: [src/model/enums.ts:61](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L61)
+Defined in: [src/model/enums.ts:61](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L61)
 
 Sets a human-readable title for the model
 

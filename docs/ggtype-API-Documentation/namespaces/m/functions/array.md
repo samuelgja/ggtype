@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Function: array()
 
-> **array**\<`T`\>(`list`): [`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `false`\>
+> **array**\<`T`\>(`list`): [`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `true`\>
 
-Defined in: [src/model/array.ts:88](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/array.ts#L88)
+Defined in: [src/model/array.ts:91](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L91)
 
 Creates an array model for validation and type inference.
 Returns a model that validates arrays of items matching the provided model type,
@@ -30,7 +30,7 @@ The model to validate each array item against
 
 ## Returns
 
-[`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `false`\>
+[`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `true`\>
 
 An ArrayModel instance for validating arrays of the specified type
 
@@ -39,17 +39,20 @@ An ArrayModel instance for validating arrays of the specified type
 ```ts
 import { m } from 'ggtype'
 
-// Array of strings
-const tags = m.array(m.string()).isRequired()
+// Array of strings (required by default)
+const tags = m.array(m.string())
 
 // Array of numbers
 const scores = m.array(m.number()).minItems(1).maxItems(10)
 
+// Optional array
+const optionalTags = m.array(m.string())
+
 // Array of objects
 const users = m.array(
   m.object({
-    id: m.string().isRequired(),
-    name: m.string().isRequired(),
+    id: m.string(),
+    name: m.string(),
   })
-).isRequired()
+)
 ```

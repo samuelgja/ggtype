@@ -14,9 +14,11 @@ describe('router action return types', () => {
       const timeout = 1000
       const serverTimeout = timeout * 2 + 10
 
-      const paramsModel = m.object({
-        value: m.string().isRequired(),
-      })
+      const paramsModel = m
+        .object({
+          value: m.string(),
+        })
+        .isOptional()
 
       // 1. Normal return (non-streaming)
       const normalAction = action(

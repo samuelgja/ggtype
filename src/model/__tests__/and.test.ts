@@ -8,10 +8,10 @@ import { string } from '../string'
 describe('and', () => {
   it('should validate and type', () => {
     const user = object({
-      name: string().isRequired(),
+      name: string(),
     })
     const book = object({
-      title: string().isRequired(),
+      title: string(),
     })
     const model = and(user, book)
     const isValidUser = compileTestModel(model)({
@@ -39,15 +39,17 @@ describe('and', () => {
   })
   it('should validate and type with 3 models', () => {
     const user = object({
-      name: string().isRequired(),
+      name: string(),
     })
     const book = object({
-      title: string().isRequired(),
+      title: string(),
     })
     const model = and(
       user,
       book,
-      object({ author: string() }),
+      object({
+        author: string(),
+      }),
     )
     const isValidUser = compileTestModel(model)({
       name: 'John',
@@ -65,16 +67,23 @@ describe('and', () => {
   })
   it('should merge two models', () => {
     const availableToolTypes = m.enums('text', 'math')
-    const objectParameter = m.object({
-      required: m.array(m.string()).isRequired(),
-    })
+    const objectParameter = m
+      .object({
+        required: m.array(m.string()),
+      })
+      
 
-    const toolNode = m.object({
-      id: m.string().isRequired(),
-      type: availableToolTypes.isRequired(),
-    })
+    const toolNode = m
+      .object({
+        id: m.string(),
+        type: availableToolTypes,
+      })
+      
 
-    const merged = and(toolNode, objectParameter)
+    const merged = and(
+      toolNode,
+      objectParameter,
+    )
     const isValid = compileTestModel(merged)({
       type: 'math',
       id: '123',

@@ -16,22 +16,26 @@ describe('router', () => {
     describe(`transport: ${transport}`, () => {
       let timeout = 10
       const serverTimeout = timeout * 2 + 10
-      const user = m.object({
-        id: m.string().isRequired(),
-        name: m.string().isRequired(),
-      })
+      const user = m
+        .object({
+          id: m.string(),
+          name: m.string(),
+        })
+        .isOptional()
 
       const clientActions = defineClientActionsSchema({
         useTool: {
-          params: m.object({
-            tool: m.string().isRequired(),
-            user: m.string().isRequired(),
-          }),
-          return: m.string(),
+          params: m
+            .object({
+              tool: m.string(),
+              user: m.string(),
+            })
+            .isOptional(),
+          return: m.string().isOptional(),
         },
         useFile: {
-          params: m.file().isRequired(),
-          return: m.file().isRequired(),
+          params: m.file(),
+          return: m.file(),
         },
       })
       type ClientActions = typeof clientActions
@@ -41,7 +45,7 @@ describe('router', () => {
       })
 
       const deleteUser = action(
-        m.string().isRequired(),
+        m.string(),
         async ({
           params,
           clientActions: clientActions,
@@ -61,7 +65,7 @@ describe('router', () => {
       )
 
       const fileAction = action(
-        m.file().isRequired(),
+        m.file(),
         async ({ params }) => {
           expect(params).toBeInstanceOf(File)
           return params
@@ -69,7 +73,7 @@ describe('router', () => {
       )
 
       const fileActionGetFileByTool = action(
-        m.file().isRequired(),
+        m.file(),
         async ({
           params,
           clientActions: clientActions,
@@ -83,7 +87,7 @@ describe('router', () => {
       )
 
       const fileStream = action(
-        m.file().isRequired(),
+        m.file(),
         async function* ({
           params,
           clientActions: clientActions,
@@ -98,7 +102,7 @@ describe('router', () => {
       )
 
       const streamUser = action(
-        m.string().isRequired(),
+        m.string(),
         async function* ({ clientActions: clientActions }) {
           const { useTool } = clientActions<ClientActions>()
           const toolResult = await useTool?.({
@@ -519,7 +523,7 @@ describe('router', () => {
 
       it('should handle errors gracefully', async () => {
         const errorAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({ params }) => {
             throw new Error(`Test error: ${params}`)
           },
@@ -811,7 +815,7 @@ describe('router', () => {
 
       it('should handle client action timeout', async () => {
         const slowClientAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({
             params,
             clientActions: clientActions,
@@ -997,7 +1001,7 @@ describe('router', () => {
 
       it('should handle null and undefined values correctly', async () => {
         const nullableAction = action(
-          m.string(),
+          m.string().isOptional(),
           async ({ params }) => {
             return params ?? 'null-value'
           },
@@ -1108,7 +1112,7 @@ describe('router', () => {
 
       it('should handle streaming with multiple yields', async () => {
         const multiStreamAction = action(
-          m.string().isRequired(),
+          m.string(),
           async function* ({ params }) {
             for (let index = 0; index < 10; index++) {
               yield `${params}-${index}`
@@ -1268,7 +1272,7 @@ describe('router', () => {
       it('should preserve original action field in client action error responses', async () => {
         // This test verifies Bug 1 fix: error responses should preserve the original action field
         const testAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({
             params,
             clientActions: clientActions,
@@ -1389,7 +1393,7 @@ describe('router', () => {
         }
 
         const testAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({ params }) => {
             return `Result: ${params}`
           },
@@ -1484,7 +1488,7 @@ describe('router', () => {
         }
 
         const testAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({ params }) => {
             return `Result: ${params}`
           },
@@ -1615,7 +1619,7 @@ describe('router', () => {
 
       it('should handle empty stream responses', async () => {
         const emptyStreamAction = action(
-          m.string().isRequired(),
+          m.string(),
           async function* () {
             // No yields - empty stream
           },
@@ -2047,7 +2051,7 @@ describe('router', () => {
 
         it('should fetch result with errors', async () => {
           const errorAction = action(
-            m.string().isRequired(),
+            m.string(),
             async ({ params }) => {
               throw new Error(`Test error: ${params}`)
             },

@@ -476,7 +476,7 @@ type RouterInferLike =
  *
  * const router = createRouter({
  *   serverActions: {
- *     getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({})),
+ *     getUser: action(m.object({ id: m.string() }).isOptional(), async ({ params }) => ({})),
  *   },
  *   clientActions: {},
  * })
@@ -519,7 +519,7 @@ export type ParamsInfer<
  *
  * const router = createRouter({
  *   serverActions: {
- *     getUser: action(m.object({ id: m.string().isRequired() }), async ({ params }) => ({
+ *     getUser: action(m.object({ id: m.string() }).isOptional(), async ({ params }) => ({
  *       id: params.id,
  *       name: 'John',
  *     })),

@@ -10,7 +10,7 @@ import { setModelState } from './model-state'
 
 export interface EnumModel<
   T extends string,
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<T, R> {
   /**
    * Sets the maximum length constraint for the enum string
@@ -39,10 +39,10 @@ export interface EnumModel<
     ...values: N
   ) => EnumModel<N[number], R>
   /**
-   * Marks the enum model as required
-   * @returns A new EnumModel instance marked as required
+   * Marks the enum model as optional
+   * @returns A new EnumModel instance marked as optional
    */
-  readonly isRequired: () => EnumModel<T, true>
+  readonly isOptional: () => EnumModel<T, false>
   /**
    * Sets a default value for the enum
    * @param value - Default enum value
@@ -80,34 +80,36 @@ export interface EnumModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Simple enum
- * const role = m.enums('admin', 'user', 'guest').isRequired()
+ * // Simple enum (required by default)
+ * const role = m.enums('admin', 'user', 'guest')
+ *
+ * // Optional enum
+ * const optionalRole = m.enums('admin', 'user')
  *
  * // Enum with default
  * const status = m.enums('pending', 'active', 'inactive')
  *   .default('pending')
- *   .isRequired()
  *
  * // Use in object
  * const userParams = m.object({
- *   role: m.enums('admin', 'user').isRequired(),
- *   status: m.enums('active', 'inactive').isRequired(),
+ *   role: m.enums('admin', 'user'),
+ *   status: m.enums('active', 'inactive'),
  * })
  * ```
  */
 export function enums<T extends string>(
   ...enumParameters: T[]
-): EnumModel<T, false> {
-  const baseModel = getBaseModel<EnumModel<T, false>>()
+): EnumModel<T, true> {
+  const baseModel = getBaseModel<EnumModel<T, true>>()
   baseModel.$internals.enums = enumParameters
-  const model: EnumModel<T, false> = {
+  const model: EnumModel<T, true> = {
     ...baseModel,
     onParse: (data: unknown) => data as T,
-    isRequired(): EnumModel<T, true> {
+    isOptional(): EnumModel<T, false> {
       const copied = copyModel(
         this,
-      ) as unknown as EnumModel<T, true>
-      copied.$internals.isRequired = true
+      ) as unknown as EnumModel<T, false>
+      copied.$internals.isRequired = false
       return copied
     },
     default(value: T) {
@@ -128,10 +130,7 @@ export function enums<T extends string>(
     only<N extends T[]>(...values: N) {
       const copied = copyModel(this)
       copied.$internals.enums = values
-      return copied as unknown as EnumModel<
-        N[number],
-        false
-      >
+      return copied as unknown as EnumModel<N[number], true>
     },
     pattern(pattern: RegExp) {
       const copied = copyModel(this)

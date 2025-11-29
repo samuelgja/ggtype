@@ -10,13 +10,17 @@ import {
 describe('Quickstart Demo', () => {
   it('should work with server actions and client actions', async () => {
     // Define models
-    const userParams = m.object({
-      id: m.string().isRequired(),
-      name: m.string().isRequired(),
-    })
-    const idParams = m.object({
-      id: m.string().isRequired(),
-    })
+    const userParams = m
+      .object({
+        id: m.string(),
+        name: m.string(),
+      })
+      .isOptional()
+    const idParams = m
+      .object({
+        id: m.string(),
+      })
+      .isOptional()
 
     // Create server actions
     const createUser = action(
@@ -36,10 +40,16 @@ describe('Quickstart Demo', () => {
     // Define client actions schema (optional - only needed for bidirectional RPC)
     const clientActions = defineClientActionsSchema({
       showNotification: {
-        params: m.object({
-          message: m.string().isRequired(),
-        }),
-        return: m.object({ acknowledged: m.boolean() }),
+        params: m
+          .object({
+            message: m.string(),
+          })
+          .isOptional(),
+        return: m
+          .object({
+            acknowledged: m.boolean().isOptional(),
+          })
+          .isOptional(),
       },
     })
 

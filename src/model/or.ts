@@ -12,17 +12,17 @@ import { setModelState } from './model-state'
 
 export interface OrModel<
   M extends ModelNotGeneric[],
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<M[number], R> {
   /**
    * Inferred TypeScript type for the union model (union of all model inferred types)
    */
   readonly infer: M[number]['infer']
   /**
-   * Marks the union model as required
-   * @returns A new OrModel instance marked as required
+   * Marks the union model as optional
+   * @returns A new OrModel instance marked as optional
    */
-  readonly isRequired: () => OrModel<M, true>
+  readonly isOptional: () => OrModel<M, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed data
@@ -58,21 +58,24 @@ export interface OrModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Union of string or number
- * const idOrName = m.or(m.string(), m.number()).isRequired()
+ * // Union of string or number (required by default)
+ * const idOrName = m.or(m.string(), m.number())
+ *
+ * // Optional union
+ * const optionalId = m.or(m.string(), m.number())
  *
  * // Union of different object types
  * const userOrAdmin = m.or(
- *   m.object({ type: m.enums('user').isRequired(), name: m.string().isRequired() }),
- *   m.object({ type: m.enums('admin').isRequired(), role: m.string().isRequired() })
- * ).isRequired()
+ *   m.object({ type: m.enums('user'), name: m.string() }),
+ *   m.object({ type: m.enums('admin'), role: m.string() })
+ * )
  * ```
  */
 export function or<M extends ModelNotGeneric[]>(
   ...models: M
-): OrModel<M, false> {
-  const baseModel = getBaseModel<OrModel<M, false>>()
-  const model: OrModel<M, false> = {
+): OrModel<M, true> {
+  const baseModel = getBaseModel<OrModel<M, true>>()
+  const model: OrModel<M, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -116,12 +119,12 @@ export function or<M extends ModelNotGeneric[]>(
       }
       return data
     },
-    isRequired(): OrModel<M, true> {
+    isOptional(): OrModel<M, false> {
       const copied = copyModel(this) as unknown as OrModel<
         M,
-        true
+        false
       >
-      copied.$internals.isRequired = true
+      copied.$internals.isRequired = false
       return copied
     },
     getSchema(options?: GetSchemaOptions) {

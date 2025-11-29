@@ -9,13 +9,13 @@ import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
 export interface BooleanModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<boolean, R> {
   /**
-   * Marks the boolean model as required
-   * @returns A new BooleanModel instance marked as required
+   * Marks the boolean model as optional
+   * @returns A new BooleanModel instance marked as optional
    */
-  readonly isRequired: () => BooleanModel<true>
+  readonly isOptional: () => BooleanModel<false>
   /**
    * Inferred TypeScript type for the boolean model (always boolean)
    */
@@ -44,30 +44,30 @@ export interface BooleanModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Basic boolean
- * const isActive = m.boolean().isRequired()
+ * // Basic boolean (required by default)
+ * const isActive = m.boolean()
  *
  * // Optional boolean
  * const isPublished = m.boolean()
  *
  * // Use in object
  * const userParams = m.object({
- *   name: m.string().isRequired(),
- *   isActive: m.boolean().isRequired(),
+ *   name: m.string(),
+ *   isActive: m.boolean(),
  *   isVerified: m.boolean(),
  * })
  * ```
  */
-export function boolean(): BooleanModel<false> {
-  const baseModel = getBaseModel<BooleanModel<false>>()
-  const model: BooleanModel<false> = {
+export function boolean(): BooleanModel<true> {
+  const baseModel = getBaseModel<BooleanModel<true>>()
+  const model: BooleanModel<true> = {
     ...baseModel,
     onParse: (data: unknown) => data as boolean,
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as BooleanModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as BooleanModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     getSchema(options?: GetSchemaOptions) {

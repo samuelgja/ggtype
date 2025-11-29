@@ -10,13 +10,13 @@ import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
 export interface FileModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<File, R> {
   /**
-   * Marks the file model as required
-   * @returns A new FileModel instance marked as required
+   * Marks the file model as optional
+   * @returns A new FileModel instance marked as optional
    */
-  readonly isRequired: () => FileModel<true>
+  readonly isOptional: () => FileModel<false>
   /**
    * Inferred TypeScript type for the file model (always File)
    */
@@ -49,8 +49,8 @@ export interface FileModel<
  * // File upload action
  * const uploadFile = action(
  *   m.object({
- *     file: m.file().isRequired(),
- *     name: m.string().isRequired(),
+ *     file: m.file(), // Required by default
+ *     name: m.string(),
  *   }),
  *   async ({ params }) => {
  *     // params.file is a File instance
@@ -59,9 +59,9 @@ export interface FileModel<
  * )
  * ```
  */
-export function file(): FileModel<false> {
-  const baseModel = getBaseModel<FileModel<false>>()
-  const model: FileModel<false> = {
+export function file(): FileModel<true> {
+  const baseModel = getBaseModel<FileModel<true>>()
+  const model: FileModel<true> = {
     ...baseModel,
     onParse: (data: unknown) => {
       if (isFile(data)) return data as File
@@ -77,11 +77,11 @@ export function file(): FileModel<false> {
       }
       return data as File
     },
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as FileModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as FileModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     getSchema(options?: GetSchemaOptions) {

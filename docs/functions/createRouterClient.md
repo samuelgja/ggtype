@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **createRouterClient**\<`R`\>(`options`): `object`
 
-Defined in: [src/router/router-client.ts:115](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router-client.ts#L115)
+Defined in: [src/router/router-client.ts:115](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router-client.ts#L115)
 
 Creates a router client for communicating with a router server.
 The client handles sending requests to the server, waiting for responses,

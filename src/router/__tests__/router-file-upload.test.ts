@@ -23,15 +23,15 @@ describe('router file upload', () => {
 
       const clientActions = defineClientActionsSchema({
         useFile: {
-          params: m.file().isRequired(),
-          return: m.file().isRequired(),
+          params: m.file(),
+          return: m.file(),
         },
       })
       type ClientActions = typeof clientActions
 
       // Simple file action that just returns the file
       const fileAction = action(
-        m.file().isRequired(),
+        m.file(),
         async ({ params }) => {
           expect(params).toBeInstanceOf(File)
           return params
@@ -40,7 +40,7 @@ describe('router file upload', () => {
 
       // File action that uses client action
       const fileActionWithClientAction = action(
-        m.file().isRequired(),
+        m.file(),
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
         async ({ params, clientActions }) => {
           expect(params).toBeInstanceOf(File)
@@ -53,7 +53,7 @@ describe('router file upload', () => {
 
       // Streaming file action
       const fileStreamAction = action(
-        m.file().isRequired(),
+        m.file(),
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
         async function* ({ params, clientActions }) {
           expect(params).toBeInstanceOf(File)

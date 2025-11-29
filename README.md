@@ -19,7 +19,7 @@ import { action, createRouter, m } from 'ggtype'
 
 // Define an action
 const getUser = action(
-  m.object({ id: m.string().isRequired() }),
+  m.object({ id: m.string() }),
   async ({ params }) => {
     return { id: params.id, name: 'John Doe', email: 'john@example.com' }
   }
@@ -173,7 +173,7 @@ Return streams from actions for real-time data:
 ```typescript
 // Server: Streaming action
 const searchUsers = action(
-  m.object({ query: m.string().isRequired() }),
+  m.object({ query: m.string() }),
   async function* ({ params }) {
     yield { id: '1', name: 'John' }
     yield { id: '2', name: 'Jane' }
@@ -202,7 +202,7 @@ import { defineClientActionsSchema } from 'ggtype'
 // Define client actions schema
 const clientActions = defineClientActionsSchema({
   showNotification: {
-    params: m.object({ message: m.string().isRequired() }),
+    params: m.object({ message: m.string() }),
     return: m.object({ acknowledged: m.boolean() }),
   },
 })
@@ -256,6 +256,8 @@ const client = createRouterClient<Router>({
 - `m.string()`, `m.number()`, `m.boolean()`, `m.date()`, `m.file()`, `m.blob()`
 - `m.array(model)`, `m.object(properties)`, `m.record(model)`
 - `m.or(...models)`, `m.and(...models)`, `m.enums(...values)`, `m.nullable()`
+
+All models are required by default. Use `` to make them optional.
 
 **Router**
 - `createRouter(options)` - Create server router

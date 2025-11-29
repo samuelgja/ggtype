@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Function: enums()
 
-> **enums**\<`T`\>(...`enumParameters`): [`EnumModel`](../interfaces/EnumModel.md)\<`T`, `false`\>
+> **enums**\<`T`\>(...`enumParameters`): [`EnumModel`](../interfaces/EnumModel.md)\<`T`, `true`\>
 
-Defined in: [src/model/enums.ts:98](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/enums.ts#L98)
+Defined in: [src/model/enums.ts:100](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L100)
 
 Creates an enum model for validation and type inference.
 Returns a model that validates string values against a set of allowed enum values.
@@ -30,7 +30,7 @@ Array of allowed string values for the enum
 
 ## Returns
 
-[`EnumModel`](../interfaces/EnumModel.md)\<`T`, `false`\>
+[`EnumModel`](../interfaces/EnumModel.md)\<`T`, `true`\>
 
 An EnumModel instance for validating enum string values
 
@@ -39,17 +39,19 @@ An EnumModel instance for validating enum string values
 ```ts
 import { m } from 'ggtype'
 
-// Simple enum
-const role = m.enums('admin', 'user', 'guest').isRequired()
+// Simple enum (required by default)
+const role = m.enums('admin', 'user', 'guest')
+
+// Optional enum
+const optionalRole = m.enums('admin', 'user')
 
 // Enum with default
 const status = m.enums('pending', 'active', 'inactive')
   .default('pending')
-  .isRequired()
 
 // Use in object
 const userParams = m.object({
-  role: m.enums('admin', 'user').isRequired(),
-  status: m.enums('active', 'inactive').isRequired(),
+  role: m.enums('admin', 'user'),
+  status: m.enums('active', 'inactive'),
 })
 ```

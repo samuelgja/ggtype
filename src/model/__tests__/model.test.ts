@@ -8,14 +8,14 @@ import { string } from '../string'
 describe('test model', () => {
   it('should create some object', () => {
     const friendModel = object({
-      name: string().isRequired(),
-      age: number().isRequired(),
-      isAdult: boolean().isRequired(),
+      name: string(),
+      age: number(),
+      isAdult: boolean(),
     })
     const userModel = object({
-      name: string().isRequired(),
-      age: number().isRequired(),
-      isAdult: boolean().isRequired(),
+      name: string(),
+      age: number(),
+      isAdult: boolean(),
       friends: array(friendModel),
     })
     const parsed = userModel.onParse({
@@ -46,14 +46,14 @@ describe('test model', () => {
   })
   it('should get references for the model', () => {
     const bigObject = object({
-      name: string().isRequired(),
-      age: number().isRequired(),
-      isAdult: boolean().isRequired(),
+      name: string(),
+      age: number(),
+      isAdult: boolean(),
       friends: array(
         object({
-          name: string().isRequired(),
-          age: number().isRequired(),
-          isAdult: boolean().isRequired(),
+          name: string(),
+          age: number(),
+          isAdult: boolean(),
         }),
       ),
     })

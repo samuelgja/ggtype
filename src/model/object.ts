@@ -23,7 +23,7 @@ type Properties = {
 // @ts-ignore
 export interface ObjectModel<
   T extends Properties,
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<T, R> {
   /**
    * Inferred TypeScript type for the object model
@@ -59,10 +59,10 @@ export interface ObjectModel<
    */
   readonly minKeys: (minKeys: number) => ObjectModel<T, R>
   /**
-   * Marks the object model as required
-   * @returns A new ObjectModel instance marked as required
+   * Marks the object model as optional
+   * @returns A new ObjectModel instance marked as optional
    */
-  readonly isRequired: () => ObjectModel<T, true>
+  readonly isOptional: () => ObjectModel<T, false>
   /**
    * Parses and validates an object according to the model
    * @param data - The object data to parse
@@ -125,29 +125,29 @@ export interface ObjectModel<
  *
  * // Simple object
  * const userParams = m.object({
- *   id: m.string().isRequired(),
- *   name: m.string().isRequired(),
- *   email: m.string().isEmail().isRequired(),
+ *   id: m.string(),
+ *   name: m.string(),
+ *   email: m.string().isEmail(),
  *   age: m.number().minimum(0).maximum(120),
  * })
  *
  * // Nested object
  * const addressParams = m.object({
- *   street: m.string().isRequired(),
- *   city: m.string().isRequired(),
- *   zipCode: m.string().isRequired(),
+ *   street: m.string(),
+ *   city: m.string(),
+ *   zipCode: m.string(),
  * })
  *
  * const userWithAddress = m.object({
- *   id: m.string().isRequired(),
- *   name: m.string().isRequired(),
- *   address: addressParams.isRequired(),
+ *   id: m.string(),
+ *   name: m.string(),
+ *   address: addressParams,
  * })
  * ```
  */
 export function object<
   T extends Properties,
-  R extends boolean = false,
+  R extends boolean = true,
 >(properties: T): ObjectModel<T, R> {
   const props: Record<string, ModelNotGeneric> = {}
   for (const key in properties) {
@@ -230,11 +230,11 @@ export function object<
       }
       return newData
     },
-    isRequired(): ObjectModel<T, true> {
+    isOptional(): ObjectModel<T, false> {
       const copied = copyModel(
         this,
-      ) as unknown as ObjectModel<T, true>
-      copied.$internals.isRequired = true
+      ) as unknown as ObjectModel<T, false>
+      copied.$internals.isRequired = false
       return copied
     },
     maxKeys(maxKeys: number) {

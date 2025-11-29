@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Interface: FetchOptions\<R\>
 
-Defined in: [src/router/router-client.types.ts:280](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router-client.types.ts#L280)
+Defined in: [src/router/router-client.types.ts:280](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router-client.types.ts#L280)
 
 Options for fetch and stream calls.
 
@@ -22,7 +22,7 @@ The router type
 
 > `optional` **defineClientActions**: `Partial`\<`ClientCallableActionsFromClient`\<`R`\[`"infer"`\]\[`"clientActions"`\]\>\>
 
-Defined in: [src/router/router-client.types.ts:294](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router-client.types.ts#L294)
+Defined in: [src/router/router-client.types.ts:294](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router-client.types.ts#L294)
 
 Partial client action handlers that override client-level handlers for this specific request.
 If an action is defined here, it will be used instead of the client-level definition.
@@ -33,7 +33,7 @@ If an action is defined here, it will be used instead of the client-level defini
 
 > `optional` **files**: `File`[]
 
-Defined in: [src/router/router-client.types.ts:289](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router-client.types.ts#L289)
+Defined in: [src/router/router-client.types.ts:289](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router-client.types.ts#L289)
 
 Optional array of files to upload
 
@@ -43,7 +43,7 @@ Optional array of files to upload
 
 > `optional` **method**: `"POST"` \| `"GET"` \| `"PUT"` \| `"PATCH"` \| `"DELETE"`
 
-Defined in: [src/router/router-client.types.ts:305](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/router/router-client.types.ts#L305)
+Defined in: [src/router/router-client.types.ts:305](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/router/router-client.types.ts#L305)
 
 HTTP method to use for the request.
 Defaults to 'GET' for HTTP transport, 'POST' for stream transport.

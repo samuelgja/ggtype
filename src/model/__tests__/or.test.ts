@@ -8,7 +8,10 @@ import { string } from '../string'
 
 describe('or', () => {
   it('should validate oneOf type', () => {
-    const model = or(boolean(), number())
+    const model = or(
+      boolean(),
+      number(),
+    )
     const isValidBoolean = compileTestModel(model)(true)
     expect(isValidBoolean).toBe(true)
 
@@ -23,7 +26,10 @@ describe('or', () => {
   })
 
   it('should validate or type', () => {
-    const model = or(boolean(), number())
+    const model = or(
+      boolean(),
+      number(),
+    )
     const isValidBoolean = compileTestModel(model)(true)
     expect(isValidBoolean).toBe(true)
 
@@ -67,7 +73,10 @@ describe('or', () => {
   })
 
   it('should parse and stringify', () => {
-    const model = or(boolean(), number())
+    const model = or(
+      boolean(),
+      number(),
+    )
     const parsedBool = model.onParse(true)
     expect(parsedBool).toBe(true)
 

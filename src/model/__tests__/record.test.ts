@@ -8,7 +8,7 @@ import { string } from '../string'
 describe('record as objects', () => {
   it('should test record', () => {
     const user = object({
-      name: string().isRequired(),
+      name: string(),
       age: number(),
     })
     const model = record(user)
@@ -37,7 +37,7 @@ describe('record as objects', () => {
 
   it('should test record parse inside another object model', () => {
     const user = object({
-      name: string().isRequired(),
+      name: string(),
       age: number(),
     })
     const model = object({
@@ -61,12 +61,21 @@ describe('record as objects', () => {
     expect(isInvalid).toBe(false)
   })
   it('should test record nested with object', () => {
-    const nestedUser = m.object({
-      omg: m.boolean(),
-    })
-    const omg = m.record(
-      m.object({ user: m.string(), nestedUser }),
-    )
+    const nestedUser = m
+      .object({
+        omg: m.boolean(),
+      })
+      
+    const omg = m
+      .record(
+        m
+          .object({
+            user: m.string(),
+            nestedUser,
+          })
+          ,
+      )
+      
     const isValid = compileTestModel(omg)({
       john: { user: '2' },
     })
@@ -81,16 +90,18 @@ describe('record as objects', () => {
     })
     const systemPromptModel = m.string()
     const jsonSchema = m.string()
-    const llmNode = m.object({
-      id: idType.isRequired(),
-      name: nameModel.isRequired(),
-      type: nodeTypeEnum.only('llm').isRequired(),
-      provider: provider.isRequired(),
-      system: systemPromptModel.isRequired(),
-      // settings: llmNodeSettings,
-      nextId: idType,
-      parametersJsonSchema: jsonSchema,
-    })
+    const llmNode = m
+      .object({
+        id: idType,
+        name: nameModel,
+        type: nodeTypeEnum.only('llm'),
+        provider,
+        system: systemPromptModel,
+        // settings: llmNodeSettings,
+        nextId: idType,
+        parametersJsonSchema: jsonSchema,
+      })
+      
 
     const isValid = compileTestModel(llmNode)({
       id: '1',

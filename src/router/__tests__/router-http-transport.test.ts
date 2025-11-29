@@ -8,9 +8,9 @@ import { createRouterClient } from '../router-client'
 describe('router with http transport', () => {
   it('should parse router simple', async () => {
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string().isRequired(),
-    })
+      id: string(),
+      createdAt: string(),
+    }).isOptional()
 
     const someAction1 = action(userModel, ({ params }) => {
       return params.createdAt
@@ -106,9 +106,9 @@ describe('router with http transport', () => {
     }
     const ctx: DefinedCtx = { some: 'thing' }
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string(),
-    })
+      id: string(),
+      createdAt: string().isOptional(),
+    }).isOptional()
 
     const someAction1 = action(
       userModel,
@@ -166,9 +166,9 @@ describe('router with http transport', () => {
 
   it('should parse validation but action will return error', async () => {
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string(),
-    })
+      id: string(),
+      createdAt: string().isOptional(),
+    }).isOptional()
     const someAction1 = action(userModel, ({ params }) => {
       return params.createdAt
     })
@@ -238,9 +238,9 @@ describe('router with http transport', () => {
 
   it('should throw error on invalid json', async () => {
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string(),
-    })
+      id: string(),
+      createdAt: string().isOptional(),
+    }).isOptional()
     const someAction1 = action(userModel, ({ params }) => {
       return params.createdAt
     })
@@ -305,9 +305,9 @@ describe('router with http transport', () => {
 
   it('should throw error 401', async () => {
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string(),
-    })
+      id: string(),
+      createdAt: string().isOptional(),
+    }).isOptional()
     const someAction1 = action(userModel, () => {
       throw new ErrorWithCode('Some error', 401)
     })
@@ -368,9 +368,9 @@ describe('router with http transport', () => {
 
   it('should ignore clientActions', async () => {
     const userModel = object({
-      id: string().isRequired(),
-      createdAt: string(),
-    })
+      id: string(),
+      createdAt: string().isOptional(),
+    }).isOptional()
 
     const someAction1 = action(userModel, ({ params }) => {
       return params.createdAt

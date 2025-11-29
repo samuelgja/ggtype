@@ -9,7 +9,7 @@ import {
 import { setModelState } from './model-state'
 
 export interface NumberModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<number, R> {
   /**
    * Sets the minimum value constraint for the number
@@ -34,10 +34,10 @@ export interface NumberModel<
    */
   readonly negative: () => NumberModel<R>
   /**
-   * Marks the number model as required
-   * @returns A new NumberModel instance marked as required
+   * Marks the number model as optional
+   * @returns A new NumberModel instance marked as optional
    */
-  readonly isRequired: () => NumberModel<true>
+  readonly isOptional: () => NumberModel<false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed number data
@@ -75,29 +75,29 @@ export interface NumberModel<
  * ```ts
  * import { m } from 'ggtype'
  *
- * // Basic number
- * const age = m.number().isRequired()
+ * // Basic number (required by default)
+ * const age = m.number()
+ *
+ * // Optional number
+ * const height = m.number()
  *
  * // Number with constraints
  * const positiveAge = m.number()
  *   .minimum(0)
  *   .maximum(120)
- *   .isRequired()
  *
  * const price = m.number()
  *   .positive()
  *   .minimum(0.01)
- *   .isRequired()
  *
  * const score = m.number()
  *   .minimum(0)
  *   .maximum(100)
- *   .isRequired()
  * ```
  */
-export function number(): NumberModel<false> {
-  const baseModel = getBaseModel<NumberModel<false>>()
-  const model: NumberModel<false> = {
+export function number(): NumberModel<true> {
+  const baseModel = getBaseModel<NumberModel<true>>()
+  const model: NumberModel<true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -111,11 +111,11 @@ export function number(): NumberModel<false> {
       }
       return data as number
     },
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as NumberModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as NumberModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     minimum(minimum: number) {

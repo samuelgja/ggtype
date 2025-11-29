@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Function: and()
 
-> **and**\<`M`\>(...`models`): [`AndModel`](../interfaces/AndModel.md)\<`M`, `false`\>
+> **and**\<`M`\>(...`models`): [`AndModel`](../interfaces/AndModel.md)\<`M`, `true`\>
 
-Defined in: [src/model/and.ts:76](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/and.ts#L76)
+Defined in: [src/model/and.ts:77](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L77)
 
 Creates an intersection model that combines multiple object models.
 Merges all properties from the provided models into a single object model,
@@ -30,7 +30,7 @@ Variable number of models to combine
 
 ## Returns
 
-[`AndModel`](../interfaces/AndModel.md)\<`M`, `false`\>
+[`AndModel`](../interfaces/AndModel.md)\<`M`, `true`\>
 
 An AndModel instance representing the intersection of all provided models
 
@@ -41,17 +41,17 @@ import { m } from 'ggtype'
 
 // Base user model
 const userBase = m.object({
-  id: m.string().isRequired(),
-  name: m.string().isRequired(),
+  id: m.string(),
+  name: m.string(),
 })
 
 // Role model
 const roleModel = m.object({
-  role: m.enums('admin', 'user').isRequired(),
+  role: m.enums('admin', 'user'),
   permissions: m.array(m.string()),
 })
 
-// Combined user with role
-const userWithRole = m.and(userBase, roleModel).isRequired()
+// Combined user with role (required by default)
+const userWithRole = m.and(userBase, roleModel)
 // Result: { id: string, name: string, role: 'admin' | 'user', permissions?: string[] }
 ```

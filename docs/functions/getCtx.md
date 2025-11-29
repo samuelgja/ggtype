@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **getCtx**\<`T`\>(`ctx`): `T`
 
-Defined in: [src/action/action.ts:39](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/action/action.ts#L39)
+Defined in: [src/action/action.ts:39](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L39)
 
 Extracts and types the context object from an unknown value.
 This is a type-safe way to access the context passed to actions.
@@ -43,7 +43,7 @@ interface UserContext {
 }
 
 const deleteUser = action(
-  m.object({ id: m.string().isRequired() }),
+  m.object({ id: m.string() }),
   async ({ params, ctx }) => {
     // Type-safe context extraction
     const { user } = getCtx<UserContext>(ctx)

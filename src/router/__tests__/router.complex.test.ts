@@ -20,64 +20,88 @@ describe('router complex', () => {
 
       const clientActions = defineClientActionsSchema({
         fetchUserData: {
-          params: m.object({
-            userId: m.string().isRequired(),
-          }),
-          return: m.object({
-            userId: m.string().isRequired(),
-            name: m.string().isRequired(),
-            email: m.string().isRequired(),
-          }),
+          params: m
+            .object({
+              userId: m.string(),
+            })
+            .isOptional(),
+          return: m
+            .object({
+              userId: m.string(),
+              name: m.string(),
+              email: m.string(),
+            })
+            .isOptional(),
         },
         fetchUserPosts: {
-          params: m.object({
-            userId: m.string().isRequired(),
-          }),
-          return: m.array(
-            m.object({
-              postId: m.string().isRequired(),
-              title: m.string().isRequired(),
-            }),
-          ),
+          params: m
+            .object({
+              userId: m.string(),
+            })
+            .isOptional(),
+          return: m
+            .array(
+              m
+                .object({
+                  postId: m.string(),
+                  title: m.string(),
+                })
+                .isOptional(),
+            )
+            .isOptional(),
         },
         fetchUserComments: {
-          params: m.object({
-            userId: m.string().isRequired(),
-          }),
-          return: m.array(
-            m.object({
-              commentId: m.string().isRequired(),
-              text: m.string().isRequired(),
-            }),
-          ),
+          params: m
+            .object({
+              userId: m.string(),
+            })
+            .isOptional(),
+          return: m
+            .array(
+              m
+                .object({
+                  commentId: m.string(),
+                  text: m.string(),
+                })
+                .isOptional(),
+            )
+            .isOptional(),
         },
         processData: {
-          params: m.object({
-            data: m.string().isRequired(),
-            operation: m.string().isRequired(),
-          }),
-          return: m.string(),
+          params: m
+            .object({
+              data: m.string(),
+              operation: m.string(),
+            })
+            .isOptional(),
+          return: m.string().isOptional(),
         },
         validateInput: {
-          params: m.object({
-            input: m.string().isRequired(),
-          }),
-          return: m.boolean(),
+          params: m
+            .object({
+              input: m.string(),
+            })
+            .isOptional(),
+          return: m.boolean().isOptional(),
         },
         transformData: {
-          params: m.object({
-            data: m.string().isRequired(),
-          }),
-          return: m.string(),
+          params: m
+            .object({
+              data: m.string(),
+            })
+            .isOptional(),
+          return: m.string().isOptional(),
         },
       })
       type ClientActions = typeof clientActions
 
       // Action 1: Calls 3 client actions in parallel using Promise.all()
       const getUserCompleteProfile = action(
-        m.object({
-          userId: m.string().isRequired(),
-        }),
+        m
+          .object({
+            userId: m.string(),
+          })
+          .isOptional(),
         async ({
           params,
           clientActions: clientActions,
@@ -112,10 +136,12 @@ describe('router complex', () => {
 
       // Action 2: Calls multiple client actions with different operations
       const processUserWorkflow = action(
-        m.object({
-          userId: m.string().isRequired(),
-          data: m.string().isRequired(),
-        }),
+        m
+          .object({
+            userId: m.string(),
+            data: m.string(),
+          })
+          .isOptional(),
         async ({
           params,
           clientActions: clientActions,
@@ -165,9 +191,11 @@ describe('router complex', () => {
 
       // Action 3: Streaming action with concurrent client actions
       const streamUserActivity = action(
-        m.object({
-          userId: m.string().isRequired(),
-        }),
+        m
+          .object({
+            userId: m.string(),
+          })
+          .isOptional(),
         async function* ({ params, clientActions }) {
           const clientActionsFunctions =
             (clientActions?.<ClientActions>() ??

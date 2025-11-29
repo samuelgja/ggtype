@@ -11,22 +11,26 @@ describe('router-test-utils', () => {
   for (const transport of transports) {
     describe(`transport: ${transport}`, () => {
       const timeout = 10
-      const userModel = m.object({
-        id: m.string().isRequired(),
-        name: m.string().isRequired(),
-      })
+      const userModel = m
+        .object({
+          id: m.string(),
+          name: m.string(),
+        })
+        .isOptional()
 
       const clientActions = defineClientActionsSchema({
         useTool: {
-          params: m.object({
-            tool: m.string().isRequired(),
-            user: m.string().isRequired(),
-          }),
-          return: m.string(),
+          params: m
+            .object({
+              tool: m.string(),
+              user: m.string(),
+            })
+            .isOptional(),
+          return: m.string().isOptional(),
         },
         useFile: {
-          params: m.file().isRequired(),
-          return: m.file().isRequired(),
+          params: m.file(),
+          return: m.file(),
         },
       })
       type ClientActions = typeof clientActions
@@ -36,7 +40,7 @@ describe('router-test-utils', () => {
       })
 
       const deleteUser = action(
-        m.string().isRequired(),
+        m.string(),
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
         async ({ params, clientActions }) => {
           const { useTool } = clientActions<ClientActions>()
@@ -54,7 +58,7 @@ describe('router-test-utils', () => {
       )
 
       const fileAction = action(
-        m.file().isRequired(),
+        m.file(),
         async ({ params }) => {
           expect(params).toBeInstanceOf(File)
           return params
@@ -62,7 +66,7 @@ describe('router-test-utils', () => {
       )
 
       const streamUser = action(
-        m.string().isRequired(),
+        m.string(),
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
         async function* ({ clientActions }) {
           const { useTool } = clientActions<ClientActions>()
@@ -266,7 +270,7 @@ describe('router-test-utils', () => {
 
       it('should handle errors', async () => {
         const errorAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({ params }) => {
             throw new Error(`Test error: ${params}`)
           },

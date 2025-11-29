@@ -9,13 +9,13 @@ import {
 import { setModelState } from './model-state'
 
 export interface NullModel<
-  R extends boolean = false,
+  R extends boolean = true,
 > extends Model<null, R> {
   /**
-   * Marks the null model as required
-   * @returns A new NullModel instance marked as required
+   * Marks the null model as optional
+   * @returns A new NullModel instance marked as optional
    */
-  readonly isRequired: () => NullModel<true>
+  readonly isOptional: () => NullModel<false>
   /**
    * Inferred TypeScript type for the null model (always null)
    */
@@ -52,21 +52,21 @@ export interface NullModel<
  *
  * // Use in object
  * const userParams = m.object({
- *   name: m.string().isRequired(),
+ *   name: m.string(),
  *   deletedAt: m.nullable(),
  * })
  * ```
  */
-export function nullable(): NullModel<false> {
-  const baseModel = getBaseModel<NullModel<false>>()
-  const model: NullModel<false> = {
+export function nullable(): NullModel<true> {
+  const baseModel = getBaseModel<NullModel<true>>()
+  const model: NullModel<true> = {
     ...baseModel,
     onParse: (data: unknown) => data as null,
-    isRequired() {
+    isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as NullModel<true>
-      copied.$internals.isRequired = true
+      ) as unknown as NullModel<false>
+      copied.$internals.isRequired = false
       return copied
     },
     getSchema(options?: GetSchemaOptions) {

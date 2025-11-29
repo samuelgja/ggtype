@@ -99,12 +99,12 @@ function sendErrorMessage(
  *
  * // Define actions
  * const createUser = action(
- *   m.object({ id: m.string().isRequired(), name: m.string().isRequired() }),
+ *   m.object({ id: m.string(), name: m.string() }).isOptional(),
  *   async ({ params }) => ({ ...params, createdAt: new Date() })
  * )
  *
  * const getUser = action(
- *   m.object({ id: m.string().isRequired() }),
+ *   m.object({ id: m.string() }).isOptional(),
  *   async ({ params }) => ({ id: params.id, name: 'John' })
  * )
  *
@@ -112,10 +112,10 @@ function sendErrorMessage(
  * const clientActions = defineClientActionsSchema({
  *   showNotification: {
  *     params: m.object({
- *       message: m.string().isRequired(),
- *       type: m.string().isRequired(),
- *     }),
- *     return: m.object({ acknowledged: m.boolean() }),
+ *       message: m.string(),
+ *       type: m.string(),
+ *     }).isOptional(),
+ *     return: m.object({ acknowledged: m.boolean().isOptional() }).isOptional(),
  *   },
  * })
  *

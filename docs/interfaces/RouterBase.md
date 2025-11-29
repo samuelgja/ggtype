@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Interface: RouterBase
 
-Defined in: [src/types.ts:560](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L560)
+Defined in: [src/types.ts:560](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L560)
 
 ## Extended by
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:560](https://github.com/samuelgja/ggtype/blob/137128a3
 
 > `readonly` **infer**: `any`
 
-Defined in: [src/types.ts:570](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L570)
+Defined in: [src/types.ts:570](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L570)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/types.ts:570](https://github.com/samuelgja/ggtype/blob/137128a3
 
 > `readonly` **onRequest**: (`options`) => `Promise`\<`Response`\>
 
-Defined in: [src/types.ts:566](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L566)
+Defined in: [src/types.ts:566](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L566)
 
 Handles HTTP requests for the router
 

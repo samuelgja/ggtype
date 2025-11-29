@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **Infer**\<`T`\> = `T`\[`"infer"`\]
 
-Defined in: [src/index.ts:33](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/index.ts#L33)
+Defined in: [src/index.ts:33](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/index.ts#L33)
 
 Extracts the inferred TypeScript type from a model.
 This utility type extracts the runtime type that a model validates.
@@ -25,8 +25,8 @@ The model type with an `infer` property
 import { m, type Infer } from 'ggtype'
 
 const userModel = m.object({
-  id: m.string().isRequired(),
-  name: m.string().isRequired(),
+  id: m.string(),
+  name: m.string(),
   age: m.number(),
 })
 

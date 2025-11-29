@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **isIterable**(`object`): `object is Iterable<unknown, any, any>`
 
-Defined in: [src/utils/is.ts:210](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/utils/is.ts#L210)
+Defined in: [src/utils/is.ts:210](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/is.ts#L210)
 
 Type guard to check if a value is an iterable.
 

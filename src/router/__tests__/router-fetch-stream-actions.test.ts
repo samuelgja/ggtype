@@ -18,10 +18,12 @@ describe('router fetchActions and streamActions', () => {
 
   for (const transport of transports) {
     describe(`transport: ${transport}`, () => {
-      const userModel = m.object({
-        id: m.string().isRequired(),
-        name: m.string().isRequired(),
-      })
+      const userModel = m
+        .object({
+          id: m.string(),
+          name: m.string(),
+        })
+        .isOptional()
 
       const getUser = action(
         userModel,
@@ -45,7 +47,7 @@ describe('router fetchActions and streamActions', () => {
       )
 
       const searchUsers = action(
-        m.object({ query: m.string().isRequired() }),
+        m.object({ query: m.string() }).isOptional(),
         async function* ({ params }) {
           yield {
             id: '1',

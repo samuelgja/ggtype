@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../../README.md)
 
 ***
 
 # Interface: StringModel\<R\>
 
-Defined in: [src/model/string.ts:12](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L12)
+Defined in: [src/model/string.ts:12](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L12)
 
 ## Extends
 
@@ -14,7 +14,7 @@ Defined in: [src/model/string.ts:12](https://github.com/samuelgja/ggtype/blob/13
 
 ### R
 
-`R` *extends* `boolean` = `false`
+`R` *extends* `boolean` = `true`
 
 ## Properties
 
@@ -22,7 +22,7 @@ Defined in: [src/model/string.ts:12](https://github.com/samuelgja/ggtype/blob/13
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -36,7 +36,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:71](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L71)
+Defined in: [src/model/string.ts:71](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L71)
 
 Sets a human-readable description for the model
 
@@ -64,7 +64,7 @@ A new StringModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -112,7 +112,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `string`
 
-Defined in: [src/model/string.ts:59](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L59)
+Defined in: [src/model/string.ts:59](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L59)
 
 Inferred TypeScript type for the string model (always string)
 
@@ -126,7 +126,7 @@ Inferred TypeScript type for the string model (always string)
 
 > `readonly` **isEmail**: () => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:42](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L42)
+Defined in: [src/model/string.ts:42](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L42)
 
 Validates the string as an email address
 
@@ -138,11 +138,31 @@ A new StringModel instance with email format validation
 
 ***
 
+### isOptional()
+
+> `readonly` **isOptional**: () => `StringModel`\<`false`\>
+
+Defined in: [src/model/string.ts:37](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L37)
+
+Marks the string model as optional
+
+#### Returns
+
+`StringModel`\<`false`\>
+
+A new StringModel instance marked as optional
+
+#### Overrides
+
+[`Model`](Model.md).[`isOptional`](Model.md#isoptional)
+
+***
+
 ### isPassword()
 
 > `readonly` **isPassword**: () => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:47](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L47)
+Defined in: [src/model/string.ts:47](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L47)
 
 Validates the string as a password
 
@@ -154,31 +174,11 @@ A new StringModel instance with password format validation
 
 ***
 
-### isRequired()
-
-> `readonly` **isRequired**: () => `StringModel`\<`true`\>
-
-Defined in: [src/model/string.ts:37](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L37)
-
-Marks the string model as required
-
-#### Returns
-
-`StringModel`\<`true`\>
-
-A new StringModel instance marked as required
-
-#### Overrides
-
-[`Model`](Model.md).[`isRequired`](Model.md#isrequired)
-
-***
-
 ### maxLength()
 
 > `readonly` **maxLength**: (`length`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:20](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L20)
+Defined in: [src/model/string.ts:20](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L20)
 
 Sets the maximum length constraint for the string
 
@@ -202,7 +202,7 @@ A new StringModel instance with the constraint
 
 > `readonly` **minLength**: (`length`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:26](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L26)
+Defined in: [src/model/string.ts:26](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L26)
 
 Sets the minimum length constraint for the string
 
@@ -226,7 +226,7 @@ A new StringModel instance with the constraint
 
 > `readonly` **onParse**: (`data`) => `string`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -254,7 +254,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -278,7 +278,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **regex**: (`pattern`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:32](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L32)
+Defined in: [src/model/string.ts:32](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L32)
 
 Sets a regular expression pattern for string validation
 
@@ -302,7 +302,7 @@ A new StringModel instance with the pattern constraint
 
 > `readonly` **title**: (`name`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:65](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L65)
+Defined in: [src/model/string.ts:65](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L65)
 
 Sets a human-readable title for the model
 
@@ -330,7 +330,7 @@ A new StringModel instance with the updated title
 
 > `readonly` **validate**: (`onValidate`) => `StringModel`\<`R`\>
 
-Defined in: [src/model/string.ts:53](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/model/string.ts#L53)
+Defined in: [src/model/string.ts:53](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/string.ts#L53)
 
 Adds custom validation logic to the model
 

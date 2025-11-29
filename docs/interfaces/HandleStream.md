@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.7**](../README.md)
+[**ggtype API Documentation v0.4.8**](../README.md)
 
 ***
 
 # Interface: HandleStream
 
-Defined in: [src/types.ts:384](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L384)
+Defined in: [src/types.ts:384](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L384)
 
 ## Properties
 
@@ -12,7 +12,7 @@ Defined in: [src/types.ts:384](https://github.com/samuelgja/ggtype/blob/137128a3
 
 > **action**: `string`
 
-Defined in: [src/types.ts:392](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L392)
+Defined in: [src/types.ts:392](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L392)
 
 The action name
 
@@ -22,7 +22,7 @@ The action name
 
 > **data**: `AsyncIterable`\<`unknown`\>
 
-Defined in: [src/types.ts:396](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L396)
+Defined in: [src/types.ts:396](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L396)
 
 The async iterable stream to process
 
@@ -32,7 +32,7 @@ The async iterable stream to process
 
 > `optional` **id**: `string`
 
-Defined in: [src/types.ts:400](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L400)
+Defined in: [src/types.ts:400](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L400)
 
 The message ID
 
@@ -42,7 +42,7 @@ The message ID
 
 > **onError**: (`error`) => `Error`
 
-Defined in: [src/types.ts:388](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L388)
+Defined in: [src/types.ts:388](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L388)
 
 Error handler function
 
@@ -62,7 +62,7 @@ Error handler function
 
 > **send**: (`message`) => `void`
 
-Defined in: [src/types.ts:404](https://github.com/samuelgja/ggtype/blob/137128a3dcb18447111a39c3e91e9b141b47e78d/src/types.ts#L404)
+Defined in: [src/types.ts:404](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L404)
 
 Function to send a raw message (not used in current implementation)
 

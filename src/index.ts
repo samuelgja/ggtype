@@ -20,10 +20,10 @@ export * from './transport'
  * import { m, type Infer } from 'ggtype'
  *
  * const userModel = m.object({
- *   id: m.string().isRequired(),
- *   name: m.string().isRequired(),
- *   age: m.number(),
- * })
+ *   id: m.string(),
+ *   name: m.string(),
+ *   age: m.number().isOptional(),
+ * }).isOptional()
  *
  * // Extract the TypeScript type
  * type User = Infer<typeof userModel>

@@ -98,15 +98,15 @@ export interface TestRouter<
  *
  * // Define actions
  * const getUser = action(
- *   m.object({ id: m.string().isRequired() }),
+ *   m.object({ id: m.string() }).isOptional(),
  *   async ({ params }) => ({ id: params.id, name: 'John' })
  * )
  *
  * // Define client actions
  * const clientActions = defineClientActionsSchema({
  *   showNotification: {
- *     params: m.object({ message: m.string().isRequired() }),
- *     return: m.object({ acknowledged: m.boolean() }),
+ *     params: m.object({ message: m.string() }).isOptional(),
+ *     return: m.object({ acknowledged: m.boolean().isOptional() }).isOptional(),
  *   },
  * })
  *

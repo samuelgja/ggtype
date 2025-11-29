@@ -24,6 +24,7 @@ describe('date', () => {
     const model = date()
       .minimum(new Date('2020-01-01'))
       .maximum(new Date('2021-01-01'))
+      
     const isValid = compileTestModel(model)(
       new Date('2020-06-01'),
     )

@@ -10,18 +10,22 @@ describe('router performance', () => {
 
   for (const transport of transports) {
     describe(`transport: ${transport}`, () => {
-      const userModel = m.object({
-        id: m.string().isRequired(),
-        name: m.string().isRequired(),
-      })
+      const userModel = m
+        .object({
+          id: m.string(),
+          name: m.string(),
+        })
+        .isOptional()
 
       const clientActions = defineClientActionsSchema({
         useTool: {
-          params: m.object({
-            tool: m.string().isRequired(),
-            user: m.string().isRequired(),
-          }),
-          return: m.string(),
+          params: m
+            .object({
+              tool: m.string(),
+              user: m.string(),
+            })
+            .isOptional(),
+          return: m.string().isOptional(),
         },
       })
 
@@ -30,7 +34,7 @@ describe('router performance', () => {
       })
 
       const simpleAction = action(
-        m.string().isRequired(),
+        m.string(),
         async ({ params }) => {
           return `Result: ${params}`
         },
@@ -134,7 +138,7 @@ describe('router performance', () => {
 
       it('should handle large payloads efficiently', async () => {
         const largeDataAction = action(
-          m.string().isRequired(),
+          m.string(),
           async ({ params }) => {
             // Return a large string
             return params.repeat(1000)
@@ -179,7 +183,7 @@ describe('router performance', () => {
 
       it('should handle streaming with many yields efficiently', async () => {
         const streamingAction = action(
-          m.string().isRequired(),
+          m.string(),
           async function* ({ params }) {
             for (let index = 0; index < 100; index++) {
               yield `${params}-${index}`

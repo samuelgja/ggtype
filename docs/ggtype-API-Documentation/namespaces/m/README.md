@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.7**](../../../README.md)
+[**ggtype API Documentation v0.4.8**](../../../README.md)
 
 ***
 
