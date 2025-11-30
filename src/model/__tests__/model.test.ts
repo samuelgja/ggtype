@@ -32,13 +32,18 @@ describe('test model', () => {
     })
     const userList = array(userModel)
     const isValid = compileTestModel(userList)([
-      { name: 'John', age: 20, isAdult: true },
-      { name: 'Jane', age: 18, isAdult: false },
+      { name: 'John', age: 20, isAdult: true, friends: [] },
+      {
+        name: 'Jane',
+        age: 18,
+        isAdult: false,
+        friends: [],
+      },
     ])
 
     expect(isValid).toBe(true)
     const isInvalid = compileTestModel(userList)([
-      { name: 'John', age: 20, isAdult: true },
+      { name: 'John', age: 20, isAdult: true, friends: [] },
       { name: 'Jane', age: 18 } as never,
     ])
     expect(isInvalid).toBe(false)

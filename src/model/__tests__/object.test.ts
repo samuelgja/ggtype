@@ -23,7 +23,7 @@ describe('object', () => {
     })
       .maxKeys(10)
       .minKeys(1)
-      
+
     const isValid = compileTestModel(model)({
       age: 2,
       name: 'test',
@@ -74,14 +74,14 @@ describe('object', () => {
   })
   it('should ignore undefined properties', () => {
     const model = object({
-      name: string(),
+      name: string().isOptional(),
       age: number(),
       undefinedProperty: undefined,
     })
 
     const isValid = compileTestModel(model)({
       age: 2,
-      name: undefined,
+      name: undefined as never,
     })
     expect(isValid).toBe(true)
     expect(model.getSchema()).toMatchSnapshot()

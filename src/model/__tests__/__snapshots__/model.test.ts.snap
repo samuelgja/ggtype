@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`test model should create some object 1`] = `
 {
@@ -58,6 +58,7 @@ exports[`test model should create some object 1`] = `
     "name",
     "age",
     "isAdult",
+    "friends",
   ],
   "title": undefined,
   "type": "object",

@@ -19,10 +19,8 @@ describe('string', () => {
     expect(isInvalid).toBe(false)
   })
   it('should parse string with maxLength', () => {
-    const model = string()
-      .maxLength(3)
-      .title('test')
-      
+    const model = string().maxLength(3).title('test')
+
     const isValid = compileTestModel(model)('222')
     expect(isValid).toBe(true)
     const isInvalid = compileTestModel(model)('aaaa')

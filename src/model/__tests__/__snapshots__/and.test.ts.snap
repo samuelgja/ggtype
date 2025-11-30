@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`and should validate and type 1`] = `
 {
@@ -49,6 +49,7 @@ exports[`and should validate and type with 3 models 1`] = `
   "required": [
     "name",
     "title",
+    "author",
   ],
   "title": undefined,
   "type": "object",

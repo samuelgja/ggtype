@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`or should validate oneOf type 1`] = `
 {
@@ -62,7 +62,9 @@ exports[`or should validate or for 3 models 1`] = `
           "type": "string",
         },
       },
-      "required": [],
+      "required": [
+        "name",
+      ],
       "title": undefined,
       "type": "object",
     },
@@ -101,7 +103,9 @@ exports[`or should parse json schema 1`] = `
       "type": "number",
     },
   },
-  "required": [],
+  "required": [
+    "age",
+  ],
   "title": undefined,
   "type": "object",
 }
@@ -118,7 +122,9 @@ exports[`or should parse json schema 2`] = `
       "type": "string",
     },
   },
-  "required": [],
+  "required": [
+    "date",
+  ],
   "title": undefined,
   "type": "object",
 }
@@ -143,7 +149,10 @@ exports[`or should parse or for two object models with shared type 1`] = `
       "type": "string",
     },
   },
-  "required": [],
+  "required": [
+    "type",
+    "age",
+  ],
   "title": undefined,
   "type": "object",
 }
@@ -168,7 +177,10 @@ exports[`or should parse or for two object models with shared type 2`] = `
       "type": "string",
     },
   },
-  "required": [],
+  "required": [
+    "type",
+    "name",
+  ],
   "title": undefined,
   "type": "object",
 }

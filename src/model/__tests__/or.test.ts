@@ -8,10 +8,7 @@ import { string } from '../string'
 
 describe('or', () => {
   it('should validate oneOf type', () => {
-    const model = or(
-      boolean(),
-      number(),
-    )
+    const model = or(boolean(), number())
     const isValidBoolean = compileTestModel(model)(true)
     expect(isValidBoolean).toBe(true)
 
@@ -26,10 +23,7 @@ describe('or', () => {
   })
 
   it('should validate or type', () => {
-    const model = or(
-      boolean(),
-      number(),
-    )
+    const model = or(boolean(), number())
     const isValidBoolean = compileTestModel(model)(true)
     expect(isValidBoolean).toBe(true)
 
@@ -60,23 +54,22 @@ describe('or', () => {
     })
     expect(isValidObject).toEqual(true)
 
-    const isInvalid = compileTestModel(model)('asd')
+    const isInvalid = compileTestModel(model)(
+      'asd' as unknown as Infer<typeof model>,
+    )
     expect(isInvalid).toBe(false)
     // TS checking
     // eslint-disable-next-line sonarjs/no-dead-store
     let value: Infer<typeof model> = 2
     // eslint-disable-next-line sonarjs/no-dead-store
     value = { name: 'John' }
-    value = new Date()
+    value = new Date() as unknown as Infer<typeof model>
     expect(value).toEqual(value)
     expect(model.getSchema()).toMatchSnapshot()
   })
 
   it('should parse and stringify', () => {
-    const model = or(
-      boolean(),
-      number(),
-    )
+    const model = or(boolean(), number())
     const parsedBool = model.onParse(true)
     expect(parsedBool).toBe(true)
 

@@ -61,23 +61,19 @@ describe('record as objects', () => {
     expect(isInvalid).toBe(false)
   })
   it('should test record nested with object', () => {
-    const nestedUser = m
-      .object({
-        omg: m.boolean(),
-      })
-      
-    const omg = m
-      .record(
-        m
-          .object({
-            user: m.string(),
-            nestedUser,
-          })
-          ,
-      )
-      
+    const nestedUser = m.object({
+      omg: m.boolean(),
+    })
+
+    const omg = m.record(
+      m.object({
+        user: m.string(),
+        nestedUser,
+      }),
+    )
+
     const isValid = compileTestModel(omg)({
-      john: { user: '2' },
+      john: { user: '2', nestedUser: { omg: true } },
     })
     expect(isValid).toBe(true)
   })
@@ -90,18 +86,16 @@ describe('record as objects', () => {
     })
     const systemPromptModel = m.string()
     const jsonSchema = m.string()
-    const llmNode = m
-      .object({
-        id: idType,
-        name: nameModel,
-        type: nodeTypeEnum.only('llm'),
-        provider,
-        system: systemPromptModel,
-        // settings: llmNodeSettings,
-        nextId: idType,
-        parametersJsonSchema: jsonSchema,
-      })
-      
+    const llmNode = m.object({
+      id: idType,
+      name: nameModel,
+      type: nodeTypeEnum.only('llm'),
+      provider,
+      system: systemPromptModel,
+      // settings: llmNodeSettings,
+      nextId: idType,
+      parametersJsonSchema: jsonSchema,
+    })
 
     const isValid = compileTestModel(llmNode)({
       id: '1',

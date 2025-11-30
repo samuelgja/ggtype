@@ -13,10 +13,8 @@ describe('number', () => {
     expect(model.getSchema()).toMatchSnapshot()
   })
   it('should number maximum and minimum', () => {
-    const model = number()
-      .maximum(10)
-      .minimum(5)
-      
+    const model = number().maximum(10).minimum(5)
+
     const isValid = compileTestModel(model)(7)
     expect(isValid).toBe(true)
     const isInvalid = compileTestModel(model)(11)

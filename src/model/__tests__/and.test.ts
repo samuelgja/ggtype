@@ -54,6 +54,7 @@ describe('and', () => {
     const isValidUser = compileTestModel(model)({
       name: 'John',
       title: 'Book Title',
+      author: 'Author Name',
     })
     expect(isValidUser).toEqual(true)
 
@@ -67,23 +68,16 @@ describe('and', () => {
   })
   it('should merge two models', () => {
     const availableToolTypes = m.enums('text', 'math')
-    const objectParameter = m
-      .object({
-        required: m.array(m.string()),
-      })
-      
+    const objectParameter = m.object({
+      required: m.array(m.string()),
+    })
 
-    const toolNode = m
-      .object({
-        id: m.string(),
-        type: availableToolTypes,
-      })
-      
+    const toolNode = m.object({
+      id: m.string(),
+      type: availableToolTypes,
+    })
 
-    const merged = and(
-      toolNode,
-      objectParameter,
-    )
+    const merged = and(toolNode, objectParameter)
     const isValid = compileTestModel(merged)({
       type: 'math',
       id: '123',
