@@ -9,50 +9,50 @@ import {
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface StringModel<
+export interface String<
   R extends boolean = true,
 > extends Model<string, R> {
   /**
    * Sets the maximum length constraint for the string
    * @param length - Maximum number of characters
-   * @returns A new StringModel instance with the constraint
+   * @returns A new String instance with the constraint
    */
-  readonly maxLength: (length: number) => StringModel<R>
+  readonly maxLength: (length: number) => String<R>
   /**
    * Sets the minimum length constraint for the string
    * @param length - Minimum number of characters
-   * @returns A new StringModel instance with the constraint
+   * @returns A new String instance with the constraint
    */
-  readonly minLength: (length: number) => StringModel<R>
+  readonly minLength: (length: number) => String<R>
   /**
    * Sets a regular expression pattern for string validation
    * @param pattern - Regular expression pattern
-   * @returns A new StringModel instance with the pattern constraint
+   * @returns A new String instance with the pattern constraint
    */
-  readonly regex: (pattern: RegExp) => StringModel<R>
+  readonly regex: (pattern: RegExp) => String<R>
   /**
    * Marks the string model as optional
-   * @returns A new StringModel instance marked as optional
+   * @returns A new String instance marked as optional
    */
-  readonly isOptional: () => StringModel<false>
+  readonly isOptional: () => String<false>
   /**
    * Validates the string as an email address
-   * @returns A new StringModel instance with email format validation
+   * @returns A new String instance with email format validation
    */
-  readonly isEmail: () => StringModel<R>
+  readonly isEmail: () => String<R>
   /**
    * Validates the string as a password
-   * @returns A new StringModel instance with password format validation
+   * @returns A new String instance with password format validation
    */
-  readonly isPassword: () => StringModel<R>
+  readonly isPassword: () => String<R>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed string data
-   * @returns A new StringModel instance with the validation function
+   * @returns A new String instance with the validation function
    */
   readonly validate: (
     onValidate: OnValidate<string>,
-  ) => StringModel<R>
+  ) => String<R>
   /**
    * Inferred TypeScript type for the string model (always string)
    */
@@ -60,24 +60,22 @@ export interface StringModel<
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new StringModel instance with the updated title
+   * @returns A new String instance with the updated title
    */
-  readonly title: (name: string) => StringModel<R>
+  readonly title: (name: string) => String<R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new StringModel instance with the updated description
+   * @returns A new String instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => StringModel<R>
+  readonly description: (description: string) => String<R>
 }
 
 /**
  * Creates a string model for validation and type inference.
  * Returns a model that validates string values with optional constraints like
  * min/max length, regex patterns, email/password formats, and custom validation.
- * @returns A StringModel instance for validating string values
+ * @returns A String instance for validating string values
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -102,9 +100,9 @@ export interface StringModel<
  *   .regex(/^[a-zA-Z0-9_]+$/)
  * ```
  */
-export function string(): StringModel<true> {
-  const baseModel = getBaseModel<StringModel<true>>()
-  const model: StringModel<true> = {
+export function string(): String<true> {
+  const baseModel = getBaseModel<String<true>>()
+  const model: String<true> = {
     ...baseModel,
     $internals: baseModel.$internals,
     validate(onValidate) {
@@ -119,10 +117,10 @@ export function string(): StringModel<true> {
       }
       return data as string
     },
-    isOptional(): StringModel<false> {
+    isOptional(): String<false> {
       const copied = copyModel(
         this,
-      ) as unknown as StringModel<false>
+      ) as unknown as String<false>
       copied.$internals.isRequired = false
       return copied
     },

@@ -10,41 +10,47 @@ import { isModel } from '../utils/is'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface RecordModel<
+// Alias Record to StdRecord to avoid conflict with the interface Record
+type StdRecord<
+  K extends string | number | symbol,
+  T,
+> = globalThis.Record<K, T>
+
+export interface Record<
   M extends ModelNotGeneric,
   R extends boolean = true,
 > extends Model<M, R> {
   /**
    * Inferred TypeScript type for the record model (object with string keys and values matching the item model)
    */
-  readonly infer: Record<string, M['infer']>
+  readonly infer: StdRecord<string, M['infer']>
   /**
    * Marks the record model as optional
-   * @returns A new RecordModel instance marked as optional
+   * @returns A new Record instance marked as optional
    */
-  readonly isOptional: () => RecordModel<M, false>
+  readonly isOptional: () => Record<M, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed record data
-   * @returns A new RecordModel instance with the validation function
+   * @returns A new Record instance with the validation function
    */
   readonly validate: (
     onValidate: (data: M) => void,
-  ) => RecordModel<M, R>
+  ) => Record<M, R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new RecordModel instance with the updated title
+   * @returns A new Record instance with the updated title
    */
-  readonly title: (name: string) => RecordModel<M, R>
+  readonly title: (name: string) => Record<M, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new RecordModel instance with the updated description
+   * @returns A new Record instance with the updated description
    */
   readonly description: (
     description: string,
-  ) => RecordModel<M, R>
+  ) => Record<M, R>
 }
 
 /**
@@ -53,7 +59,7 @@ export interface RecordModel<
  * regardless of the keys. Useful for dictionaries and key-value stores.
  * @template M - The model type for record values
  * @param item - The model to validate each value in the record against
- * @returns A RecordModel instance for validating record objects
+ * @returns A Record instance for validating record objects
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -77,9 +83,9 @@ export interface RecordModel<
  */
 export function record<M extends ModelNotGeneric>(
   item: M,
-): RecordModel<M, true> {
-  const baseModel = getBaseModel<RecordModel<M, true>>()
-  const model: RecordModel<M, true> = {
+): Record<M, true> {
+  const baseModel = getBaseModel<Record<M, true>>()
+  const model: Record<M, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -87,16 +93,19 @@ export function record<M extends ModelNotGeneric>(
       return copied
     },
     onParse(data: unknown) {
-      if (typeof data !== 'object' || Array.isArray(data))
+      if (
+        typeof data !== 'object' ||
+        globalThis.Array.isArray(data)
+      )
         return data as M
 
       const { onValidate } = this.$internals
-      const parsed: Record<string, unknown> =
-        data as Record<string, unknown>
+      const parsed: StdRecord<string, unknown> =
+        data as StdRecord<string, unknown>
       for (const key in data) {
-        const itemData = (data as Record<string, unknown>)[
-          key
-        ]
+        const itemData = (
+          data as StdRecord<string, unknown>
+        )[key]
         parsed[key] = isModel(item)
           ? item.onParse(itemData as never)
           : itemData
@@ -108,14 +117,17 @@ export function record<M extends ModelNotGeneric>(
     },
     onStringify(data: M) {
       if (data == null) return data
-      if (typeof data !== 'object' || Array.isArray(data))
+      if (
+        typeof data !== 'object' ||
+        globalThis.Array.isArray(data)
+      )
         return data
-      const parsed: Record<string, unknown> =
-        data as Record<string, unknown>
+      const parsed: StdRecord<string, unknown> =
+        data as StdRecord<string, unknown>
       for (const key in data) {
-        const itemData = (data as Record<string, unknown>)[
-          key
-        ]
+        const itemData = (
+          data as StdRecord<string, unknown>
+        )[key]
         parsed[key] =
           isModel(item) && item.onStringify
             ? item.onStringify(itemData as never)
@@ -123,10 +135,11 @@ export function record<M extends ModelNotGeneric>(
       }
       return parsed
     },
-    isOptional(): RecordModel<M, false> {
-      const copied = copyModel(
-        this,
-      ) as unknown as RecordModel<M, false>
+    isOptional(): Record<M, false> {
+      const copied = copyModel(this) as unknown as Record<
+        M,
+        false
+      >
       copied.$internals.isRequired = false
       return copied
     },

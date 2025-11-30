@@ -10,7 +10,7 @@ import { isModel } from '../utils/is'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface OrModel<
+export interface Or<
   M extends ModelNotGeneric[],
   R extends boolean = true,
 > extends Model<M[number], R> {
@@ -20,31 +20,29 @@ export interface OrModel<
   readonly infer: M[number]['infer']
   /**
    * Marks the union model as optional
-   * @returns A new OrModel instance marked as optional
+   * @returns A new Or instance marked as optional
    */
-  readonly isOptional: () => OrModel<M, false>
+  readonly isOptional: () => Or<M, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed data
-   * @returns A new OrModel instance with the validation function
+   * @returns A new Or instance with the validation function
    */
   readonly validate: (
     onValidate: (data: M) => void,
-  ) => OrModel<M, R>
+  ) => Or<M, R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new OrModel instance with the updated title
+   * @returns A new Or instance with the updated title
    */
-  readonly title: (name: string) => OrModel<M, R>
+  readonly title: (name: string) => Or<M, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new OrModel instance with the updated description
+   * @returns A new Or instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => OrModel<M, R>
+  readonly description: (description: string) => Or<M, R>
 }
 
 /**
@@ -53,7 +51,7 @@ export interface OrModel<
  * Creates a union type where the value can be any of the provided model types.
  * @template M - Array of model types to union
  * @param models - Variable number of models to create a union from
- * @returns An OrModel instance representing the union of all provided models
+ * @returns An Or instance representing the union of all provided models
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -73,9 +71,9 @@ export interface OrModel<
  */
 export function or<M extends ModelNotGeneric[]>(
   ...models: M
-): OrModel<M, true> {
-  const baseModel = getBaseModel<OrModel<M, true>>()
-  const model: OrModel<M, true> = {
+): Or<M, true> {
+  const baseModel = getBaseModel<Or<M, true>>()
+  const model: Or<M, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -119,8 +117,8 @@ export function or<M extends ModelNotGeneric[]>(
       }
       return data
     },
-    isOptional(): OrModel<M, false> {
-      const copied = copyModel(this) as unknown as OrModel<
+    isOptional(): Or<M, false> {
+      const copied = copyModel(this) as unknown as Or<
         M,
         false
       >

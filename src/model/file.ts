@@ -9,39 +9,37 @@ import { isFile } from '../utils/array-buffer-handler'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface FileModel<
+export interface File<
   R extends boolean = true,
-> extends Model<File, R> {
+> extends Model<globalThis.File, R> {
   /**
    * Marks the file model as optional
-   * @returns A new FileModel instance marked as optional
+   * @returns A new File instance marked as optional
    */
-  readonly isOptional: () => FileModel<false>
+  readonly isOptional: () => File<false>
   /**
    * Inferred TypeScript type for the file model (always File)
    */
-  readonly infer: File
+  readonly infer: globalThis.File
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new FileModel instance with the updated title
+   * @returns A new File instance with the updated title
    */
-  readonly title: (name: string) => FileModel<R>
+  readonly title: (name: string) => File<R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new FileModel instance with the updated description
+   * @returns A new File instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => FileModel<R>
+  readonly description: (description: string) => File<R>
 }
 
 /**
  * Creates a file model for validation and type inference.
  * Returns a model that validates File values, automatically converting Blob and ArrayBuffer
  * instances to File objects when needed. Supports optional required constraint.
- * @returns A FileModel instance for validating File values
+ * @returns A File instance for validating File values
  * @example
  * ```ts
  * import { action, m } from 'ggtype'
@@ -59,28 +57,28 @@ export interface FileModel<
  * )
  * ```
  */
-export function file(): FileModel<true> {
-  const baseModel = getBaseModel<FileModel<true>>()
-  const model: FileModel<true> = {
+export function file(): File<true> {
+  const baseModel = getBaseModel<File<true>>()
+  const model: File<true> = {
     ...baseModel,
     onParse: (data: unknown) => {
-      if (isFile(data)) return data as File
+      if (isFile(data)) return data as globalThis.File
       if (data instanceof Blob) {
-        return new File([data], 'file', {
+        return new globalThis.File([data], 'file', {
           type: data.type,
-        }) as File
+        }) as globalThis.File
       }
       if (data instanceof ArrayBuffer) {
-        return new File([data], 'file', {
+        return new globalThis.File([data], 'file', {
           type: 'application/octet-stream',
-        }) as File
+        }) as globalThis.File
       }
-      return data as File
+      return data as globalThis.File
     },
     isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as FileModel<false>
+      ) as unknown as File<false>
       copied.$internals.isRequired = false
       return copied
     },

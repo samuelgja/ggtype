@@ -8,44 +8,44 @@ import {
 } from './model'
 import { setModelState } from './model-state'
 
-export interface NumberModel<
+export interface Number<
   R extends boolean = true,
 > extends Model<number, R> {
   /**
    * Sets the minimum value constraint for the number
    * @param minimum - Minimum allowed value
-   * @returns A new NumberModel instance with the constraint
+   * @returns A new Number instance with the constraint
    */
-  readonly minimum: (minimum: number) => NumberModel<R>
+  readonly minimum: (minimum: number) => Number<R>
   /**
    * Sets the maximum value constraint for the number
    * @param maximum - Maximum allowed value
-   * @returns A new NumberModel instance with the constraint
+   * @returns A new Number instance with the constraint
    */
-  readonly maximum: (maximum: number) => NumberModel<R>
+  readonly maximum: (maximum: number) => Number<R>
   /**
    * Validates that the number is positive (greater than 0)
-   * @returns A new NumberModel instance with positive validation
+   * @returns A new Number instance with positive validation
    */
-  readonly positive: () => NumberModel<R>
+  readonly positive: () => Number<R>
   /**
    * Validates that the number is negative (less than 0)
-   * @returns A new NumberModel instance with negative validation
+   * @returns A new Number instance with negative validation
    */
-  readonly negative: () => NumberModel<R>
+  readonly negative: () => Number<R>
   /**
    * Marks the number model as optional
-   * @returns A new NumberModel instance marked as optional
+   * @returns A new Number instance marked as optional
    */
-  readonly isOptional: () => NumberModel<false>
+  readonly isOptional: () => Number<false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed number data
-   * @returns A new NumberModel instance with the validation function
+   * @returns A new Number instance with the validation function
    */
   readonly validate: (
     onValidate: (data: number) => void,
-  ) => NumberModel<R>
+  ) => Number<R>
   /**
    * Inferred TypeScript type for the number model (always number)
    */
@@ -53,24 +53,22 @@ export interface NumberModel<
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new NumberModel instance with the updated title
+   * @returns A new Number instance with the updated title
    */
-  readonly title: (name: string) => NumberModel<R>
+  readonly title: (name: string) => Number<R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new NumberModel instance with the updated description
+   * @returns A new Number instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => NumberModel<R>
+  readonly description: (description: string) => Number<R>
 }
 
 /**
  * Creates a number model for validation and type inference.
  * Returns a model that validates number values with optional constraints like
  * minimum/maximum values, positive/negative checks, and custom validation.
- * @returns A NumberModel instance for validating number values
+ * @returns A Number instance for validating number values
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -95,9 +93,9 @@ export interface NumberModel<
  *   .maximum(100)
  * ```
  */
-export function number(): NumberModel<true> {
-  const baseModel = getBaseModel<NumberModel<true>>()
-  const model: NumberModel<true> = {
+export function number(): Number<true> {
+  const baseModel = getBaseModel<Number<true>>()
+  const model: Number<true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -114,7 +112,7 @@ export function number(): NumberModel<true> {
     isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as NumberModel<false>
+      ) as unknown as Number<false>
       copied.$internals.isRequired = false
       return copied
     },

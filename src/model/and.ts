@@ -9,7 +9,7 @@ import { getModelId } from '../utils/get-model-id'
 import { object } from './object'
 import { copyModel } from './model'
 
-export interface AndModel<
+export interface And<
   M extends ModelNotGeneric[],
   R extends boolean = true,
 > extends Model<Intersect<M[number]>, R> {
@@ -19,31 +19,29 @@ export interface AndModel<
   readonly infer: Intersect<M[number]['infer']>
   /**
    * Marks the intersection model as optional
-   * @returns A new AndModel instance marked as optional
+   * @returns A new And instance marked as optional
    */
-  readonly isOptional: () => AndModel<M, false>
+  readonly isOptional: () => And<M, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed data
-   * @returns A new AndModel instance with the validation function
+   * @returns A new And instance with the validation function
    */
   readonly validate: (
     onValidate: (data: M) => void,
-  ) => AndModel<M, R>
+  ) => And<M, R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new AndModel instance with the updated title
+   * @returns A new And instance with the updated title
    */
-  readonly title: (name: string) => AndModel<M, R>
+  readonly title: (name: string) => And<M, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new AndModel instance with the updated description
+   * @returns A new And instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => AndModel<M, R>
+  readonly description: (description: string) => And<M, R>
 }
 
 /**
@@ -52,7 +50,7 @@ export interface AndModel<
  * creating an intersection type. Useful for composing complex object structures.
  * @template M - Array of model types to intersect
  * @param models - Variable number of models to combine
- * @returns An AndModel instance representing the intersection of all provided models
+ * @returns An And instance representing the intersection of all provided models
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -76,7 +74,7 @@ export interface AndModel<
  */
 export function and<M extends ModelNotGeneric[]>(
   ...models: M
-): AndModel<M, true> {
+): And<M, true> {
   const id = getModelId()
   let fullProps: Record<string, ModelNotGeneric> = {}
   for (const item of models) {
@@ -92,13 +90,13 @@ export function and<M extends ModelNotGeneric[]>(
   model.$internals.id = id
 
   // Override isRequired/isOptional logic for AndModel
-  const andModel = model as unknown as AndModel<M, true>
+  const andModel = model as unknown as And<M, true>
 
   // Create a new object with the correct isOptional method
-  const result: AndModel<M, true> = {
+  const result: And<M, true> = {
     ...andModel,
-    isOptional(): AndModel<M, false> {
-      const copied = copyModel(this) as unknown as AndModel<
+    isOptional(): And<M, false> {
+      const copied = copyModel(this) as unknown as And<
         M,
         false
       >

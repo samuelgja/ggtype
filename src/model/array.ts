@@ -10,53 +10,51 @@ import { isModel } from '../utils/is'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface ArrayModel<
+export interface Array<
   T extends ModelNotGeneric,
   R extends boolean = true,
 > extends Model<T[], R> {
   /**
    * Sets the maximum number of items allowed in the array
    * @param length - Maximum number of items
-   * @returns A new ArrayModel instance with the constraint
+   * @returns A new Array instance with the constraint
    */
-  readonly maxItems: (length: number) => ArrayModel<T, R>
+  readonly maxItems: (length: number) => Array<T, R>
   /**
    * Sets the minimum number of items required in the array
    * @param length - Minimum number of items
-   * @returns A new ArrayModel instance with the constraint
+   * @returns A new Array instance with the constraint
    */
-  readonly minItems: (length: number) => ArrayModel<T, R>
+  readonly minItems: (length: number) => Array<T, R>
   /**
    * Inferred TypeScript type for the array model (array of the item model's inferred type)
    */
   readonly infer: T['infer'][]
   /**
    * Marks the array model as optional
-   * @returns A new ArrayModel instance marked as optional
+   * @returns A new Array instance marked as optional
    */
-  readonly isOptional: () => ArrayModel<T, false>
+  readonly isOptional: () => Array<T, false>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed array data
-   * @returns A new ArrayModel instance with the validation function
+   * @returns A new Array instance with the validation function
    */
   readonly validate: (
     onValidate: (data: T[]) => void,
-  ) => ArrayModel<T, R>
+  ) => Array<T, R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new ArrayModel instance with the updated title
+   * @returns A new Array instance with the updated title
    */
-  readonly title: (name: string) => ArrayModel<T, R>
+  readonly title: (name: string) => Array<T, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new ArrayModel instance with the updated description
+   * @returns A new Array instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => ArrayModel<T, R>
+  readonly description: (description: string) => Array<T, R>
 }
 
 /**
@@ -65,7 +63,7 @@ export interface ArrayModel<
  * with optional constraints like min/max items and custom validation.
  * @template T - The model type for array items
  * @param list - The model to validate each array item against
- * @returns An ArrayModel instance for validating arrays of the specified type
+ * @returns An Array instance for validating arrays of the specified type
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -90,9 +88,9 @@ export interface ArrayModel<
  */
 export function array<T extends ModelNotGeneric>(
   list: T,
-): ArrayModel<T, true> {
-  const baseModel = getBaseModel<ArrayModel<T, true>>()
-  const model: ArrayModel<T, true> = {
+): Array<T, true> {
+  const baseModel = getBaseModel<Array<T, true>>()
+  const model: Array<T, true> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -100,7 +98,8 @@ export function array<T extends ModelNotGeneric>(
       return copied
     },
     onParse(data: unknown) {
-      if (!Array.isArray(data)) return data as T[]
+      if (!globalThis.Array.isArray(data))
+        return data as T[]
       const { onValidate } = this.$internals
       const parsed = data as T[]
       for (const item of parsed) {
@@ -120,7 +119,7 @@ export function array<T extends ModelNotGeneric>(
     },
     onStringify(data: T[]) {
       if (!data) return data
-      if (!Array.isArray(data)) return data
+      if (!globalThis.Array.isArray(data)) return data
 
       const newData = data as ModelNotGeneric['infer'][]
       for (let index = 0; index < newData.length; index++) {
@@ -136,10 +135,11 @@ export function array<T extends ModelNotGeneric>(
       }
       return newData
     },
-    isOptional(): ArrayModel<T, false> {
-      const copied = copyModel(
-        this,
-      ) as unknown as ArrayModel<T, false>
+    isOptional(): Array<T, false> {
+      const copied = copyModel(this) as unknown as Array<
+        T,
+        false
+      >
       copied.$internals.isRequired = false
       return copied
     },

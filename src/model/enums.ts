@@ -8,47 +8,47 @@ import {
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface EnumModel<
+export interface Enum<
   T extends string,
   R extends boolean = true,
 > extends Model<T, R> {
   /**
    * Sets the maximum length constraint for the enum string
    * @param length - Maximum number of characters
-   * @returns A new EnumModel instance with the constraint
+   * @returns A new Enum instance with the constraint
    */
-  readonly maxLength: (length: number) => EnumModel<T, R>
+  readonly maxLength: (length: number) => Enum<T, R>
   /**
    * Sets the minimum length constraint for the enum string
    * @param length - Minimum number of characters
-   * @returns A new EnumModel instance with the constraint
+   * @returns A new Enum instance with the constraint
    */
-  readonly minLength: (length: number) => EnumModel<T, R>
+  readonly minLength: (length: number) => Enum<T, R>
   /**
    * Sets a regular expression pattern for enum validation
    * @param pattern - Regular expression pattern
-   * @returns A new EnumModel instance with the pattern constraint
+   * @returns A new Enum instance with the pattern constraint
    */
-  readonly pattern: (pattern: RegExp) => EnumModel<T, R>
+  readonly pattern: (pattern: RegExp) => Enum<T, R>
   /**
    * Restricts the enum to only the specified values
    * @param values - Allowed enum values
-   * @returns A new EnumModel instance with restricted values
+   * @returns A new Enum instance with restricted values
    */
   readonly only: <N extends T[]>(
     ...values: N
-  ) => EnumModel<N[number], R>
+  ) => Enum<N[number], R>
   /**
    * Marks the enum model as optional
-   * @returns A new EnumModel instance marked as optional
+   * @returns A new Enum instance marked as optional
    */
-  readonly isOptional: () => EnumModel<T, false>
+  readonly isOptional: () => Enum<T, false>
   /**
    * Sets a default value for the enum
    * @param value - Default enum value
-   * @returns A new EnumModel instance with the default value
+   * @returns A new Enum instance with the default value
    */
-  readonly default: (value: T) => EnumModel<T, R>
+  readonly default: (value: T) => Enum<T, R>
   /**
    * Inferred TypeScript type for the enum model (string literal union)
    */
@@ -56,17 +56,15 @@ export interface EnumModel<
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new EnumModel instance with the updated title
+   * @returns A new Enum instance with the updated title
    */
-  readonly title: (name: string) => EnumModel<T, R>
+  readonly title: (name: string) => Enum<T, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new EnumModel instance with the updated description
+   * @returns A new Enum instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => EnumModel<T, R>
+  readonly description: (description: string) => Enum<T, R>
 }
 
 /**
@@ -75,7 +73,7 @@ export interface EnumModel<
  * Supports additional string constraints like min/max length, regex patterns, and default values.
  * @template T - The enum string literal type
  * @param enumParameters - Array of allowed string values for the enum
- * @returns An EnumModel instance for validating enum string values
+ * @returns An Enum instance for validating enum string values
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -99,16 +97,17 @@ export interface EnumModel<
  */
 export function enums<T extends string>(
   ...enumParameters: T[]
-): EnumModel<T, true> {
-  const baseModel = getBaseModel<EnumModel<T, true>>()
+): Enum<T, true> {
+  const baseModel = getBaseModel<Enum<T, true>>()
   baseModel.$internals.enums = enumParameters
-  const model: EnumModel<T, true> = {
+  const model: Enum<T, true> = {
     ...baseModel,
     onParse: (data: unknown) => data as T,
-    isOptional(): EnumModel<T, false> {
-      const copied = copyModel(
-        this,
-      ) as unknown as EnumModel<T, false>
+    isOptional(): Enum<T, false> {
+      const copied = copyModel(this) as unknown as Enum<
+        T,
+        false
+      >
       copied.$internals.isRequired = false
       return copied
     },
@@ -130,7 +129,7 @@ export function enums<T extends string>(
     only<N extends T[]>(...values: N) {
       const copied = copyModel(this)
       copied.$internals.enums = values
-      return copied as unknown as EnumModel<N[number], true>
+      return copied as unknown as Enum<N[number], true>
     },
     pattern(pattern: RegExp) {
       const copied = copyModel(this)

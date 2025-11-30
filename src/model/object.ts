@@ -21,7 +21,7 @@ type Properties = {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export interface ObjectModel<
+export interface Object<
   T extends Properties,
   R extends boolean = true,
 > extends Model<T, R> {
@@ -49,20 +49,20 @@ export interface ObjectModel<
   /**
    * Sets the maximum number of keys allowed in the object
    * @param maxKeys - Maximum number of keys
-   * @returns A new ObjectModel instance with the constraint
+   * @returns A new Object instance with the constraint
    */
-  readonly maxKeys: (maxKeys: number) => ObjectModel<T, R>
+  readonly maxKeys: (maxKeys: number) => Object<T, R>
   /**
    * Sets the minimum number of keys required in the object
    * @param minKeys - Minimum number of keys
-   * @returns A new ObjectModel instance with the constraint
+   * @returns A new Object instance with the constraint
    */
-  readonly minKeys: (minKeys: number) => ObjectModel<T, R>
+  readonly minKeys: (minKeys: number) => Object<T, R>
   /**
    * Marks the object model as optional
-   * @returns A new ObjectModel instance marked as optional
+   * @returns A new Object instance marked as optional
    */
-  readonly isOptional: () => ObjectModel<T, false>
+  readonly isOptional: () => Object<T, false>
   /**
    * Parses and validates an object according to the model
    * @param data - The object data to parse
@@ -90,25 +90,25 @@ export interface ObjectModel<
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed data
-   * @returns A new ObjectModel instance with the validation function
+   * @returns A new Object instance with the validation function
    */
   readonly validate: (
     onValidate: OnValidate<T>,
-  ) => ObjectModel<T, R>
+  ) => Object<T, R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new ObjectModel instance with the updated title
+   * @returns A new Object instance with the updated title
    */
-  readonly title: (name: string) => ObjectModel<T, R>
+  readonly title: (name: string) => Object<T, R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new ObjectModel instance with the updated description
+   * @returns A new Object instance with the updated description
    */
   readonly description: (
     description: string,
-  ) => ObjectModel<T, R>
+  ) => Object<T, R>
 }
 
 /**
@@ -118,7 +118,7 @@ export interface ObjectModel<
  * @template T - The properties type
  * @template R - Whether the model is required
  * @param properties - Record of property names to their corresponding models
- * @returns An ObjectModel instance for validating objects with the specified structure
+ * @returns An Object instance for validating objects with the specified structure
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -148,7 +148,7 @@ export interface ObjectModel<
 export function object<
   T extends Properties,
   R extends boolean = true,
->(properties: T): ObjectModel<T, R> {
+>(properties: T): Object<T, R> {
   const props: Record<string, ModelNotGeneric> = {}
   for (const key in properties) {
     const property = properties[key]
@@ -162,9 +162,9 @@ export function object<
     }
     props[key] = property
   }
-  const baseModel = getBaseModel<ObjectModel<T, R>>()
+  const baseModel = getBaseModel<Object<T, R>>()
   baseModel.$internals.properties = props
-  const model: ObjectModel<T, R> = {
+  const model: Object<T, R> = {
     ...baseModel,
     validate(onValidate) {
       const copied = copyModel(this)
@@ -180,7 +180,7 @@ export function object<
       // 1) detect unknown keys:
       const { properties } = this.$internals
       if (properties) {
-        const extras = Object.keys(data).filter(
+        const extras = globalThis.Object.keys(data).filter(
           (key) => !(key in properties),
         )
         if (extras.length > 0) {
@@ -230,10 +230,11 @@ export function object<
       }
       return newData
     },
-    isOptional(): ObjectModel<T, false> {
-      const copied = copyModel(
-        this,
-      ) as unknown as ObjectModel<T, false>
+    isOptional(): Object<T, false> {
+      const copied = copyModel(this) as unknown as Object<
+        T,
+        false
+      >
       copied.$internals.isRequired = false
       return copied
     },

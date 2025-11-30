@@ -12,85 +12,83 @@ import { ValidationError } from '../utils/errors'
 import type { JSONSchema7 } from 'json-schema'
 import { setModelState } from './model-state'
 
-export interface DateModel<
+export interface Date<
   R extends boolean = true,
-> extends Model<Date, R> {
+> extends Model<globalThis.Date, R> {
   /**
    * Marks the date model as optional
-   * @returns A new DateModel instance marked as optional
+   * @returns A new Date instance marked as optional
    */
-  readonly isOptional: () => DateModel<false>
+  readonly isOptional: () => Date<false>
   /**
    * Inferred TypeScript type for the date model (always Date)
    */
-  readonly infer: Date
+  readonly infer: globalThis.Date
   /**
    * Converts a Date to a string representation based on the format (time, date, or date-time)
    * @param data - The Date to stringify
    * @returns String representation of the date
    */
-  readonly onStringify: (data: Date) => string
+  readonly onStringify: (data: globalThis.Date) => string
   /**
    * Validates the date as a time value (HH:mm:ss format)
-   * @returns A new DateModel instance with time format validation
+   * @returns A new Date instance with time format validation
    */
-  readonly isTime: () => DateModel<R>
+  readonly isTime: () => Date<R>
   /**
    * Validates the date as a date value (YYYY-MM-DD format)
-   * @returns A new DateModel instance with date format validation
+   * @returns A new Date instance with date format validation
    */
-  readonly isDate: () => DateModel<R>
+  readonly isDate: () => Date<R>
   /**
    * Validates the date as a date-time value (ISO 8601 format)
-   * @returns A new DateModel instance with date-time format validation
+   * @returns A new Date instance with date-time format validation
    */
-  readonly isDateTime: () => DateModel<R>
+  readonly isDateTime: () => Date<R>
   /**
    * Sets the minimum date constraint
    * @param value - Minimum allowed date
-   * @returns A new DateModel instance with the constraint
+   * @returns A new Date instance with the constraint
    */
-  readonly minimum: (value: Date) => DateModel<R>
+  readonly minimum: (value: globalThis.Date) => Date<R>
   /**
    * Sets the maximum date constraint
    * @param value - Maximum allowed date
-   * @returns A new DateModel instance with the constraint
+   * @returns A new Date instance with the constraint
    */
-  readonly maximum: (value: Date) => DateModel<R>
+  readonly maximum: (value: globalThis.Date) => Date<R>
   /**
    * Sets the minimum date constraint using a Unix timestamp
    * @param value - Minimum allowed timestamp in milliseconds
-   * @returns A new DateModel instance with the constraint
+   * @returns A new Date instance with the constraint
    */
-  readonly minimumTimestamp: (value: number) => DateModel<R>
+  readonly minimumTimestamp: (value: number) => Date<R>
   /**
    * Sets the maximum date constraint using a Unix timestamp
    * @param value - Maximum allowed timestamp in milliseconds
-   * @returns A new DateModel instance with the constraint
+   * @returns A new Date instance with the constraint
    */
-  readonly maximumTimestamp: (value: number) => DateModel<R>
+  readonly maximumTimestamp: (value: number) => Date<R>
   /**
    * Adds custom validation logic to the model
    * @param onValidate - Validation function that receives the parsed date data
-   * @returns A new DateModel instance with the validation function
+   * @returns A new Date instance with the validation function
    */
   readonly validate: (
-    onValidate: OnValidate<Date>,
-  ) => DateModel<R>
+    onValidate: OnValidate<globalThis.Date>,
+  ) => Date<R>
   /**
    * Sets a human-readable title for the model
    * @param name - The title to set
-   * @returns A new DateModel instance with the updated title
+   * @returns A new Date instance with the updated title
    */
-  readonly title: (name: string) => DateModel<R>
+  readonly title: (name: string) => Date<R>
   /**
    * Sets a human-readable description for the model
    * @param description - The description to set
-   * @returns A new DateModel instance with the updated description
+   * @returns A new Date instance with the updated description
    */
-  readonly description: (
-    description: string,
-  ) => DateModel<R>
+  readonly description: (description: string) => Date<R>
 }
 
 /**
@@ -101,9 +99,9 @@ export interface DateModel<
  */
 function getDate(data: unknown) {
   if (typeof data === 'string') {
-    return new Date(data)
+    return new globalThis.Date(data)
   }
-  if (data instanceof Date) {
+  if (data instanceof globalThis.Date) {
     return data
   }
   return
@@ -113,7 +111,7 @@ function getDate(data: unknown) {
  * Creates a date model for validation and type inference.
  * Returns a model that validates Date values with optional custom validation.
  * Supports parsing from strings, numbers (timestamps), and Date instances.
- * @returns A DateModel instance for validating Date values
+ * @returns A Date instance for validating Date values
  * @example
  * ```ts
  * import { m } from 'ggtype'
@@ -132,12 +130,12 @@ function getDate(data: unknown) {
  * })
  * ```
  */
-export function date(): DateModel<true> {
-  const baseModel = getBaseModel<DateModel<true>>()
+export function date(): Date<true> {
+  const baseModel = getBaseModel<Date<true>>()
 
-  const model: DateModel<true> = {
+  const model: Date<true> = {
     ...baseModel,
-    validate(onValidate: (data: Date) => void) {
+    validate(onValidate: (data: globalThis.Date) => void) {
       const copied = copyModel(this)
       copied.$internals.onValidate = onValidate
       return copied
@@ -185,9 +183,9 @@ export function date(): DateModel<true> {
       }
       return dateValue
     },
-    onStringify(data: Date) {
+    onStringify(data: globalThis.Date) {
       if (data == undefined || !data) return data
-      if (!(data instanceof Date)) return data
+      if (!(data instanceof globalThis.Date)) return data
       switch (this.$internals.format) {
         case 'time': {
           return data.toISOString().split('T')[1]
@@ -218,15 +216,15 @@ export function date(): DateModel<true> {
     isOptional() {
       const copied = copyModel(
         this,
-      ) as unknown as DateModel<false>
+      ) as unknown as Date<false>
       copied.$internals.isRequired = false
       return copied
     },
-    maximum(value: Date) {
+    maximum(value: globalThis.Date) {
       const unix = value.getTime()
       return this.maximumTimestamp(unix)
     },
-    minimum(value: Date) {
+    minimum(value: globalThis.Date) {
       const unix = value.getTime()
       return this.minimumTimestamp(unix)
     },
