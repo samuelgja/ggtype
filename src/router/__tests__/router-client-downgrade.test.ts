@@ -12,7 +12,7 @@ import { createRouter } from '../router'
 import { createRouterClient } from '../router-client'
 import { isSuccess } from '../..'
 
-describe('router client transport downgrade', () => {
+describe('router client transport selection', () => {
   const userModel = object({
     id: string(),
     name: string(),
@@ -130,7 +130,7 @@ describe('router client transport downgrade', () => {
     }
   })
 
-  it('should downgrade to websocket when stream fails', async () => {
+  it('should fail when stream transport fails (no automatic downgrade)', async () => {
     // Create a client with invalid stream URL but valid websocket and http URLs
     const client = createRouterClient<Router>({
       streamURL: `http://localhost:99999`, // Invalid port
@@ -138,20 +138,15 @@ describe('router client transport downgrade', () => {
       httpURL: `http://localhost:${httpPort}`,
     })
 
-    const result = await client.fetch({
-      getUser: { id: '2', name: 'Jane' },
-    })
-
-    expect(result.getUser).toBeDefined()
-    if (isSuccess(result.getUser)) {
-      expect(result.getUser.data).toEqual({
-        id: '2',
-        name: 'Jane',
-      })
-    }
+    // Should throw error since stream transport fails and no downgrade occurs
+    await expect(
+      client.fetch({
+        getUser: { id: '2', name: 'Jane' },
+      }),
+    ).rejects.toThrow()
   })
 
-  it('should downgrade to http when stream and websocket fail', async () => {
+  it('should fail when stream transport fails even if http is available (no automatic downgrade)', async () => {
     // Create a client with invalid stream and websocket URLs but valid http URL
     const client = createRouterClient<Router>({
       streamURL: `http://localhost:99999`, // Invalid port
@@ -159,17 +154,12 @@ describe('router client transport downgrade', () => {
       httpURL: `http://localhost:${httpPort}`,
     })
 
-    const result = await client.fetch({
-      getUser: { id: '3', name: 'Bob' },
-    })
-
-    expect(result.getUser).toBeDefined()
-    if (isSuccess(result.getUser)) {
-      expect(result.getUser.data).toEqual({
-        id: '3',
-        name: 'Bob',
-      })
-    }
+    // Should throw error since stream transport fails and no downgrade occurs
+    await expect(
+      client.fetch({
+        getUser: { id: '3', name: 'Bob' },
+      }),
+    ).rejects.toThrow()
   })
 
   it('should work with only stream URL provided', async () => {
@@ -248,39 +238,22 @@ describe('router client transport downgrade', () => {
     )
   })
 
-  it('should downgrade correctly with stream() method', async () => {
+  it('should fail with stream() method when stream transport fails (no automatic downgrade)', async () => {
     const client = createRouterClient<Router>({
       streamURL: `http://localhost:99999`, // Invalid port
       websocketURL: `ws://localhost:${wsPort}`,
       httpURL: `http://localhost:${httpPort}`,
     })
 
-    const stream = await client.stream({
-      getUser: { id: '8', name: 'Frank' },
-    })
-
-    const results: unknown[] = []
-    for await (const result of stream) {
-      results.push(result)
-    }
-
-    expect(results.length).toBeGreaterThan(0)
-    const lastResult = results.at(-1) as {
-      getUser?: {
-        status: string
-        data?: { id: string; name: string }
-      }
-    }
-    expect(lastResult.getUser).toBeDefined()
-    if (lastResult.getUser?.status === 'ok') {
-      expect(lastResult.getUser.data).toEqual({
-        id: '8',
-        name: 'Frank',
-      })
-    }
+    // Should throw error since stream transport fails and no downgrade occurs
+    await expect(
+      client.stream({
+        getUser: { id: '8', name: 'Frank' },
+      }),
+    ).rejects.toThrow()
   })
 
-  it('should try transports in correct order: stream -> websocket -> http', async () => {
+  it('should use stream transport when all three URLs are provided (priority order)', async () => {
     const transportAttempts: string[] = []
 
     // Create servers that track which transport was used
@@ -351,8 +324,11 @@ describe('router client transport downgrade', () => {
         getUser: { id: '9', name: 'Grace' },
       })
 
-      // Should have tried stream first
+      // Should have used stream transport (first in priority order)
       expect(transportAttempts).toContain('stream')
+      // Should not have tried other transports
+      expect(transportAttempts).not.toContain('websocket')
+      expect(transportAttempts).not.toContain('http')
       expect(result.getUser).toBeDefined()
       if (isSuccess(result.getUser)) {
         expect(result.getUser.data).toEqual({

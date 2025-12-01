@@ -128,13 +128,13 @@ Server can call client actions (like notifications, UI updates). Client can call
 
 Return streams from actions for real-time data. Use async generators to yield results as they become available.
 
-### 🚀 Multiple Transports with Automatic Downgrade
+### 🚀 Multiple Transports
 
 - **`httpURL`** - Simple request/response (like REST). Best for CRUD operations.
 - **`streamURL`** - HTTP streaming with bidirectional RPC. Best for real-time apps.
 - **`websocketURL`** - WebSocket connection. Best for chat, games, real-time collaboration.
 
-**Automatic Transport Downgrade:** When multiple URLs are provided, the client automatically tries them in order (stream → websocket → http) if a connection fails. This ensures maximum reliability and compatibility.
+**Transport Selection:** When multiple URLs are provided, the client uses the first available transport in priority order (stream → websocket → http). If the selected transport fails, the error is thrown (no automatic downgrade).
 
 ---
 
@@ -271,7 +271,7 @@ All models are required by default. Use `` to make them optional.
   - `options.streamURL` - Server URL for HTTP stream transport (optional)
   - `options.websocketURL` - Server URL for WebSocket transport (optional)
   - `options.httpURL` - Server URL for HTTP transport (optional)
-  - **Transport Downgrade:** If multiple URLs are provided, the client automatically tries them in order (stream → websocket → http) if a connection fails
+  - **Transport Selection:** If multiple URLs are provided, the client uses the first available transport in priority order (stream → websocket → http). No automatic downgrade.
   - `options.defineClientActions` - Client action handlers (optional)
   - Returns: 
     - `fetch(params, options?)` - Fetch multiple actions
@@ -604,9 +604,9 @@ if (isSuccess(result)) {
 
 ---
 
-## Transport Configuration & Downgrade
+## Transport Configuration
 
-The client supports flexible transport configuration with automatic downgrade for maximum reliability:
+The client supports flexible transport configuration:
 
 ### Single Transport
 
@@ -629,15 +629,15 @@ const client = createRouterClient<Router>({
 })
 ```
 
-### Multiple Transports with Automatic Downgrade
+### Multiple Transports
 
-Provide multiple URLs to enable automatic downgrade. The client will try transports in order (stream → websocket → http) if a connection fails:
+Provide multiple URLs to specify transport priority. The client will use the first available transport in priority order (stream → websocket → http):
 
 ```typescript
 const client = createRouterClient<Router>({
-  streamURL: 'http://localhost:3000/stream',    // Try first
-  websocketURL: 'ws://localhost:3000/ws',       // Fallback if stream fails
-  httpURL: 'http://localhost:3000/http',        // Final fallback
+  streamURL: 'http://localhost:3000/stream',    // Used first if available
+  websocketURL: 'ws://localhost:3000/ws',       // Used if streamURL not provided
+  httpURL: 'http://localhost:3000/http',        // Used if neither streamURL nor websocketURL provided
   defineClientActions: {
     showNotification: async (params) => {
       console.log('Notification:', params.message)
@@ -646,11 +646,10 @@ const client = createRouterClient<Router>({
   },
 })
 
-// The client will automatically:
-// 1. Try stream transport first
-// 2. If that fails, try websocket
-// 3. If that also fails, use HTTP
-// This ensures your app works even if some transports are unavailable
+// The client will use stream transport (first in priority order).
+// If streamURL is not provided, it will use websocketURL.
+// If neither streamURL nor websocketURL are provided, it will use httpURL.
+// If the selected transport fails, an error is thrown (no automatic downgrade).
 ```
 
 **Use Cases:**

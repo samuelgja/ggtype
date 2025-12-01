@@ -14,7 +14,7 @@ describe('router', () => {
 
   for (const transport of transports) {
     describe(`transport: ${transport}`, () => {
-      let timeout = 10
+      let timeout = 20
       const serverTimeout = timeout * 2 + 10
       const user = m
         .object({
@@ -1404,7 +1404,6 @@ describe('router', () => {
 
         try {
           const testPort = testServer.port
-          let onErrorCalled = false
           let streamErrored = false
 
           const client = createRouterClient<
@@ -1413,11 +1412,6 @@ describe('router', () => {
             streamURL: `http://localhost:${testPort}`,
             defineClientActions: {},
             responseTimeout: timeout,
-            onError: (error) => {
-              // onError should be called when stream encounters errors
-              onErrorCalled = true
-              expect(error).toBeInstanceOf(Error)
-            },
           })
 
           const result = await client.stream({
@@ -1439,9 +1433,8 @@ describe('router', () => {
           }
 
           // At least one of these should be true - either the stream errors
-          // or onError is called (or both)
           // The key is that the stream doesn't hang indefinitely
-          expect(streamErrored || onErrorCalled).toBe(true)
+          expect(streamErrored).toBe(true)
         } finally {
           testServer.stop()
         }

@@ -9,32 +9,34 @@
  * @returns A wrapped controller with closure protection
  */
 export function createController<Result>(
-  controller: ReadableStreamDefaultController<Result>,
+  controller: ReadableStreamController<Result>,
 ): ReadableStreamDefaultController<Result> {
+  const defaultController =
+    controller as ReadableStreamDefaultController<Result>
   let isClosed = false
   return {
-    enqueue(data) {
+    enqueue(data: Result) {
       if (isClosed) {
         return
       }
-      controller.enqueue(data)
+      defaultController.enqueue(data)
     },
     close() {
       if (isClosed) {
         return
       }
       isClosed = true
-      controller.close()
+      defaultController.close()
     },
     error(error) {
       if (isClosed) {
         return
       }
       isClosed = true
-      controller.error(error)
+      defaultController.error(error)
     },
     get desiredSize() {
-      return controller.desiredSize
+      return defaultController.desiredSize
     },
   }
 }

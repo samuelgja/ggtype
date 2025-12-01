@@ -415,7 +415,7 @@ describe('router-test-utils', () => {
         }
       })
 
-      it('should handle onError callback', async () => {
+      it('should handle errors by throwing', async () => {
         const testRouter = createTestRouter(
           actions,
           clientActions,
@@ -423,9 +423,6 @@ describe('router-test-utils', () => {
           {
             transport,
             responseTimeout: timeout * 10,
-            onError: () => {
-              // Error callback may or may not be called depending on implementation
-            },
           },
         )
 

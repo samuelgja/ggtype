@@ -36,6 +36,9 @@ export class WebSocketConnectionManager {
   private readonly initialReconnectDelay: number
   private readonly maxReconnectDelay: number
   private reconnectDelay: number
+  // Track in-flight connection attempts to prevent concurrent creation
+  private pendingConnectionPromise: Promise<Transport | null> | null =
+    null
 
   constructor(
     url: string | URL,
@@ -70,6 +73,7 @@ export class WebSocketConnectionManager {
   /**
    * Gets or creates a WebSocket connection.
    * Returns the transport if connection is ready, or null if connection failed.
+   * Prevents concurrent connection attempts by reusing in-flight connection promises.
    * @returns The transport instance or null if connection failed
    */
   async getConnection(): Promise<Transport | null> {
@@ -86,8 +90,20 @@ export class WebSocketConnectionManager {
       this.cleanupConnection()
     }
 
-    // Create new connection
-    return this.createConnection()
+    // If there's already a connection attempt in progress, wait for it
+    if (this.pendingConnectionPromise) {
+      return this.pendingConnectionPromise
+    }
+
+    // Create new connection and track the promise
+    this.pendingConnectionPromise = this.createConnection()
+    try {
+      const result = await this.pendingConnectionPromise
+      return result
+    } finally {
+      // Clear the pending promise after completion
+      this.pendingConnectionPromise = null
+    }
   }
 
   /**
@@ -116,6 +132,8 @@ export class WebSocketConnectionManager {
    * Closes the connection and cleans up resources.
    */
   async close(): Promise<void> {
+    // Clear pending connection promise to prevent new connections
+    this.pendingConnectionPromise = null
     if (this.connectionState) {
       this.connectionState.isClosing = true
       if (this.connectionState.reconnectTimer) {
@@ -335,5 +353,7 @@ export class WebSocketConnectionManager {
       }
       this.connectionState = null
     }
+    // Clear any pending connection promise to allow new connection attempts
+    this.pendingConnectionPromise = null
   }
 }

@@ -3,6 +3,7 @@ import { action, m, type TransportType } from '../..'
 import { createRouter } from '../router'
 import { createRouterClient } from '../router-client'
 import { AsyncStream } from '../../utils/async-stream'
+import { createController } from '../../utils/stream-helpers'
 
 describe('router client return types', () => {
   const transports: TransportType[] = [
@@ -92,7 +93,9 @@ describe('router client return types', () => {
         paramsModel,
         async ({ params }) => {
           return new AsyncStream({
-            start(controller) {
+            start(control) {
+              const controller =
+                createController<string>(control)
               controller.enqueue(
                 `async-stream-${params.value}-1`,
               )

@@ -128,17 +128,18 @@ interface RouterClientOptionsBase<
   >,
 > {
   /**
-   * URL for HTTP stream transport. If provided, will be tried first.
-   * If all three URLs are provided, transports will be tried in order:
-   * stream -> websocket -> http (with automatic downgrade on failure)
+   * URL for HTTP stream transport. If provided, will be used first (priority order).
+   * If multiple URLs are provided, the first available transport in priority order will be used:
+   * stream -> websocket -> http
+   * No automatic downgrade - if the selected transport fails, the error is thrown.
    */
   streamURL?: string | URL
   /**
-   * URL for WebSocket transport. If provided, will be tried after stream if stream fails.
+   * URL for WebSocket transport. If provided and streamURL is not provided, will be used.
    */
   websocketURL?: string | URL
   /**
-   * URL for HTTP transport. If provided, will be tried last if other transports fail.
+   * URL for HTTP transport. If provided and neither streamURL nor websocketURL are provided, will be used.
    */
   httpURL?: string | URL
   /**
@@ -151,10 +152,6 @@ interface RouterClientOptionsBase<
    * Timeout in milliseconds for waiting responses (default: 60000)
    */
   responseTimeout?: number
-  /**
-   * Optional error handler callback
-   */
-  onError?: (error: Error) => void
   /**
    * Optional callback invoked before sending a request.
    * Receives the request parameters and a runAgain method to retry the request.
