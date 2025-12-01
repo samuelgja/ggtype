@@ -1,7 +1,6 @@
 import type { ActionNotGeneric } from '../action/action'
 import type {
   Router,
-  TransportType,
   RouterResultNotGeneric,
   ActionResult,
 } from '../types'
@@ -129,9 +128,19 @@ interface RouterClientOptionsBase<
   >,
 > {
   /**
-   * The server URL to connect to
+   * URL for HTTP stream transport. If provided, will be tried first.
+   * If all three URLs are provided, transports will be tried in order:
+   * stream -> websocket -> http (with automatic downgrade on failure)
    */
-  url: string | URL
+  streamURL?: string | URL
+  /**
+   * URL for WebSocket transport. If provided, will be tried after stream if stream fails.
+   */
+  websocketURL?: string | URL
+  /**
+   * URL for HTTP transport. If provided, will be tried last if other transports fail.
+   */
+  httpURL?: string | URL
   /**
    * Handlers for client actions (called by server)
    */
@@ -142,10 +151,6 @@ interface RouterClientOptionsBase<
    * Timeout in milliseconds for waiting responses (default: 60000)
    */
   responseTimeout?: number
-  /**
-   * Transport type: 'stream', 'websocket', or 'http' (must match server transport)
-   */
-  transport?: TransportType
   /**
    * Optional error handler callback
    */
@@ -180,83 +185,38 @@ interface RouterClientOptionsBase<
     | ResultForWithActionResult<R, Params>
     | void
     | Promise<ResultForWithActionResult<R, Params> | void>
-}
-
-interface RouterClientOptionsHTTP<
-  R extends Router<
-    Record<string, ActionNotGeneric>,
-    Record<string, ClientAction>
-  >,
-> extends RouterClientOptionsBase<R> {
-  transport: 'http'
   /**
-   * HTTP method to use for requests (default: 'GET')
+   * HTTP method to use for HTTP requests (default: 'GET')
    * Can be overridden per-request via FetchOptions
    */
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   /**
-   * Whether to use HTTP keep-alive connections (default: false)
-   * When true, adds 'Connection: keep-alive' header to requests
-   */
-  keepAlive?: boolean
-}
-
-interface RouterClientOptionsStream<
-  R extends Router<
-    Record<string, ActionNotGeneric>,
-    Record<string, ClientAction>
-  >,
-> extends RouterClientOptionsBase<R> {
-  transport: 'stream'
-  /**
-   * Whether to use HTTP keep-alive connections (default: true)
+   * Whether to use HTTP keep-alive connections for HTTP transport (default: false)
+   * For stream transport, default is true
    * When true, adds 'Connection: keep-alive' header to requests
    */
   keepAlive?: boolean
   /**
    * Maximum number of reconnection attempts when connection is lost (default: 5)
+   * Applies to stream and websocket transports
    */
   maxReconnectAttempts?: number
   /**
    * Initial delay in milliseconds before first reconnection attempt (default: 1000)
+   * Applies to stream and websocket transports
    */
   initialReconnectDelay?: number
   /**
    * Maximum delay in milliseconds between reconnection attempts (default: 30000)
+   * Applies to stream and websocket transports
    */
   maxReconnectDelay?: number
   /**
    * Connection timeout in milliseconds (default: same as responseTimeout)
    * Time to wait for initial connection establishment
+   * Applies to stream and websocket transports
    */
   connectionTimeout?: number
-}
-
-interface RouterClientOptionsWebSocket<
-  R extends Router<
-    Record<string, ActionNotGeneric>,
-    Record<string, ClientAction>
-  >,
-> extends RouterClientOptionsBase<R> {
-  transport: 'websocket'
-  /**
-   * Maximum number of reconnection attempts when connection is lost (default: 5)
-   */
-  maxReconnectAttempts?: number
-  /**
-   * Initial delay in milliseconds before first reconnection attempt (default: 1000)
-   */
-  initialReconnectDelay?: number
-  /**
-   * Maximum delay in milliseconds between reconnection attempts (default: 30000)
-   */
-  maxReconnectDelay?: number
-  /**
-   * Connection timeout in milliseconds (default: same as responseTimeout)
-   * Time to wait for initial connection establishment
-   */
-  connectionTimeout?: number
-  // websocket keep alive automatically handled by the protocol
 }
 
 /**
@@ -267,10 +227,7 @@ export type RouterClientOptions<
     Record<string, ActionNotGeneric>,
     Record<string, ClientAction>
   >,
-> =
-  | RouterClientOptionsHTTP<R>
-  | RouterClientOptionsStream<R>
-  | RouterClientOptionsWebSocket<R>
+> = RouterClientOptionsBase<R>
 
 /**
  * Options for fetch and stream calls.

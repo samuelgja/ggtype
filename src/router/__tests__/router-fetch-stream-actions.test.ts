@@ -132,10 +132,19 @@ describe('router fetchActions and streamActions', () => {
           })
         }
 
-        client = createRouterClient<Router>({
-          url: `http://localhost:${server.port}`,
-          transport,
-        })
+        if (transport === 'stream') {
+          client = createRouterClient<Router>({
+            streamURL: `http://localhost:${server.port}`,
+          })
+        } else if (transport === 'http') {
+          client = createRouterClient<Router>({
+            httpURL: `http://localhost:${server.port}`,
+          })
+        } else {
+          client = createRouterClient<Router>({
+            websocketURL: `ws://localhost:${server.port}`,
+          })
+        }
       })
 
       afterAll(() => {

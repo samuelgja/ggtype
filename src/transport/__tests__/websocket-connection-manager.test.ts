@@ -745,8 +745,7 @@ describe('WebSocketConnectionManager', () => {
 
     try {
       const client = createRouterClient<typeof router>({
-        url: wsUrl,
-        transport: 'websocket',
+        websocketURL: wsUrl,
         defineClientActions: {},
         responseTimeout: 5000,
       })

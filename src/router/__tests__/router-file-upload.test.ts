@@ -135,11 +135,9 @@ describe('router file upload', () => {
       describe('client.fetch() with file upload', () => {
         it('should send file and receive file back', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },
@@ -166,11 +164,9 @@ describe('router file upload', () => {
 
         it('should send file with client action and receive file back', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => {
                 await new Promise((resolve) =>
@@ -214,11 +210,9 @@ describe('router file upload', () => {
           )
 
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },
@@ -252,11 +246,9 @@ describe('router file upload', () => {
           )
 
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },
@@ -284,11 +276,9 @@ describe('router file upload', () => {
       describe('client.stream() with file upload', () => {
         it('should send file and receive file back via stream', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },
@@ -341,11 +331,9 @@ describe('router file upload', () => {
 
         it('should send file with client action and receive file back via stream', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => {
                 await new Promise((resolve) =>
@@ -404,11 +392,9 @@ describe('router file upload', () => {
 
         it('should handle streaming file action', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => {
                 await new Promise((resolve) =>
@@ -473,11 +459,9 @@ describe('router file upload', () => {
           )
 
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },
@@ -537,11 +521,9 @@ describe('router file upload', () => {
           )
 
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
             },

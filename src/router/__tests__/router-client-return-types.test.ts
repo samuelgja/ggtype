@@ -201,12 +201,18 @@ describe('router client return types', () => {
 
       describe('client.fetch()', () => {
         it('should fetch normal (non-streaming) action return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             normalAction: { value: 'test' },
@@ -219,12 +225,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch generator function return and return final value', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             generatorAction: { value: 'test' },
@@ -238,12 +250,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch async generator function return and return final value', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             asyncGeneratorAction: { value: 'test' },
@@ -259,12 +277,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch ReadableStream return and return final value', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             readableStreamAction: { value: 'test' },
@@ -280,12 +304,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch AsyncStream return and return final value', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             asyncStreamAction: { value: 'test' },
@@ -301,12 +331,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch empty stream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             emptyStreamAction: { value: 'test' },
@@ -322,12 +358,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch single value stream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.fetch({
             singleValueStreamAction: { value: 'test' },
@@ -342,12 +384,18 @@ describe('router client return types', () => {
         })
 
         it('should fetch all return types in a single request', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout * 2,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout * 2,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout * 2,
+                })
 
           const result = await client.fetch({
             normalAction: { value: 'all' },
@@ -412,12 +460,18 @@ describe('router client return types', () => {
 
       describe('client.stream()', () => {
         it('should stream normal (non-streaming) action return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             normalAction: { value: 'test' },
@@ -441,12 +495,18 @@ describe('router client return types', () => {
         })
 
         it('should stream generator function return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             generatorAction: { value: 'test' },
@@ -482,12 +542,18 @@ describe('router client return types', () => {
         })
 
         it('should stream async generator function return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             asyncGeneratorAction: { value: 'test' },
@@ -517,12 +583,18 @@ describe('router client return types', () => {
         })
 
         it('should stream ReadableStream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             readableStreamAction: { value: 'test' },
@@ -552,12 +624,18 @@ describe('router client return types', () => {
         })
 
         it('should stream AsyncStream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             asyncStreamAction: { value: 'test' },
@@ -587,12 +665,18 @@ describe('router client return types', () => {
         })
 
         it('should stream empty stream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             emptyStreamAction: { value: 'test' },
@@ -618,12 +702,18 @@ describe('router client return types', () => {
         })
 
         it('should stream single value stream return', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout,
+                })
 
           const result = await client.stream({
             singleValueStreamAction: { value: 'test' },
@@ -646,12 +736,18 @@ describe('router client return types', () => {
         })
 
         it('should stream all return types in a single request', async () => {
-          const client = createRouterClient<Router>({
-            url,
-            transport,
-            defineClientActions: {},
-            responseTimeout: timeout * 2,
-          })
+          const client =
+            transport === 'stream'
+              ? createRouterClient<Router>({
+                  streamURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout * 2,
+                })
+              : createRouterClient<Router>({
+                  websocketURL: url,
+                  defineClientActions: {},
+                  responseTimeout: timeout * 2,
+                })
 
           const result = await client.stream({
             normalAction: { value: 'all' },

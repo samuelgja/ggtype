@@ -39,8 +39,7 @@ describe('Router with Elysia integration', () => {
 
       try {
         const client = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/api`,
-          transport: 'http',
+          httpURL: `http://localhost:${PORT}/api`,
         })
 
         const result = await client.fetch({
@@ -89,8 +88,7 @@ describe('Router with Elysia integration', () => {
 
       try {
         const client = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/api`,
-          transport: 'http',
+          httpURL: `http://localhost:${PORT}/api`,
         })
 
         const result = await client.fetch({
@@ -157,8 +155,7 @@ describe('Router with Elysia integration', () => {
 
       try {
         const client = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/api`,
-          transport: 'stream',
+          streamURL: `http://localhost:${PORT}/api`,
         })
 
         // Test single action
@@ -236,8 +233,7 @@ describe('Router with Elysia integration', () => {
         let notificationReceived = false
 
         const client = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/api`,
-          transport: 'stream',
+          streamURL: `http://localhost:${PORT}/api`,
           defineClientActions: {
             showNotification: async (params) => {
               notificationReceived = true
@@ -323,8 +319,7 @@ describe('Router with Elysia integration', () => {
 
       try {
         const client = createRouterClient<Router>({
-          url: `ws://localhost:${PORT}/ws`,
-          transport: 'websocket',
+          websocketURL: `ws://localhost:${PORT}/ws`,
         })
 
         // Test HTTP route through Elysia
@@ -432,8 +427,7 @@ describe('Router with Elysia integration', () => {
         let notificationReceived = false
 
         const client = createRouterClient<Router>({
-          url: `ws://localhost:${PORT}/ws`,
-          transport: 'websocket',
+          websocketURL: `ws://localhost:${PORT}/ws`,
           defineClientActions: {
             showNotification: async (params) => {
               notificationReceived = true
@@ -505,8 +499,7 @@ describe('Router with Elysia integration', () => {
       try {
         // Test HTTP transport
         const httpClient = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/http`,
-          transport: 'http',
+          httpURL: `http://localhost:${PORT}/http`,
         })
 
         const httpResult = await httpClient.fetch({
@@ -519,8 +512,7 @@ describe('Router with Elysia integration', () => {
 
         // Test stream transport
         const streamClient = createRouterClient<Router>({
-          url: `http://localhost:${PORT}/stream`,
-          transport: 'stream',
+          streamURL: `http://localhost:${PORT}/stream`,
         })
 
         const streamResult = await streamClient.fetch({
@@ -533,8 +525,7 @@ describe('Router with Elysia integration', () => {
 
         // Test WebSocket transport
         const wsClient = createRouterClient<Router>({
-          url: `ws://localhost:${PORT}/ws`,
-          transport: 'websocket',
+          websocketURL: `ws://localhost:${PORT}/ws`,
         })
 
         const wsResult = await wsClient.fetch({

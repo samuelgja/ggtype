@@ -203,11 +203,9 @@ describe('router', () => {
 
       it('should test basic client connect and actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useFile: async (file) => {
               await new Promise((resolve) => {
@@ -279,11 +277,9 @@ describe('router', () => {
 
       it('should handle file actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useFile: async (file) => file,
             useTool: async ({ tool, user }) =>
@@ -317,11 +313,9 @@ describe('router', () => {
 
       it('should handle streaming actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -355,11 +349,9 @@ describe('router', () => {
 
       it('should handle file streaming with client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useFile: async (file) => {
               await new Promise((resolve) =>
@@ -420,11 +412,9 @@ describe('router', () => {
 
       it('should handle client actions from server', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useFile: async (file) => {
               await new Promise((resolve) =>
@@ -463,11 +453,9 @@ describe('router', () => {
 
       it('should handle multiple concurrent actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -505,11 +493,9 @@ describe('router', () => {
 
       it('should handle empty params', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -595,11 +581,13 @@ describe('router', () => {
 
         try {
           const client = createRouterClient<ErrorRouter>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${ERROR_PORT}`
-                : `ws://localhost:${ERROR_PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? {
+                  streamURL: `http://localhost:${ERROR_PORT}`,
+                }
+              : {
+                  websocketURL: `ws://localhost:${ERROR_PORT}`,
+                }),
             defineClientActions: {},
             responseTimeout: timeout,
           })
@@ -669,11 +657,9 @@ describe('router', () => {
 
       it('should handle concurrent requests', async () => {
         const client1 = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -683,11 +669,9 @@ describe('router', () => {
         })
 
         const client2 = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -745,11 +729,9 @@ describe('router', () => {
         )
 
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useFile: async (file) => file,
             useTool: async ({ tool, user }) =>
@@ -781,11 +763,9 @@ describe('router', () => {
 
       it('should handle validation errors', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -890,11 +870,13 @@ describe('router', () => {
 
         try {
           const client = createRouterClient<SlowRouter>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${SLOW_PORT}`
-                : `ws://localhost:${SLOW_PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? {
+                  streamURL: `http://localhost:${SLOW_PORT}`,
+                }
+              : {
+                  websocketURL: `ws://localhost:${SLOW_PORT}`,
+                }),
             defineClientActions: {
               useTool: async () => {
                 // Simulate timeout by waiting longer than client timeout
@@ -959,11 +941,9 @@ describe('router', () => {
 
       it('should handle rapid sequential calls', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -1066,11 +1046,13 @@ describe('router', () => {
         try {
           const client = createRouterClient<NullableRouter>(
             {
-              url:
-                transport === 'stream'
-                  ? `http://localhost:${NULLABLE_PORT}`
-                  : `ws://localhost:${NULLABLE_PORT}`,
-              transport,
+              ...(transport === 'stream'
+                ? {
+                    streamURL: `http://localhost:${NULLABLE_PORT}`,
+                  }
+                : {
+                    websocketURL: `ws://localhost:${NULLABLE_PORT}`,
+                  }),
               defineClientActions: {},
               responseTimeout: timeout,
             },
@@ -1178,11 +1160,13 @@ describe('router', () => {
         try {
           const client =
             createRouterClient<MultiStreamRouter>({
-              url:
-                transport === 'stream'
-                  ? `http://localhost:${MULTI_STREAM_PORT}`
-                  : `ws://localhost:${MULTI_STREAM_PORT}`,
-              transport,
+              ...(transport === 'stream'
+                ? {
+                    streamURL: `http://localhost:${MULTI_STREAM_PORT}`,
+                  }
+                : {
+                    websocketURL: `ws://localhost:${MULTI_STREAM_PORT}`,
+                  }),
               defineClientActions: {},
               responseTimeout: timeout,
             })
@@ -1217,11 +1201,9 @@ describe('router', () => {
 
       it('should handle client action errors and preserve action field', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async () => {
               throw new Error('Client action error')
@@ -1340,8 +1322,9 @@ describe('router', () => {
           const client = createRouterClient<
             typeof testRouter
           >({
-            url: testUrl,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: testUrl }
+              : { websocketURL: testUrl }),
             defineClientActions: {
               useTool: async () => {
                 throw new Error('Client action error')
@@ -1427,8 +1410,7 @@ describe('router', () => {
           const client = createRouterClient<
             typeof testRouter
           >({
-            url: `http://localhost:${testPort}`,
-            transport: 'stream',
+            streamURL: `http://localhost:${testPort}`,
             defineClientActions: {},
             responseTimeout: timeout,
             onError: (error) => {
@@ -1556,8 +1538,7 @@ describe('router', () => {
           const client = createRouterClient<
             typeof testRouter
           >({
-            url: wsUrl,
-            transport: 'websocket',
+            websocketURL: wsUrl,
             defineClientActions: {},
             responseTimeout: timeout,
           })
@@ -1669,11 +1650,13 @@ describe('router', () => {
         try {
           const client =
             createRouterClient<EmptyStreamRouter>({
-              url:
-                transport === 'stream'
-                  ? `http://localhost:${EMPTY_STREAM_PORT}`
-                  : `ws://localhost:${EMPTY_STREAM_PORT}`,
-              transport,
+              ...(transport === 'stream'
+                ? {
+                    streamURL: `http://localhost:${EMPTY_STREAM_PORT}`,
+                  }
+                : {
+                    websocketURL: `ws://localhost:${EMPTY_STREAM_PORT}`,
+                  }),
               defineClientActions: {},
               responseTimeout: timeout * 5,
             })
@@ -1696,11 +1679,9 @@ describe('router', () => {
 
       it('should handle very large number of concurrent actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -1738,11 +1719,9 @@ describe('router', () => {
         let requestLevelHandlerCalled = false
 
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) => {
               clientLevelHandlerCalled = true
@@ -1837,11 +1816,9 @@ describe('router', () => {
         let useFileRequestLevelCalled = false
 
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             useTool: async ({ tool, user }) =>
               `Tool ${tool} used by ${user}`,
@@ -1893,11 +1870,9 @@ describe('router', () => {
       describe('client.fetch()', () => {
         it('should fetch single action result', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) =>
                 `Tool ${tool} used by ${user}`,
@@ -1922,11 +1897,9 @@ describe('router', () => {
 
         it('should fetch multiple action results', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) => {
                 await new Promise((resolve) => {
@@ -1962,11 +1935,9 @@ describe('router', () => {
 
         it('should fetch file action result', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => file,
               useTool: async ({ tool, user }) =>
@@ -1992,11 +1963,9 @@ describe('router', () => {
 
         it('should fetch result with client actions from server', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useFile: async (file) => {
                 await new Promise((resolve) =>
@@ -2096,11 +2065,13 @@ describe('router', () => {
 
           try {
             const client = createRouterClient<ErrorRouter>({
-              url:
-                transport === 'stream'
-                  ? `http://localhost:${ERROR_PORT}`
-                  : `ws://localhost:${ERROR_PORT}`,
-              transport,
+              ...(transport === 'stream'
+                ? {
+                    streamURL: `http://localhost:${ERROR_PORT}`,
+                  }
+                : {
+                    websocketURL: `ws://localhost:${ERROR_PORT}`,
+                  }),
               defineClientActions: {},
               responseTimeout: timeout,
             })
@@ -2118,11 +2089,9 @@ describe('router', () => {
 
         it('should fetch empty params', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) =>
                 `Tool ${tool} used by ${user}`,
@@ -2138,11 +2107,9 @@ describe('router', () => {
 
         it('should fetch with validation errors', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) =>
                 `Tool ${tool} used by ${user}`,
@@ -2167,11 +2134,9 @@ describe('router', () => {
           let requestLevelHandlerCalled = false
 
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) => {
                 clientLevelHandlerCalled = true
@@ -2223,11 +2188,9 @@ describe('router', () => {
 
         it('should fetch streaming action and return final result', async () => {
           const client = createRouterClient<Router>({
-            url:
-              transport === 'stream'
-                ? `http://localhost:${PORT}`
-                : `ws://localhost:${PORT}`,
-            transport,
+            ...(transport === 'stream'
+              ? { streamURL: `http://localhost:${PORT}` }
+              : { websocketURL: `ws://localhost:${PORT}` }),
             defineClientActions: {
               useTool: async ({ tool, user }) =>
                 `Tool ${tool} used by ${user}`,

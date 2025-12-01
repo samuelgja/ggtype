@@ -74,8 +74,7 @@ describe('Quickstart Demo', () => {
 
     // Create client with router type for full type safety
     const client = createRouterClient<Router>({
-      url,
-      transport: 'stream',
+      streamURL: url,
       defineClientActions: {
         showNotification: async (params) => {
           // Client action handler

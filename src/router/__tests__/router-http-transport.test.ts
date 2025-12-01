@@ -1,9 +1,11 @@
 import { object } from '../../model/object'
 import { string } from '../../model/string'
+import { number } from '../../model/number'
 import { ErrorWithCode } from '../../utils/errors'
 import { action, getCtx } from '../../action/action'
 import { createRouter } from '../router'
 import { createRouterClient } from '../router-client'
+import { isSuccess } from '../..'
 
 describe('router with http transport', () => {
   it('should parse router simple', async () => {
@@ -50,8 +52,7 @@ describe('router with http transport', () => {
     })
 
     const client = createRouterClient<Router>({
-      url: `http://localhost:${PORT}`,
-      transport: 'http',
+      httpURL: `http://localhost:${PORT}`,
       defineClientActions: {},
     })
 
@@ -142,8 +143,7 @@ describe('router with http transport', () => {
     })
 
     const client = createRouterClient<Router>({
-      url: `http://localhost:${PORT}`,
-      transport: 'http',
+      httpURL: `http://localhost:${PORT}`,
       defineClientActions: {},
     })
 
@@ -201,8 +201,7 @@ describe('router with http transport', () => {
     })
 
     const client = createRouterClient<Router>({
-      url: `http://localhost:${PORT}`,
-      transport: 'http',
+      httpURL: `http://localhost:${PORT}`,
       defineClientActions: {},
     })
 
@@ -334,8 +333,7 @@ describe('router with http transport', () => {
     })
 
     const client = createRouterClient<Router>({
-      url: `http://localhost:${PORT}`,
-      transport: 'http',
+      httpURL: `http://localhost:${PORT}`,
       defineClientActions: {},
     })
 
@@ -398,8 +396,7 @@ describe('router with http transport', () => {
     })
 
     const client = createRouterClient<Router>({
-      url: `http://localhost:${PORT}`,
-      transport: 'http',
+      httpURL: `http://localhost:${PORT}`,
       defineClientActions: {},
     })
 
@@ -416,5 +413,72 @@ describe('router with http transport', () => {
     expect(results[0]).toEqual({
       someAction1: { data: '2021-01-01', status: 'ok' },
     })
+  })
+
+  it('should collect all stream values when action returns stream but client uses HTTP transport', async () => {
+    const streamAction = action(
+      object({ count: number() }).isOptional(),
+      async function* ({ params }) {
+        for (let index = 0; index < params.count; index++) {
+          yield {
+            index: index + 1,
+            value: `item-${index + 1}`,
+          }
+          await new Promise((resolve) =>
+            setTimeout(resolve, 10),
+          )
+        }
+      },
+    )
+
+    const router = createRouter({
+      serverActions: { streamAction },
+      clientActions: {},
+    })
+    type Router = typeof router
+
+    const server = Bun.serve({
+      port: 0,
+      reusePort: true,
+      async fetch(request) {
+        return router.onRequest({
+          request,
+          ctx: {},
+        })
+      },
+    })
+
+    const PORT = server.port
+
+    afterAll(() => {
+      server.stop()
+    })
+
+    const client = createRouterClient<Router>({
+      httpURL: `http://localhost:${PORT}`,
+      defineClientActions: {},
+    })
+
+    // Using fetch - should get all stream values collected
+    const result = await client.fetch({
+      streamAction: { count: 3 },
+    })
+
+    expect(result.streamAction).toBeDefined()
+    if (isSuccess(result.streamAction)) {
+      // When using HTTP with onRequest, stream should be collected into an array
+      expect(Array.isArray(result.streamAction.data)).toBe(
+        true,
+      )
+      const data = result.streamAction
+        .data as unknown as Array<{
+        index: number
+        value: string
+      }>
+      expect(data).toHaveLength(3)
+      expect(data[0]).toEqual({ index: 1, value: 'item-1' })
+      expect(data[1]).toEqual({ index: 2, value: 'item-2' })
+      expect(data[2]).toEqual({ index: 3, value: 'item-3' })
+    }
   })
 })

@@ -48,6 +48,46 @@ const TRANSPORT_SYMBOL = Symbol('transport')
 const PROCESSORS_SYMBOL = Symbol('processors')
 
 /**
+ * Collects all values from a stream/iterable into an array.
+ * Used for HTTP transport where we need to send all stream values in a single response.
+ * @param actionResult - The action result which may be a stream/iterable
+ * @returns An array of all collected values, or the original value if not a stream
+ */
+async function collectStreamValues(
+  actionResult: unknown,
+): Promise<unknown> {
+  if (
+    !isAsyncStream(actionResult) &&
+    !isAsyncIterable(actionResult) &&
+    !isIterable(actionResult)
+  ) {
+    return actionResult
+  }
+
+  const collectedValues: unknown[] = []
+  const iterable = actionResult as
+    | AsyncIterable<unknown>
+    | Iterable<unknown>
+
+  // Handle async iterables
+  if (
+    isAsyncStream(actionResult) ||
+    isAsyncIterable(actionResult)
+  ) {
+    for await (const value of iterable as AsyncIterable<unknown>) {
+      collectedValues.push(value)
+    }
+  } else {
+    // Handle sync iterables
+    for (const value of iterable as Iterable<unknown>) {
+      collectedValues.push(value)
+    }
+  }
+
+  return collectedValues
+}
+
+/**
  * Sends an error message to the client via the transport layer.
  * Processes the raw error through the error handler, creates a RouterMessage with error details,
  * and sends it to the client. If the error handler suppresses the error, nothing is sent.
@@ -669,12 +709,18 @@ export function createRouter<
           if (!model) {
             throw new Error(`Action ${key} not found.`)
           }
-          const data = await action?.run({
+          const actionResult = await action?.run({
             params: body[key],
             ctx,
             clientActions: () =>
               NOOP_CLIENT_ACTIONS<ClientActions>(),
           })
+
+          // If the action returns a stream/iterable, collect all values into an array
+          // for HTTP transport (since we can't stream over a single HTTP request)
+          const data =
+            await collectStreamValues(actionResult)
+
           result[key] = {
             status: 'ok',
             data,

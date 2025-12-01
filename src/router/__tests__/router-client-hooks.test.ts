@@ -93,8 +93,7 @@ describe('router client hooks and headers', () => {
   describe('setHeaders', () => {
     it('should set headers and include them in requests', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
       })
 
       client.setHeaders({
@@ -114,8 +113,7 @@ describe('router client hooks and headers', () => {
 
     it('should reset headers when called with no arguments', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
       })
 
       client.setHeaders({
@@ -133,8 +131,7 @@ describe('router client hooks and headers', () => {
 
     it('should update headers when called multiple times', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
       })
 
       client.setHeaders({
@@ -179,8 +176,7 @@ describe('router client hooks and headers', () => {
       const streamPort = streamServer.port
 
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${streamPort}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${streamPort}`,
       })
 
       client.setHeaders({
@@ -218,8 +214,7 @@ describe('router client hooks and headers', () => {
       }
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: onResponseMock,
       })
 
@@ -240,8 +235,7 @@ describe('router client hooks and headers', () => {
 
     it('should allow modifying the response', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: ({ json }) => {
           if (
             json.getUser?.status === 'ok' &&
@@ -278,8 +272,7 @@ describe('router client hooks and headers', () => {
       let requestCount = 0
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: async ({
           json,
           runAgain,
@@ -316,8 +309,7 @@ describe('router client hooks and headers', () => {
 
     it('should throw error to prevent response from being returned', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: ({ json }) => {
           if (hasStatusCode(json, 401)) {
             throw new Error('Token expired')
@@ -345,8 +337,7 @@ describe('router client hooks and headers', () => {
       }
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: onResponseMock,
       })
 
@@ -382,8 +373,7 @@ describe('router client hooks and headers', () => {
       }
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onRequest: onRequestMock,
       })
 
@@ -400,8 +390,7 @@ describe('router client hooks and headers', () => {
 
     it('should allow modifying request parameters', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onRequest: ({ params }) => {
           if (params.getUser) {
             return {
@@ -431,8 +420,7 @@ describe('router client hooks and headers', () => {
       let attemptCount = 0
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onRequest: async ({
           params,
           runAgain,
@@ -494,8 +482,7 @@ describe('router client hooks and headers', () => {
       }
 
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${streamPort}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${streamPort}`,
         onRequest: onRequestMock,
       })
 
@@ -665,8 +652,7 @@ describe('router client hooks and headers', () => {
       const authPort = authServer.port ?? 0
 
       const client = createRouterClient<AuthRouter>({
-        url: `http://localhost:${authPort}`,
-        transport: 'http',
+        httpURL: `http://localhost:${authPort}`,
         onResponse: async ({
           json,
           runAgain,
@@ -680,8 +666,7 @@ describe('router client hooks and headers', () => {
             // Try to refresh token - create a client without onResponse to avoid recursion
             const refreshClient =
               createRouterClient<AuthRouter>({
-                url: `http://localhost:${authPort}`,
-                transport: 'http',
+                httpURL: `http://localhost:${authPort}`,
               })
             const refreshResult = await refreshClient.fetch(
               {
@@ -746,8 +731,7 @@ describe('router client hooks and headers', () => {
       const maxRetries = 2
 
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         onResponse: async ({
           json,
           runAgain,

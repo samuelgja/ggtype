@@ -82,8 +82,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('GET method (default for HTTP transport)', () => {
     it('should work with GET method using default', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -101,8 +100,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with GET method explicitly specified', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -123,8 +121,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with GET method in stream', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -153,8 +150,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('POST method', () => {
     it('should work with POST method', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -175,8 +171,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with POST method in stream', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -209,8 +204,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('PUT method', () => {
     it('should work with PUT method', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -231,8 +225,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with PUT method in stream', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -261,8 +254,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('PATCH method', () => {
     it('should work with PATCH method', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -283,8 +275,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with PATCH method in stream', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -313,8 +304,7 @@ describe('router with http transport - HTTP methods', () => {
   describe('DELETE method', () => {
     it('should work with DELETE method', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -335,8 +325,7 @@ describe('router with http transport - HTTP methods', () => {
 
     it('should work with DELETE method in stream', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         defineClientActions: {},
       })
 
@@ -387,8 +376,7 @@ describe('router with http transport - HTTP methods', () => {
 
       try {
         const client = createRouterClient<StreamRouter>({
-          url: `http://localhost:${STREAM_PORT}`,
-          transport: 'stream',
+          streamURL: `http://localhost:${STREAM_PORT}`,
           defineClientActions: {},
         })
 
@@ -441,8 +429,7 @@ describe('router with http transport - HTTP methods', () => {
 
       try {
         const client = createRouterClient<StreamRouter>({
-          url: `http://localhost:${STREAM_PORT}`,
-          transport: 'stream',
+          streamURL: `http://localhost:${STREAM_PORT}`,
           defineClientActions: {},
         })
 

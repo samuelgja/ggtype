@@ -49,8 +49,7 @@ import type { Router } from './server'
 
 // Create client
 const client = createRouterClient<Router>({
-  url: 'http://localhost:3000',
-  transport: 'http',
+  httpURL: 'http://localhost:3000',
 })
 
 // Call the action
@@ -129,11 +128,13 @@ Server can call client actions (like notifications, UI updates). Client can call
 
 Return streams from actions for real-time data. Use async generators to yield results as they become available.
 
-### 🚀 Multiple Transports
+### 🚀 Multiple Transports with Automatic Downgrade
 
-- **`'http'`** - Simple request/response (like REST). Best for CRUD operations.
-- **`'stream'`** - HTTP streaming with bidirectional RPC. Best for real-time apps.
-- **`'websocket'`** - WebSocket connection. Best for chat, games, real-time collaboration.
+- **`httpURL`** - Simple request/response (like REST). Best for CRUD operations.
+- **`streamURL`** - HTTP streaming with bidirectional RPC. Best for real-time apps.
+- **`websocketURL`** - WebSocket connection. Best for chat, games, real-time collaboration.
+
+**Automatic Transport Downgrade:** When multiple URLs are provided, the client automatically tries them in order (stream → websocket → http) if a connection fails. This ensures maximum reliability and compatibility.
 
 ---
 
@@ -230,8 +231,7 @@ const updateUser = action(userParams, async ({ params, clientActions }) => {
 ```typescript
 // client.ts
 const client = createRouterClient<Router>({
-  url: 'http://localhost:3000',
-  transport: 'stream',
+  streamURL: 'http://localhost:3000',
   defineClientActions: {
     showNotification: async (params) => {
       alert(params.message) // Handle notification from server
@@ -268,8 +268,10 @@ All models are required by default. Use `` to make them optional.
 
 **Client**
 - `createRouterClient<Router>(options)` - Create client
-  - `options.url` - Server URL
-  - `options.transport` - Transport type (must match server)
+  - `options.streamURL` - Server URL for HTTP stream transport (optional)
+  - `options.websocketURL` - Server URL for WebSocket transport (optional)
+  - `options.httpURL` - Server URL for HTTP transport (optional)
+  - **Transport Downgrade:** If multiple URLs are provided, the client automatically tries them in order (stream → websocket → http) if a connection fails
   - `options.defineClientActions` - Client action handlers (optional)
   - Returns: 
     - `fetch(params, options?)` - Fetch multiple actions
@@ -351,8 +353,7 @@ import { createRouterClient, isSuccess } from 'ggtype'
 import type { Router } from './server'
 
 const client = createRouterClient<Router>({
-  url: 'http://localhost:3000',
-  transport: 'stream',
+  streamURL: 'http://localhost:3000',
 })
 
 // Single action call
@@ -419,7 +420,6 @@ const subscribeToUpdates = action(
 const router = createRouter({
   serverActions: { getUser, subscribeToUpdates },
   clientActions,
-  transport: 'websocket',
 })
 
 export type Router = typeof router
@@ -460,8 +460,7 @@ import { createRouterClient, isSuccess } from 'ggtype'
 import type { Router } from './server'
 
 const client = createRouterClient<Router>({
-  url: 'ws://localhost:3000',
-  transport: 'websocket',
+  websocketURL: 'ws://localhost:3000',
   defineClientActions: {
     showNotification: async (params) => {
       // Handle notification from server
@@ -534,7 +533,6 @@ const subscribeToUpdates = action(
 const router = createRouter({
   serverActions: { getUser, subscribeToUpdates },
   clientActions,
-  transport: 'websocket',
 })
 
 export type Router = typeof router
@@ -603,6 +601,62 @@ if (isSuccess(result)) {
   console.log('User:', result.data)
 }
 ```
+
+---
+
+## Transport Configuration & Downgrade
+
+The client supports flexible transport configuration with automatic downgrade for maximum reliability:
+
+### Single Transport
+
+Use a single URL for a specific transport:
+
+```typescript
+// HTTP only
+const client = createRouterClient<Router>({
+  httpURL: 'http://localhost:3000',
+})
+
+// Stream only
+const client = createRouterClient<Router>({
+  streamURL: 'http://localhost:3000',
+})
+
+// WebSocket only
+const client = createRouterClient<Router>({
+  websocketURL: 'ws://localhost:3000',
+})
+```
+
+### Multiple Transports with Automatic Downgrade
+
+Provide multiple URLs to enable automatic downgrade. The client will try transports in order (stream → websocket → http) if a connection fails:
+
+```typescript
+const client = createRouterClient<Router>({
+  streamURL: 'http://localhost:3000/stream',    // Try first
+  websocketURL: 'ws://localhost:3000/ws',       // Fallback if stream fails
+  httpURL: 'http://localhost:3000/http',        // Final fallback
+  defineClientActions: {
+    showNotification: async (params) => {
+      console.log('Notification:', params.message)
+      return { acknowledged: true }
+    },
+  },
+})
+
+// The client will automatically:
+// 1. Try stream transport first
+// 2. If that fails, try websocket
+// 3. If that also fails, use HTTP
+// This ensures your app works even if some transports are unavailable
+```
+
+**Use Cases:**
+- **Development:** Use all three transports for maximum compatibility
+- **Production:** Use stream + websocket for real-time features with HTTP fallback
+- **Progressive Enhancement:** Start with HTTP, upgrade to stream/websocket when available
 
 ---
 

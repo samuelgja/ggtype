@@ -14,12 +14,7 @@ import { DEFAULT_ROUTER_TIMEOUT } from '../types'
 import { AsyncStream } from '../utils/async-stream'
 import { clearMap } from '../utils/clear-map'
 import { createId } from '../utils/create-id'
-import {
-  isError,
-  isHttpTransport,
-  isStreamTransport,
-  isWsTransport,
-} from '../utils/is'
+import { isError } from '../utils/is'
 import { createController } from '../utils/stream-helpers'
 import type { ClientAction } from './router-client.types-shared'
 import type { Router } from '../types'
@@ -119,53 +114,38 @@ export function createRouterClient<
   >,
 >(options: RouterClientOptions<R>) {
   const {
-    url,
+    streamURL,
+    websocketURL,
+    httpURL,
     responseTimeout = DEFAULT_ROUTER_TIMEOUT,
     defineClientActions,
     onError,
     onRequest,
     onResponse,
-    transport: transportType = 'stream',
+    method: httpMethod,
+    keepAlive,
+    maxReconnectAttempts = 5,
+    initialReconnectDelay = 1000,
+    maxReconnectDelay = 30_000,
+    connectionTimeout,
   } = options
 
+  // Determine which transports are available based on provided URLs
+  const hasStreamURL = streamURL !== undefined
+  const hasWebSocketURL = websocketURL !== undefined
+  const hasHttpURL = httpURL !== undefined
+
+  if (!hasStreamURL && !hasWebSocketURL && !hasHttpURL) {
+    throw new Error(
+      'At least one of streamURL, websocketURL, or httpURL must be provided',
+    )
+  }
+
   // Extract transport-specific options
-  const httpMethod =
-    isHttpTransport(transportType) && 'method' in options
-      ? options.method
-      : undefined
-  const httpKeepAlive =
-    isHttpTransport(transportType) && 'keepAlive' in options
-      ? (options.keepAlive ?? false)
-      : false
-  const streamKeepAlive =
-    isStreamTransport(transportType) &&
-    'keepAlive' in options
-      ? (options.keepAlive ?? true)
-      : true
-  const maxReconnectAttempts =
-    (isStreamTransport(transportType) ||
-      isWsTransport(transportType)) &&
-    'maxReconnectAttempts' in options
-      ? (options.maxReconnectAttempts ?? 5)
-      : undefined
-  const initialReconnectDelay =
-    (isStreamTransport(transportType) ||
-      isWsTransport(transportType)) &&
-    'initialReconnectDelay' in options
-      ? (options.initialReconnectDelay ?? 1000)
-      : undefined
-  const maxReconnectDelay =
-    (isStreamTransport(transportType) ||
-      isWsTransport(transportType)) &&
-    'maxReconnectDelay' in options
-      ? (options.maxReconnectDelay ?? 30_000)
-      : undefined
-  const connectionTimeout =
-    (isStreamTransport(transportType) ||
-      isWsTransport(transportType)) &&
-    'connectionTimeout' in options
-      ? (options.connectionTimeout ?? responseTimeout)
-      : undefined
+  const httpKeepAlive = keepAlive ?? false
+  const streamKeepAlive = keepAlive ?? true
+  const connectionTimeoutValue =
+    connectionTimeout ?? responseTimeout
 
   const waitingResponses = clearMap<
     string,
@@ -179,20 +159,33 @@ export function createRouterClient<
   // Headers storage
   let headers: Record<string, string> = {}
 
-  // Create connection manager for persistent WebSocket connections
-  const websocketConnectionManager = isWsTransport(
-    transportType,
-  )
-    ? new WebSocketConnectionManager(
+  // Create connection managers for persistent WebSocket connections
+  // We'll create them lazily when needed
+  const websocketConnectionManagers = new Map<
+    string | URL,
+    WebSocketConnectionManager
+  >()
+
+  function getWebSocketConnectionManager(
+    url: string | URL,
+  ): WebSocketConnectionManager {
+    const urlKey =
+      typeof url === 'string' ? url : url.toString()
+    let manager = websocketConnectionManagers.get(urlKey)
+    if (!manager) {
+      manager = new WebSocketConnectionManager(
         url,
         responseTimeout,
         onError,
         maxReconnectAttempts,
         initialReconnectDelay,
         maxReconnectDelay,
-        connectionTimeout,
+        connectionTimeoutValue,
       )
-    : null
+      websocketConnectionManagers.set(urlKey, manager)
+    }
+    return manager
+  }
 
   /**
    * Processes incoming client data messages from the server.
@@ -239,12 +232,205 @@ export function createRouterClient<
     )
   }
 
-  // Set up message processor for WebSocket connection manager
-  if (websocketConnectionManager) {
-    websocketConnectionManager.setMessageProcessor(
-      (message) => {
-        processClientData(message, waitingResponses)
-      },
+  // Set up message processors for WebSocket connection managers
+  // This will be done lazily when a WebSocket connection is first used
+
+  // Cache for the working transport after first successful connection
+  // This avoids trying all transports on every request
+  let cachedWorkingTransport:
+    | 'stream'
+    | 'websocket'
+    | 'http'
+    | null = null
+  let isTransportTested = false
+
+  /**
+   * Tries to create a stream using available transports in order with automatic downgrade.
+   * Tries: stream -> websocket -> http
+   * On first request, tests all available transports and caches the working one.
+   * Subsequent requests use the cached transport.
+   * @param params - The request parameters
+   * @param fetchOptions - Optional fetch options
+   * @param isStreamCall - Whether this is a stream() call (true) or fetch() call (false)
+   * @returns An AsyncStream of results
+   */
+  async function tryTransportsWithDowngrade<
+    Params extends ParamsIt<R>,
+  >(
+    params: Params,
+    fetchOptions: FetchOptions<R> | undefined,
+  ): Promise<AsyncStream<ResultForLocal<Params>>> {
+    const requestClientActions =
+      fetchOptions?.defineClientActions
+    const mergedClientActions: Record<string, unknown> = {}
+    if (defineClientActions) {
+      Object.assign(
+        mergedClientActions,
+        defineClientActions,
+      )
+    }
+    if (requestClientActions) {
+      Object.assign(
+        mergedClientActions,
+        requestClientActions,
+      )
+    }
+
+    const method =
+      fetchOptions?.method ?? httpMethod ?? 'GET'
+    const streamMethod = fetchOptions?.method ?? 'POST'
+
+    // If we have a cached working transport, use it directly
+    if (isTransportTested && cachedWorkingTransport) {
+      if (
+        cachedWorkingTransport === 'stream' &&
+        hasStreamURL &&
+        streamURL
+      ) {
+        return await handleStreamTransport<R, Params>({
+          url: streamURL,
+          params,
+          defineClientActions: mergedClientActions,
+          waitingResponses,
+          processClientData,
+          headers,
+          onError,
+          method: streamMethod,
+          keepAlive: streamKeepAlive,
+        })
+      }
+      if (
+        cachedWorkingTransport === 'websocket' &&
+        hasWebSocketURL &&
+        websocketURL
+      ) {
+        const wsManager =
+          getWebSocketConnectionManager(websocketURL)
+        wsManager.setMessageProcessor((message) => {
+          processClientData(message, waitingResponses)
+        })
+        return await handleWebSocketTransport<R, Params>({
+          connectionManager: wsManager,
+          params,
+          defineClientActions: mergedClientActions,
+          waitingResponses,
+        })
+      }
+      if (
+        cachedWorkingTransport === 'http' &&
+        hasHttpURL &&
+        httpURL
+      ) {
+        return await handleHttpTransport<R, Params>(
+          httpURL,
+          params,
+          headers,
+          onError,
+          method,
+          httpKeepAlive,
+        )
+      }
+    }
+
+    // No cache or cache invalid - test transports in order and cache the first working one
+    // Try stream transport first
+    if (hasStreamURL && streamURL) {
+      try {
+        // Validate URL before attempting connection
+        try {
+          new URL(streamURL)
+        } catch {
+          throw new Error('Invalid stream URL')
+        }
+        const result = await handleStreamTransport<
+          R,
+          Params
+        >({
+          url: streamURL,
+          params,
+          defineClientActions: mergedClientActions,
+          waitingResponses,
+          processClientData,
+          headers,
+          onError,
+          method: streamMethod,
+          keepAlive: streamKeepAlive,
+        })
+        // Cache successful transport
+        cachedWorkingTransport = 'stream'
+        isTransportTested = true
+        return result
+      } catch (error) {
+        // Stream failed, try websocket next
+        onError?.(
+          error instanceof Error
+            ? error
+            : new Error(
+                'Stream transport failed, trying websocket',
+              ),
+        )
+      }
+    }
+
+    // Try websocket transport
+    if (hasWebSocketURL && websocketURL) {
+      try {
+        // Validate URL before attempting connection
+        try {
+          new URL(websocketURL)
+        } catch {
+          throw new Error('Invalid websocket URL')
+        }
+        const wsManager =
+          getWebSocketConnectionManager(websocketURL)
+        // Set up message processor (idempotent - safe to call multiple times)
+        wsManager.setMessageProcessor((message) => {
+          processClientData(message, waitingResponses)
+        })
+        const result = await handleWebSocketTransport<
+          R,
+          Params
+        >({
+          connectionManager: wsManager,
+          params,
+          defineClientActions: mergedClientActions,
+          waitingResponses,
+        })
+        // Cache successful transport
+        cachedWorkingTransport = 'websocket'
+        isTransportTested = true
+        return result
+      } catch (error) {
+        // WebSocket failed, try HTTP next
+        onError?.(
+          error instanceof Error
+            ? error
+            : new Error(
+                'WebSocket transport failed, trying HTTP',
+              ),
+        )
+      }
+    }
+
+    // Try HTTP transport last
+    if (hasHttpURL && httpURL) {
+      const result = await handleHttpTransport<R, Params>(
+        httpURL,
+        params,
+        headers,
+        onError,
+        method,
+        httpKeepAlive,
+      )
+      // Cache successful transport
+      cachedWorkingTransport = 'http'
+      isTransportTested = true
+      return result
+    }
+
+    // If we get here, all transports failed or none were available
+    throw new Error(
+      'All available transports failed. Please check your URLs and network connection.',
     )
   }
 
@@ -326,45 +512,90 @@ export function createRouterClient<
         }
       }
 
-      let stream: AsyncStream<ResultForLocal<Params>>
-
-      if (isHttpTransport(transportType)) {
-        const method =
-          fetchOptions?.method ?? httpMethod ?? 'GET'
-        stream = await handleHttpTransport<R, Params>(
-          url,
-          requestParams,
-          headers,
-          onError,
-          method,
-          httpKeepAlive,
-        )
-      } else if (isWsTransport(transportType)) {
-        stream = await handleWebSocketTransport<R, Params>({
-          connectionManager: websocketConnectionManager!,
-          params: requestParams,
-          defineClientActions: mergedClientActions,
-          waitingResponses,
-        })
-      } else {
-        const method = fetchOptions?.method ?? 'POST'
-        stream = await handleStreamTransport<R, Params>({
-          url,
-          params: requestParams,
-          defineClientActions: mergedClientActions,
-          waitingResponses,
-          processClientData,
-          headers,
-          onError,
-          method,
-          keepAlive: streamKeepAlive,
-        })
-      }
+      let stream = await tryTransportsWithDowngrade(
+        requestParams,
+        fetchOptions,
+      )
 
       // Collect all results from the stream and return the final state
       const result: ResultForLocal<Params> =
         {} as ResultForLocal<Params>
       try {
+        // Test connection on first use if transport not yet cached
+        // This catches connection errors and triggers downgrade
+        if (!isTransportTested) {
+          // Wrap the stream to catch connection errors on first read
+          const originalStream = stream
+          let firstChunkRead = false
+          stream = new AsyncStream<ResultForLocal<Params>>({
+            async start(control) {
+              const controller = createController(control)
+              const iterator =
+                originalStream[Symbol.asyncIterator]()
+
+              try {
+                // Try to read the first chunk - this will trigger the connection
+                const firstChunk = await iterator.next()
+                firstChunkRead = true
+
+                // If we got a chunk, yield it
+                if (
+                  !firstChunk.done &&
+                  'value' in firstChunk &&
+                  firstChunk.value !== undefined
+                ) {
+                  controller.enqueue(firstChunk.value)
+                }
+
+                // Continue reading the rest
+                while (true) {
+                  const chunk = await iterator.next()
+                  if (chunk.done) {
+                    controller.close()
+                    break
+                  }
+                  if (chunk.value !== undefined) {
+                    controller.enqueue(chunk.value)
+                  }
+                }
+              } catch (error) {
+                // Connection failed - clear cache and rethrow to trigger downgrade
+                cachedWorkingTransport = null
+                isTransportTested = false
+                const asyncDispose = (
+                  iterator as {
+                    [Symbol.asyncDispose]?: () => Promise<void>
+                  }
+                )[Symbol.asyncDispose]
+                if (asyncDispose) {
+                  await asyncDispose().catch(() => {
+                    // Ignore errors when releasing
+                  })
+                }
+                controller.error(
+                  error instanceof Error
+                    ? error
+                    : new Error(String(error)),
+                )
+                throw error
+              } finally {
+                if (!firstChunkRead) {
+                  const asyncDispose = (
+                    iterator as {
+                      [Symbol.asyncDispose]?: () => Promise<void>
+                    }
+                  )[Symbol.asyncDispose]
+                  if (asyncDispose) {
+                    await asyncDispose().catch(() => {
+                      // Ignore errors when releasing
+                    })
+                  }
+                }
+              }
+            },
+          })
+        }
+
         for await (const chunk of stream) {
           // Merge each chunk into the result, keeping the latest value for each action
           for (const key in chunk) {
@@ -459,40 +690,10 @@ export function createRouterClient<
         }
       }
 
-      if (isHttpTransport(transportType)) {
-        const method =
-          streamOptions?.method ?? httpMethod ?? 'GET'
-        return handleHttpTransport<R, Params>(
-          url,
-          requestParams,
-          headers,
-          onError,
-          method,
-          httpKeepAlive,
-        )
-      }
-
-      if (isWsTransport(transportType)) {
-        return handleWebSocketTransport<R, Params>({
-          connectionManager: websocketConnectionManager!,
-          params: requestParams,
-          defineClientActions: mergedClientActions,
-          waitingResponses,
-        })
-      }
-
-      const method = streamOptions?.method ?? 'POST'
-      return handleStreamTransport<R, Params>({
-        url,
-        params: requestParams,
-        defineClientActions: mergedClientActions,
-        waitingResponses,
-        processClientData,
-        headers,
-        onError,
-        method,
-        keepAlive: streamKeepAlive,
-      })
+      return await tryTransportsWithDowngrade(
+        requestParams,
+        streamOptions,
+      )
     },
 
     /**
@@ -771,12 +972,21 @@ async function handleStreamTransport<
     requestHeaders['Connection'] = 'keep-alive'
   }
 
+  // Add timeout to fetch to detect connection failures quickly
+  const abortController = new AbortController()
+  const timeoutId = setTimeout(
+    () => abortController.abort(),
+    2000,
+  )
   const responsePromise = fetch(url, {
     method,
     headers: requestHeaders,
     body: readable,
     duplex: 'half',
-  } as RequestInit)
+    signal: abortController.signal,
+  } as RequestInit).finally(() => {
+    clearTimeout(timeoutId)
+  })
 
   type Result = {
     [P in keyof Params &
@@ -1033,6 +1243,8 @@ async function handleStreamTransport<
     },
   })
 
+  // Return the stream directly - connection errors will be caught by the downgrade logic
+  // when the stream is actually used
   return stream
 }
 

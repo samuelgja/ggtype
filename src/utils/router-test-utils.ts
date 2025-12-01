@@ -211,18 +211,39 @@ export function createTestRouter<
   }
 
   const PORT = server.port
-  const url =
-    transport === 'stream'
-      ? `http://localhost:${PORT}`
-      : `ws://localhost:${PORT}`
+  let clientOptions: {
+    streamURL?: string
+    httpURL?: string
+    websocketURL?: string
+    defineClientActions: typeof clientActionHandlers
+    responseTimeout: number
+    onError?: typeof onError
+  }
 
-  const client = createRouterClient({
-    url,
-    transport,
-    defineClientActions: clientActionHandlers,
-    responseTimeout,
-    onError,
-  })
+  if (transport === 'stream') {
+    clientOptions = {
+      streamURL: `http://localhost:${PORT}`,
+      defineClientActions: clientActionHandlers,
+      responseTimeout,
+      onError,
+    }
+  } else if (transport === 'http') {
+    clientOptions = {
+      httpURL: `http://localhost:${PORT}`,
+      defineClientActions: clientActionHandlers,
+      responseTimeout,
+      onError,
+    }
+  } else {
+    clientOptions = {
+      websocketURL: `ws://localhost:${PORT}`,
+      defineClientActions: clientActionHandlers,
+      responseTimeout,
+      onError,
+    }
+  }
+
+  const client = createRouterClient(clientOptions as never)
 
   const testActions = {} as TestRouterActions<Actions>
 

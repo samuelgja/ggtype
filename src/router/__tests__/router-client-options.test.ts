@@ -45,8 +45,7 @@ describe('router client options', () => {
   describe('HTTP transport options', () => {
     it('should use default GET method when method is not specified', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
       })
 
       const result = await client.fetch({
@@ -62,8 +61,7 @@ describe('router client options', () => {
 
     it('should use specified method option', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         method: 'POST',
       })
 
@@ -80,8 +78,7 @@ describe('router client options', () => {
 
     it('should allow keepAlive option', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         keepAlive: true,
       })
 
@@ -98,8 +95,7 @@ describe('router client options', () => {
 
     it('should allow keepAlive option to be false', async () => {
       const client = createRouterClient<Router>({
-        url: `http://localhost:${PORT}`,
-        transport: 'http',
+        httpURL: `http://localhost:${PORT}`,
         keepAlive: false,
       })
 
@@ -143,8 +139,7 @@ describe('router client options', () => {
 
     it('should allow keepAlive option for stream transport', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         keepAlive: true,
       })
 
@@ -161,8 +156,7 @@ describe('router client options', () => {
 
     it('should allow keepAlive option to be false for stream transport', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         keepAlive: false,
       })
 
@@ -179,8 +173,7 @@ describe('router client options', () => {
 
     it('should allow maxReconnectAttempts option', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         maxReconnectAttempts: 3,
       })
 
@@ -197,8 +190,7 @@ describe('router client options', () => {
 
     it('should allow initialReconnectDelay option', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         initialReconnectDelay: 2000,
       })
 
@@ -215,8 +207,7 @@ describe('router client options', () => {
 
     it('should allow maxReconnectDelay option', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         maxReconnectDelay: 60_000,
       })
 
@@ -233,8 +224,7 @@ describe('router client options', () => {
 
     it('should allow connectionTimeout option', async () => {
       const client = createRouterClient<StreamRouter>({
-        url: `http://localhost:${STREAM_PORT}`,
-        transport: 'stream',
+        streamURL: `http://localhost:${STREAM_PORT}`,
         connectionTimeout: 10_000,
       })
 
@@ -289,8 +279,7 @@ describe('router client options', () => {
 
     it('should allow maxReconnectAttempts option for websocket', async () => {
       const client = createRouterClient<WSRouter>({
-        url: `http://localhost:${WS_PORT}`,
-        transport: 'websocket',
+        websocketURL: `ws://localhost:${WS_PORT}`,
         maxReconnectAttempts: 3,
       })
 
@@ -307,8 +296,7 @@ describe('router client options', () => {
 
     it('should allow initialReconnectDelay option for websocket', async () => {
       const client = createRouterClient<WSRouter>({
-        url: `http://localhost:${WS_PORT}`,
-        transport: 'websocket',
+        websocketURL: `ws://localhost:${WS_PORT}`,
         initialReconnectDelay: 2000,
       })
 
@@ -325,8 +313,7 @@ describe('router client options', () => {
 
     it('should allow maxReconnectDelay option for websocket', async () => {
       const client = createRouterClient<WSRouter>({
-        url: `http://localhost:${WS_PORT}`,
-        transport: 'websocket',
+        websocketURL: `ws://localhost:${WS_PORT}`,
         maxReconnectDelay: 60_000,
       })
 
@@ -343,8 +330,7 @@ describe('router client options', () => {
 
     it('should allow connectionTimeout option for websocket', async () => {
       const client = createRouterClient<WSRouter>({
-        url: `http://localhost:${WS_PORT}`,
-        transport: 'websocket',
+        websocketURL: `ws://localhost:${WS_PORT}`,
         connectionTimeout: 10_000,
       })
 

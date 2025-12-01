@@ -323,11 +323,9 @@ describe('router complex', () => {
 
       it('should handle 3 client actions called in parallel with Promise.all()', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -406,11 +404,9 @@ describe('router complex', () => {
 
       it('should handle mixed sequential and parallel client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -485,11 +481,9 @@ describe('router complex', () => {
 
       it('should handle streaming with concurrent client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -570,11 +564,9 @@ describe('router complex', () => {
 
       it('should handle high concurrency with multiple parallel requests', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -647,11 +639,9 @@ describe('router complex', () => {
 
       it('should handle concurrent requests with different actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -743,11 +733,9 @@ describe('router complex', () => {
 
       it('should handle errors in parallel client actions gracefully', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -802,11 +790,9 @@ describe('router complex', () => {
 
       it('should handle rapid sequential calls with parallel client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -876,11 +862,9 @@ describe('router complex', () => {
 
       it('should handle fetch() with parallel client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
@@ -950,11 +934,9 @@ describe('router complex', () => {
 
       it('should handle concurrent fetch() calls with parallel client actions', async () => {
         const client = createRouterClient<Router>({
-          url:
-            transport === 'stream'
-              ? `http://localhost:${PORT}`
-              : `ws://localhost:${PORT}`,
-          transport,
+          ...(transport === 'stream'
+            ? { streamURL: `http://localhost:${PORT}` }
+            : { websocketURL: `ws://localhost:${PORT}` }),
           defineClientActions: {
             fetchUserData: async ({ userId }) => {
               await new Promise((resolve) =>
