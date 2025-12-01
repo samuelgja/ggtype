@@ -265,7 +265,7 @@ describe('Router with Elysia integration', () => {
   })
 
   describe('WebSocket transport with Elysia', () => {
-    it('should work with WebSocket transport using Bun.serve alongside Elysia', async () => {
+    it('should work with WebSocket transport using Elysia', async () => {
       const getUser = action(
         m.object({ id: m.string() }),
         async ({ params }) => {
@@ -298,33 +298,14 @@ describe('Router with Elysia integration', () => {
       })
       type Router = typeof router
 
-      // Create Elysia app for HTTP routes
       const app = new Elysia()
         .get('/', () => 'Hello from Elysia!')
         .get('/health', () => ({ status: 'ok' }))
-
-      // Use Bun.serve for WebSocket support
-      const server = Bun.serve({
-        port: 0,
-        fetch(request, serverInstance) {
-          // Handle WebSocket upgrade
-          if (
-            request.url.endsWith('/ws') &&
-            serverInstance.upgrade(request, {
-              data: undefined,
-            })
-          ) {
-            return
-          }
-
-          // Delegate HTTP requests to Elysia
-          return app.handle(request)
-        },
-        websocket: {
+        .ws('/ws', {
           message(ws, message) {
             router
               .onWebSocketMessage({
-                ws,
+                ws: ws.raw as Bun.ServerWebSocket<unknown>,
                 message,
                 ctx: {},
               })
@@ -333,12 +314,12 @@ describe('Router with Elysia integration', () => {
               })
           },
           close(ws) {
-            ws.close()
+            ws.raw.close()
           },
-        },
-      })
+        })
+        .listen(0)
 
-      const PORT = server.port
+      const PORT = app.server?.port || 0
 
       try {
         const client = createRouterClient<Router>({
@@ -388,7 +369,7 @@ describe('Router with Elysia integration', () => {
 
         expect(updates.length).toBeGreaterThan(0)
       } finally {
-        server.stop()
+        app.stop()
       }
     })
 
@@ -425,29 +406,13 @@ describe('Router with Elysia integration', () => {
       })
       type Router = typeof router
 
-      const app = new Elysia().get(
-        '/',
-        () => 'Elysia + WebSocket',
-      )
-
-      const server = Bun.serve({
-        port: 0,
-        fetch(request, serverInstance) {
-          if (
-            request.url.endsWith('/ws') &&
-            serverInstance.upgrade(request, {
-              data: undefined,
-            })
-          ) {
-            return
-          }
-          return app.handle(request)
-        },
-        websocket: {
+      const app = new Elysia()
+        .get('/', () => 'Elysia + WebSocket')
+        .ws('/ws', {
           message(ws, message) {
             router
               .onWebSocketMessage({
-                ws,
+                ws: ws.raw as Bun.ServerWebSocket<unknown>,
                 message,
                 ctx: {},
               })
@@ -456,12 +421,12 @@ describe('Router with Elysia integration', () => {
               })
           },
           close(ws) {
-            ws.close()
+            ws.raw.close()
           },
-        },
-      })
+        })
+        .listen(0)
 
-      const PORT = server.port
+      const PORT = app.server?.port || 0
 
       try {
         let notificationReceived = false
@@ -490,7 +455,7 @@ describe('Router with Elysia integration', () => {
           expect(result.getUser.data.id).toBe('1')
         }
       } finally {
-        server.stop()
+        app.stop()
       }
     })
   })
@@ -517,25 +482,11 @@ describe('Router with Elysia integration', () => {
         .post('/stream', async ({ request }) => {
           return router.onStream({ request, ctx: {} })
         })
-
-      const server = Bun.serve({
-        port: 0,
-        fetch(request, serverInstance) {
-          if (
-            request.url.endsWith('/ws') &&
-            serverInstance.upgrade(request, {
-              data: undefined,
-            })
-          ) {
-            return
-          }
-          return app.handle(request)
-        },
-        websocket: {
+        .ws('/ws', {
           message(ws, message) {
             router
               .onWebSocketMessage({
-                ws,
+                ws: ws.raw as Bun.ServerWebSocket<unknown>,
                 message,
                 ctx: {},
               })
@@ -544,12 +495,12 @@ describe('Router with Elysia integration', () => {
               })
           },
           close(ws) {
-            ws.close()
+            ws.raw.close()
           },
-        },
-      })
+        })
+        .listen(0)
 
-      const PORT = server.port
+      const PORT = app.server?.port || 0
 
       try {
         // Test HTTP transport
@@ -594,7 +545,7 @@ describe('Router with Elysia integration', () => {
           expect(wsResult.getUser.data.id).toBe('3')
         }
       } finally {
-        server.stop()
+        app.stop()
       }
     })
   })
