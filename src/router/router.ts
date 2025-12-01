@@ -27,6 +27,7 @@ import {
   type Router,
   type RouterOptions,
   type OnRequest,
+  type OnStream,
   type OnWebSocketMessage,
   type SendErrorOptions,
   type SendMessageToClient,
@@ -123,7 +124,6 @@ function sendErrorMessage(
  * const router = createRouter({
  *   serverActions: { createUser, getUser },
  *   clientActions,
- *   transport: 'http', // or 'stream' or 'websocket'
  *   responseTimeout: 60000,
  * })
  *
@@ -147,7 +147,6 @@ export function createRouter<
     serverActions,
     clientActions: clientActionsSchema,
     responseTimeout = DEFAULT_ROUTER_TIMEOUT,
-    transport: transportType = 'stream',
   } = options
 
   const waitingResponses = clearMap<
@@ -165,6 +164,7 @@ export function createRouter<
    * Automatically detects File/Blob types and sets the appropriate bufferType.
    * @param sendMessageOptions - Options for sending the message
    */
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   async function sendMessageToClient(
     sendMessageOptions: SendMessageToClient & {
       transport: Transport
@@ -613,14 +613,14 @@ export function createRouter<
 
   /**
    * Handles HTTP requests for the router.
-   * For WebSocket transport, handles the upgrade request and returns a 101 response.
-   * For stream transport, creates a bidirectional TransformStream, sets up an HttpStreamTransport,
-   * and processes incoming messages asynchronously. Multiple messages can be processed concurrently.
-   * Returns a Response with appropriate headers for streaming (application/octet-stream, keep-alive).
+   * Plain HTTP transport - works like router.parse
+   * Ignores clientActions and returns a single JSON response
+   * Supports both query parameter format (?q=...) and JSON body format
+   * Supports GET, POST, PUT, PATCH, DELETE methods
+   * GET requests use query parameters, other methods use request body
    * @param onRequestOptions - Request handling options
    * @returns A Response object for the HTTP request
    */
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async function onRequest(
     onRequestOptions: OnRequest,
   ): Promise<Response> {
@@ -628,118 +628,109 @@ export function createRouter<
       onError = NOOP_ON_ERROR,
       ctx,
       request,
-      server,
     } = onRequestOptions
 
-    if (transportType === 'websocket') {
-      // For WebSocket, we need to handle the upgrade
-      // The actual WebSocket handling will be done in the server's websocket handler
-      // This function just needs to indicate that WebSocket upgrade should happen
-      if (server?.upgrade(request)) {
-        // Return undefined response - Bun handles this case
-        return new Response(null, { status: 101 })
+    try {
+      let body: Record<string, unknown>
+      const url = new URL(request.url)
+      const queryParameter = url.searchParams.get('q')
+
+      if (request.method === 'GET' || queryParameter) {
+        // GET requests or explicit query parameter format
+        if (queryParameter) {
+          body = JSON.parse(queryParameter)
+        } else {
+          // For GET without query parameter, return empty result
+          return Response.json(
+            {},
+            {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          )
+        }
+      } else {
+        // POST, PUT, PATCH, DELETE use request body
+        body = (await request.json()) as Record<
+          string,
+          unknown
+        >
       }
-      return new Response('WebSocket upgrade failed', {
-        status: 500,
+
+      const result: Record<string, RouterResultNotGeneric> =
+        {}
+
+      for (const key in body) {
+        const action = serverActions[key]
+        const model = action?.model
+        try {
+          if (!model) {
+            throw new Error(`Action ${key} not found.`)
+          }
+          const data = await action?.run({
+            params: body[key],
+            ctx,
+            clientActions: () =>
+              NOOP_CLIENT_ACTIONS<ClientActions>(),
+          })
+          result[key] = {
+            status: 'ok',
+            data,
+          }
+        } catch (rawError) {
+          const error = handleError(onError, rawError)
+          if (error) {
+            result[key] = error
+          }
+        }
+      }
+
+      return Response.json(result, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    } catch (rawError) {
+      const error = handleError(onError, rawError as Error)
+      const errorResult: Record<string, unknown> = {
+        ['$valid']: {
+          error: error?.error ?? {
+            type: 'generic',
+            message: 'Unknown error',
+            code: 500,
+          },
+        },
+      }
+      return Response.json(errorResult, {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
     }
+  }
 
-    if (transportType === 'http') {
-      // Plain HTTP transport - works like router.parse
-      // Ignores clientActions and returns a single JSON response
-      // Supports both query parameter format (?q=...) and JSON body format
-      // Supports GET, POST, PUT, PATCH, DELETE methods
-      // GET requests use query parameters, other methods use request body
+  /**
+   * Handles HTTP stream requests for the router.
+   * Creates a bidirectional TransformStream, sets up an HttpStreamTransport,
+   * and processes incoming messages asynchronously. Multiple messages can be processed concurrently.
+   * Returns a Response with appropriate headers for streaming (application/octet-stream, keep-alive).
+   * Stream transport requires methods that support request bodies (POST, PUT, PATCH, DELETE).
+   * @param onStreamOptions - Stream request handling options
+   * @returns A Response object for the stream request
+   */
+  async function onStream(
+    onStreamOptions: OnStream,
+  ): Promise<Response> {
+    const {
+      onError = NOOP_ON_ERROR,
+      ctx,
+      request,
+    } = onStreamOptions
 
-      try {
-        let body: Record<string, unknown>
-        const url = new URL(request.url)
-        const queryParameter = url.searchParams.get('q')
-
-        if (request.method === 'GET' || queryParameter) {
-          // GET requests or explicit query parameter format
-          if (queryParameter) {
-            body = JSON.parse(queryParameter)
-          } else {
-            // For GET without query parameter, return empty result
-            return Response.json(
-              {},
-              {
-                status: 200,
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              },
-            )
-          }
-        } else {
-          // POST, PUT, PATCH, DELETE use request body
-          body = (await request.json()) as Record<
-            string,
-            unknown
-          >
-        }
-
-        const result: Record<
-          string,
-          RouterResultNotGeneric
-        > = {}
-
-        for (const key in body) {
-          const action = serverActions[key]
-          const model = action?.model
-          try {
-            if (!model) {
-              throw new Error(`Action ${key} not found.`)
-            }
-            const data = await action?.run({
-              params: body[key],
-              ctx,
-              clientActions: () =>
-                NOOP_CLIENT_ACTIONS<ClientActions>(),
-            })
-            result[key] = {
-              status: 'ok',
-              data,
-            }
-          } catch (rawError) {
-            const error = handleError(onError, rawError)
-            if (error) {
-              result[key] = error
-            }
-          }
-        }
-
-        return Response.json(result, {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      } catch (rawError) {
-        const error = handleError(
-          onError,
-          rawError as Error,
-        )
-        const errorResult: Record<string, unknown> = {
-          ['$valid']: {
-            error: error?.error ?? {
-              type: 'generic',
-              message: 'Unknown error',
-              code: 500,
-            },
-          },
-        }
-        return Response.json(errorResult, {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      }
-    }
-
-    // Stream transport handling
     // Stream transport requires methods that support request bodies (POST, PUT, PATCH)
     // GET and DELETE typically don't have request bodies, but we allow them for flexibility
     const methodsWithBody = [
@@ -952,9 +943,7 @@ export function createRouter<
   return {
     infer: [] as never,
     onRequest,
-    onWebSocketMessage:
-      transportType === 'websocket'
-        ? onWebSocketMessage
-        : undefined,
+    onStream,
+    onWebSocketMessage,
   } as Router<Actions, ClientActions>
 }

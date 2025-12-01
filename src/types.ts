@@ -261,10 +261,6 @@ export interface RouterOptions<
    * Timeout in milliseconds for waiting responses (default: 60000)
    */
   readonly responseTimeout?: number
-  /**
-   * Transport type: 'stream', 'websocket', or 'http' (default: 'stream')
-   */
-  readonly transport?: TransportType
 }
 
 // ============================================================================
@@ -292,10 +288,20 @@ export interface OnRequest extends RouterCallOptions {
    * The context object to pass to actions
    */
   ctx?: unknown
+}
+
+/**
+ * @group Router
+ */
+export interface OnStream extends RouterCallOptions {
   /**
-   * Optional server instance for WebSocket upgrades
+   * The incoming HTTP request
    */
-  server?: { upgrade: (request: Request) => boolean }
+  request: Request
+  /**
+   * The context object to pass to actions
+   */
+  ctx?: unknown
 }
 
 /**
@@ -575,10 +581,18 @@ export interface Router<
   ClientActions extends Record<string, ClientAction>,
 > extends RouterBase {
   /**
-   * Handles WebSocket messages for the router (only available for WebSocket transport)
+   * Handles HTTP stream requests for the router
+   * @param options - Stream request handling options
+   * @returns A Response object for the stream request
+   */
+  readonly onStream: (
+    options: OnStream,
+  ) => Promise<Response>
+  /**
+   * Handles WebSocket messages for the router
    * @param options - WebSocket message handling options
    */
-  readonly onWebSocketMessage?: (
+  readonly onWebSocketMessage: (
     options: OnWebSocketMessage,
   ) => Promise<void>
   /**

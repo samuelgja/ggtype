@@ -28,7 +28,6 @@ const getUser = action(
 // Create router
 const router = createRouter({
   serverActions: { getUser },
-  transport: 'http',
 })
 
 // Export router type for client
@@ -83,7 +82,6 @@ if (isSuccess(results.getUser)) {
 ```typescript
 const router = createRouter({
   serverActions: { getUser, createUser, updateUser },
-  transport: 'http',
 })
 ```
 
@@ -213,7 +211,6 @@ type ClientActions = typeof clientActions
 const router = createRouter({
   serverActions: { getUser, createUser },
   clientActions, // Enable bidirectional RPC
-  transport: 'stream', // or 'websocket'
 })
 
 // Server action calling client
@@ -260,10 +257,14 @@ const client = createRouterClient<Router>({
 All models are required by default. Use `` to make them optional.
 
 **Router**
-- `createRouter(options)` - Create server router
+- `createRouter(options)` - Create server router (supports all transports simultaneously)
   - `options.serverActions` - Server actions record
   - `options.clientActions` - Client actions schema (optional)
-  - `options.transport` - `'http'` | `'stream'` | `'websocket'` (default: `'stream'`)
+  - `options.responseTimeout` - Timeout in milliseconds (optional, default: 60000)
+  - Returns router with:
+    - `onRequest(options)` - Handle HTTP requests
+    - `onStream(options)` - Handle HTTP stream requests
+    - `onWebSocketMessage(options)` - Handle WebSocket messages
 
 **Client**
 - `createRouterClient<Router>(options)` - Create client
@@ -327,7 +328,6 @@ const searchUsers = action(
 
 const router = createRouter({
   serverActions: { getUser, searchUsers },
-  transport: 'stream',
 })
 
 export type Router = typeof router
@@ -335,7 +335,7 @@ export type Router = typeof router
 Bun.serve({
   port: 3000,
   async fetch(request) {
-    return router.onRequest({
+    return router.onStream({
       request,
       ctx: {},
     })

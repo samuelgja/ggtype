@@ -10,7 +10,7 @@ Defined in: [src/router/router.ts:140](https://github.com/samuelgja/ggtype/blob/
 
 Creates a new router instance for handling server actions and client actions.
 The router manages bidirectional communication between server and client, supporting
-both HTTP stream and WebSocket transports. It handles action execution, error handling,
+HTTP, HTTP stream, and WebSocket transports simultaneously. It handles action execution, error handling,
 and response management with timeout support. Server actions can call client actions
 and wait for their responses, enabling full bidirectional RPC communication.
 
@@ -40,7 +40,7 @@ Router configuration options
 
 [`Router`](../interfaces/Router.md)\<`Actions`, `ClientActions`\>
 
-A router instance with `onRequest` and optional `onWebSocketMessage` handlers
+A router instance with `onRequest` (HTTP), `onStream` (HTTP stream), and `onWebSocketMessage` (WebSocket) handlers
 
 ## Example
 
@@ -73,16 +73,25 @@ const clientActions = defineClientActionsSchema({
 const router = createRouter({
   serverActions: { createUser, getUser },
   clientActions,
-  transport: 'http', // or 'stream' or 'websocket'
   responseTimeout: 60000,
 })
 
-// Use with Bun server
+// Use with Bun server - supports all transports simultaneously
 Bun.serve({
   port: 3000,
   async fetch(request) {
     const user = extractUserFromRequest(request)
+    // Use onRequest for HTTP transport
     return router.onRequest({ request, ctx: { user } })
   },
+  // For WebSocket, handle upgrade manually
+  websocket: {
+    message(ws, message) {
+      router.onWebSocketMessage({ ws, message, ctx: {} })
+    },
+  },
 })
+
+// For stream transport, use onStream
+// router.onStream({ request, ctx: { user } })
 ```

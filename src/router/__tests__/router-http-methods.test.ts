@@ -59,7 +59,6 @@ describe('router with http transport - HTTP methods', () => {
       deleteUser,
     },
     clientActions: {},
-    transport: 'http',
   })
   type Router = typeof router
 
@@ -370,7 +369,6 @@ describe('router with http transport - HTTP methods', () => {
           createUser,
         },
         clientActions: {},
-        transport: 'stream',
       })
       type StreamRouter = typeof streamRouter
 
@@ -378,7 +376,7 @@ describe('router with http transport - HTTP methods', () => {
         port: 0,
         reusePort: true,
         async fetch(request) {
-          return streamRouter.onRequest({
+          return streamRouter.onStream({
             request,
             ctx: {},
           })
@@ -425,7 +423,6 @@ describe('router with http transport - HTTP methods', () => {
           updateUser,
         },
         clientActions: {},
-        transport: 'stream',
       })
       type StreamRouter = typeof streamRouter
 
@@ -433,7 +430,7 @@ describe('router with http transport - HTTP methods', () => {
         port: 0,
         reusePort: true,
         async fetch(request) {
-          return streamRouter.onRequest({
+          return streamRouter.onStream({
             request,
             ctx: {},
           })

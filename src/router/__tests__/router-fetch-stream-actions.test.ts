@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable sonarjs/no-nested-functions */
 import {
   action,
   m,
@@ -73,7 +73,6 @@ describe('router fetchActions and streamActions', () => {
           createUser,
           searchUsers,
         },
-        transport,
       })
       type Router = typeof router
 
@@ -84,28 +83,43 @@ describe('router fetchActions and streamActions', () => {
 
       beforeAll(() => {
         if (transport === 'websocket') {
+          const handleMessage = (
+            ws: unknown,
+            message: unknown,
+          ) => {
+            router
+              .onWebSocketMessage({
+                ws: ws as never,
+                message,
+                ctx: {},
+              })
+              .catch(() => {
+                // Ignore errors
+              })
+          }
           server = Bun.serve({
             port: 0,
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                router.onWebSocketMessage &&
-                fetchServer.upgrade(request, {
-                  data: {},
-                })
+                fetchServer.upgrade(request, { data: {} })
               ) {
                 return
               }
-              return router.onRequest({ request, ctx: {} })
+              return new Response('Not a websocket', {
+                status: 400,
+              })
             },
             websocket: {
-              message(ws, message) {
-                router.onWebSocketMessage?.({
-                  ws: ws as never,
-                  message,
-                  ctx: {},
-                })
-              },
+              message: handleMessage,
+            },
+          })
+        } else if (transport === 'http') {
+          server = Bun.serve({
+            port: 0,
+            reusePort: true,
+            async fetch(request) {
+              return router.onRequest({ request, ctx: {} })
             },
           })
         } else {
@@ -113,7 +127,7 @@ describe('router fetchActions and streamActions', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return router.onRequest({ request, ctx: {} })
+              return router.onStream({ request, ctx: {} })
             },
           })
         }

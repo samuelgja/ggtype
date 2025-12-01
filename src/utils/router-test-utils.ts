@@ -1,9 +1,5 @@
 import type { ActionNotGeneric } from '../action/action'
-import type {
-  Router,
-  ActionResult,
-  RouterOptions,
-} from '../types'
+import type { Router, ActionResult } from '../types'
 import type {
   ClientAction,
   ClientCallableActionsFromClient,
@@ -23,7 +19,7 @@ export interface TestRouterOptions {
   /**
    * Transport type: 'stream', 'websocket', or 'http' (default: 'stream')
    */
-  readonly transport?: RouterOptions['transport']
+  readonly transport?: 'stream' | 'websocket' | 'http'
   /**
    * Optional error handler callback
    */
@@ -155,12 +151,22 @@ export function createTestRouter<
     serverActions: actions,
     clientActions,
     responseTimeout: serverTimeout,
-    transport,
   })
 
   let server: Bun.Server<unknown> | undefined
 
   if (transport === 'stream') {
+    server = Bun.serve({
+      port: 0,
+      reusePort: true,
+      async fetch(request) {
+        return router.onStream({
+          request,
+          ctx: {},
+        })
+      },
+    })
+  } else if (transport === 'http') {
     server = Bun.serve({
       port: 0,
       reusePort: true,
@@ -177,7 +183,6 @@ export function createTestRouter<
       reusePort: true,
       fetch(request, fetchServer) {
         if (
-          router.onWebSocketMessage &&
           fetchServer.upgrade(request, { data: undefined })
         ) {
           return
@@ -188,17 +193,15 @@ export function createTestRouter<
       },
       websocket: {
         message(ws, message) {
-          if (router.onWebSocketMessage) {
-            router
-              .onWebSocketMessage({
-                ws,
-                message,
-                ctx: {},
-              })
-              .catch(() => {
-                // Ignore errors in message handling
-              })
-          }
+          router
+            .onWebSocketMessage({
+              ws,
+              message,
+              ctx: {},
+            })
+            .catch(() => {
+              // Ignore errors in message handling
+            })
         },
         close(ws) {
           ws.close()

@@ -705,14 +705,12 @@ describe('WebSocketConnectionManager', () => {
       serverActions: { testAction },
       clientActions: {},
       responseTimeout: 10_000,
-      transport: 'websocket',
     })
 
     const server = Bun.serve({
       port: 0,
       fetch(request, fetchServer) {
         if (
-          router.onWebSocketMessage &&
           fetchServer.upgrade(request, { data: undefined })
         ) {
           connectionCount++

@@ -29,7 +29,6 @@ describe('router with http transport', () => {
         someAction3,
       },
       clientActions: {},
-      transport: 'http',
     })
     type Router = typeof router
 
@@ -122,7 +121,6 @@ describe('router with http transport', () => {
         someAction1,
       },
       clientActions: {},
-      transport: 'http',
     })
     type Router = typeof router
 
@@ -182,7 +180,6 @@ describe('router with http transport', () => {
         someAction3,
       },
       clientActions: {},
-      transport: 'http',
     })
     type Router = typeof router
 
@@ -258,7 +255,6 @@ describe('router with http transport', () => {
         someAction3,
       },
       clientActions: {},
-      transport: 'http',
     })
 
     const server = Bun.serve({
@@ -317,7 +313,6 @@ describe('router with http transport', () => {
         someAction1,
       },
       clientActions: {},
-      transport: 'http',
     })
     type Router = typeof router
 
@@ -382,7 +377,6 @@ describe('router with http transport', () => {
         someAction1,
       },
       clientActions: {},
-      transport: 'http',
     })
     type Router = typeof router
 

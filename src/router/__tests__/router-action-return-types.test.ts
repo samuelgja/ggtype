@@ -135,7 +135,6 @@ describe('router action return types', () => {
         },
         clientActions: {},
         responseTimeout: serverTimeout,
-        transport,
       })
       type Router = typeof router
 
@@ -146,7 +145,7 @@ describe('router action return types', () => {
           port: 0,
           reusePort: true,
           async fetch(request) {
-            return router.onRequest({
+            return router.onStream({
               request,
               ctx: {},
             })
@@ -158,7 +157,6 @@ describe('router action return types', () => {
           reusePort: true,
           fetch(request, fetchServer) {
             if (
-              router.onWebSocketMessage &&
               fetchServer.upgrade(request, {
                 data: undefined,
               })
@@ -171,17 +169,15 @@ describe('router action return types', () => {
           },
           websocket: {
             message(ws, message) {
-              if (router.onWebSocketMessage) {
-                router
-                  .onWebSocketMessage({
-                    ws,
-                    message,
-                    ctx: {},
-                  })
-                  .catch(() => {
-                    // Ignore errors in message handling
-                  })
-              }
+              router
+                .onWebSocketMessage({
+                  ws,
+                  message,
+                  ctx: {},
+                })
+                .catch(() => {
+                  // Ignore errors in message handling
+                })
             },
             close(ws) {
               ws.close()

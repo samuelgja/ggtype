@@ -130,13 +130,23 @@ describe('router', () => {
         },
         clientActions,
         responseTimeout: serverTimeout,
-        transport,
       })
       type Router = typeof router
 
       let server: Bun.Server<unknown> | undefined
 
       if (transport === 'stream') {
+        server = Bun.serve({
+          port: 0,
+          reusePort: true,
+          async fetch(request) {
+            return router.onStream({
+              request,
+              ctx: { request },
+            })
+          },
+        })
+      } else if (transport === 'http') {
         server = Bun.serve({
           port: 0,
           reusePort: true,
@@ -153,7 +163,6 @@ describe('router', () => {
           reusePort: true,
           fetch(request, fetchServer) {
             if (
-              router.onWebSocketMessage &&
               fetchServer.upgrade(request, {
                 data: undefined,
               })
@@ -166,17 +175,15 @@ describe('router', () => {
           },
           websocket: {
             message(ws, message) {
-              if (router.onWebSocketMessage) {
-                router
-                  .onWebSocketMessage({
-                    ws,
-                    message,
-                    ctx: { ws },
-                  })
-                  .catch(() => {
-                    // Ignore errors in message handling
-                  })
-              }
+              router
+                .onWebSocketMessage({
+                  ws,
+                  message,
+                  ctx: { ws },
+                })
+                .catch(() => {
+                  // Ignore errors in message handling
+                })
             },
             close(ws) {
               ws.close()
@@ -533,7 +540,6 @@ describe('router', () => {
           serverActions: { errorAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport,
         })
         type ErrorRouter = typeof errorRouter
 
@@ -544,7 +550,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return errorRouter.onRequest({
+              return errorRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -556,7 +562,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                errorRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -569,17 +574,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (errorRouter.onWebSocketMessage) {
-                  errorRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors in message handling
-                    })
-                }
+                errorRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors in message handling
+                  })
               },
               close(ws) {
                 ws.close()
@@ -627,7 +630,7 @@ describe('router', () => {
 
       if (transport === 'stream') {
         it('should handle invalid HTTP methods', async () => {
-          const getResponse = await router.onRequest({
+          const getResponse = await router.onStream({
             request: new Request(
               `http://localhost:${PORT}`,
               { method: 'GET' },
@@ -638,7 +641,7 @@ describe('router', () => {
           expect(getResponse.status).toBe(400)
 
           // Other invalid methods (like OPTIONS) return 405
-          const optionsResponse = await router.onRequest({
+          const optionsResponse = await router.onStream({
             request: new Request(
               `http://localhost:${PORT}`,
               { method: 'OPTIONS' },
@@ -649,7 +652,7 @@ describe('router', () => {
         })
 
         it('should handle missing request body', async () => {
-          const response = await router.onRequest({
+          const response = await router.onStream({
             request: new Request(
               `http://localhost:${PORT}`,
               {
@@ -832,7 +835,6 @@ describe('router', () => {
           serverActions: { slowClientAction },
           clientActions,
           responseTimeout: serverTimeout,
-          transport,
         })
         type SlowRouter = typeof slowRouter
 
@@ -843,7 +845,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return slowRouter.onRequest({
+              return slowRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -855,7 +857,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                slowRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -868,17 +869,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (slowRouter.onWebSocketMessage) {
-                  slowRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors in message handling
-                    })
-                }
+                slowRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors in message handling
+                  })
               },
               close(ws) {
                 ws.close()
@@ -1011,7 +1010,6 @@ describe('router', () => {
           serverActions: { nullableAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport,
         })
         type NullableRouter = typeof nullableRouter
 
@@ -1022,7 +1020,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return nullableRouter.onRequest({
+              return nullableRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -1034,7 +1032,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                nullableRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -1047,17 +1044,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (nullableRouter.onWebSocketMessage) {
-                  nullableRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors in message handling
-                    })
-                }
+                nullableRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors in message handling
+                  })
               },
               close(ws) {
                 ws.close()
@@ -1125,7 +1120,6 @@ describe('router', () => {
           serverActions: { multiStreamAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport,
         })
         type MultiStreamRouter = typeof multiStreamRouter
 
@@ -1138,7 +1132,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return multiStreamRouter.onRequest({
+              return multiStreamRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -1150,7 +1144,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                multiStreamRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -1163,17 +1156,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (multiStreamRouter.onWebSocketMessage) {
-                  multiStreamRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors in message handling
-                    })
-                }
+                multiStreamRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors in message handling
+                  })
               },
               close(ws) {
                 ws.close()
@@ -1289,7 +1280,6 @@ describe('router', () => {
           serverActions: { testAction },
           clientActions,
           responseTimeout: serverTimeout,
-          transport,
         })
 
         let testServer: Bun.Server<unknown> | undefined
@@ -1299,7 +1289,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return testRouter.onRequest({
+              return testRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -1311,7 +1301,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                testRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -1324,17 +1313,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (testRouter.onWebSocketMessage) {
-                  testRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors
-                    })
-                }
+                testRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors
+                  })
               },
               close(ws) {
                 ws.close()
@@ -1404,7 +1391,6 @@ describe('router', () => {
           serverActions: { testAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport: 'stream',
         })
 
         const testServer = Bun.serve({
@@ -1498,7 +1484,6 @@ describe('router', () => {
           serverActions: { testAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport: 'websocket',
         })
 
         const testServer = Bun.serve({
@@ -1506,7 +1491,6 @@ describe('router', () => {
           reusePort: true,
           fetch(request, fetchServer) {
             if (
-              testRouter.onWebSocketMessage &&
               fetchServer.upgrade(request, {
                 data: undefined,
               })
@@ -1519,17 +1503,15 @@ describe('router', () => {
           },
           websocket: {
             message(ws, message) {
-              if (testRouter.onWebSocketMessage) {
-                testRouter
-                  .onWebSocketMessage({
-                    ws,
-                    message,
-                    ctx: {},
-                  })
-                  .catch(() => {
-                    // Ignore errors
-                  })
-              }
+              testRouter
+                .onWebSocketMessage({
+                  ws,
+                  message,
+                  ctx: {},
+                })
+                .catch(() => {
+                  // Ignore errors
+                })
             },
             close(ws) {
               ws.close()
@@ -1629,7 +1611,6 @@ describe('router', () => {
           serverActions: { emptyStreamAction },
           clientActions: {},
           responseTimeout: serverTimeout,
-          transport,
         })
         type EmptyStreamRouter = typeof emptyStreamRouter
 
@@ -1642,7 +1623,7 @@ describe('router', () => {
             port: 0,
             reusePort: true,
             async fetch(request) {
-              return emptyStreamRouter.onRequest({
+              return emptyStreamRouter.onStream({
                 request,
                 ctx: {},
               })
@@ -1654,7 +1635,6 @@ describe('router', () => {
             reusePort: true,
             fetch(request, fetchServer) {
               if (
-                emptyStreamRouter.onWebSocketMessage &&
                 fetchServer.upgrade(request, {
                   data: undefined,
                 })
@@ -1667,17 +1647,15 @@ describe('router', () => {
             },
             websocket: {
               message(ws, message) {
-                if (emptyStreamRouter.onWebSocketMessage) {
-                  emptyStreamRouter
-                    .onWebSocketMessage({
-                      ws,
-                      message,
-                      ctx: {},
-                    })
-                    .catch(() => {
-                      // Ignore errors in message handling
-                    })
-                }
+                emptyStreamRouter
+                  .onWebSocketMessage({
+                    ws,
+                    message,
+                    ctx: {},
+                  })
+                  .catch(() => {
+                    // Ignore errors in message handling
+                  })
               },
               close(ws) {
                 ws.close()
@@ -2061,7 +2039,6 @@ describe('router', () => {
             serverActions: { errorAction },
             clientActions: {},
             responseTimeout: serverTimeout,
-            transport,
           })
           type ErrorRouter = typeof errorRouter
 
@@ -2072,7 +2049,7 @@ describe('router', () => {
               port: 0,
               reusePort: true,
               async fetch(request) {
-                return errorRouter.onRequest({
+                return errorRouter.onStream({
                   request,
                   ctx: {},
                 })
@@ -2084,7 +2061,6 @@ describe('router', () => {
               reusePort: true,
               fetch(request, fetchServer) {
                 if (
-                  errorRouter.onWebSocketMessage &&
                   fetchServer.upgrade(request, {
                     data: undefined,
                   })

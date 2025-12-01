@@ -250,13 +250,23 @@ describe('router complex', () => {
         },
         clientActions,
         responseTimeout: serverTimeout,
-        transport,
       })
       type Router = typeof router
 
       let server: Bun.Server<unknown> | undefined
 
       if (transport === 'stream') {
+        server = Bun.serve({
+          port: 0,
+          reusePort: true,
+          async fetch(request) {
+            return router.onStream({
+              request,
+              ctx: { request },
+            })
+          },
+        })
+      } else if (transport === 'http') {
         server = Bun.serve({
           port: 0,
           reusePort: true,
@@ -273,7 +283,6 @@ describe('router complex', () => {
           reusePort: true,
           fetch(request, fetchServer) {
             if (
-              router.onWebSocketMessage &&
               fetchServer.upgrade(request, {
                 data: undefined,
               })
@@ -286,17 +295,15 @@ describe('router complex', () => {
           },
           websocket: {
             message(ws, message) {
-              if (router.onWebSocketMessage) {
-                router
-                  .onWebSocketMessage({
-                    ws,
-                    message,
-                    ctx: { ws },
-                  })
-                  .catch(() => {
-                    // Ignore errors in message handling
-                  })
-              }
+              router
+                .onWebSocketMessage({
+                  ws,
+                  message,
+                  ctx: { ws },
+                })
+                .catch(() => {
+                  // Ignore errors in message handling
+                })
             },
             close(ws) {
               ws.close()

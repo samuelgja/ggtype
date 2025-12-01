@@ -22,7 +22,6 @@ describe('router client options', () => {
       getUser,
     },
     clientActions: {},
-    transport: 'http',
   })
   type Router = typeof router
 
@@ -122,7 +121,6 @@ describe('router client options', () => {
         getUser,
       },
       clientActions: {},
-      transport: 'stream',
     })
     type StreamRouter = typeof streamRouter
 
@@ -130,7 +128,7 @@ describe('router client options', () => {
       port: 0,
       reusePort: true,
       async fetch(request) {
-        return streamRouter.onRequest({
+        return streamRouter.onStream({
           request,
           ctx: {},
         })
@@ -258,7 +256,6 @@ describe('router client options', () => {
         getUser,
       },
       clientActions: {},
-      transport: 'websocket',
     })
     type WSRouter = typeof wsRouter
 
@@ -266,10 +263,7 @@ describe('router client options', () => {
       port: 0,
       reusePort: true,
       async fetch(request, fetchServer) {
-        if (
-          wsRouter.onWebSocketMessage &&
-          fetchServer.upgrade(request)
-        ) {
+        if (fetchServer.upgrade(request)) {
           return
         }
         return new Response('Not a websocket request', {
@@ -278,13 +272,11 @@ describe('router client options', () => {
       },
       websocket: {
         message: async (ws, message) => {
-          if (wsRouter.onWebSocketMessage) {
-            await wsRouter.onWebSocketMessage({
-              ws,
-              message,
-              ctx: {},
-            })
-          }
+          await wsRouter.onWebSocketMessage({
+            ws,
+            message,
+            ctx: {},
+          })
         },
       },
     })

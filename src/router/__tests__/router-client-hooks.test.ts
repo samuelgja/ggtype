@@ -36,7 +36,6 @@ describe('router client hooks and headers', () => {
       getForbidden: getForbiddenAction,
     },
     clientActions: {},
-    transport: 'http',
   })
 
   type Router = typeof router
@@ -162,7 +161,6 @@ describe('router client hooks and headers', () => {
           getUser: getUserAction,
         },
         clientActions: {},
-        transport: 'stream',
       })
 
       type StreamRouter = typeof streamRouter
@@ -171,7 +169,7 @@ describe('router client hooks and headers', () => {
         port: 0,
         reusePort: true,
         async fetch(request) {
-          return streamRouter.onRequest({
+          return streamRouter.onStream({
             request,
             ctx: {},
           })
@@ -467,7 +465,6 @@ describe('router client hooks and headers', () => {
           getUser: getUserAction,
         },
         clientActions: {},
-        transport: 'stream',
       })
 
       type StreamRouter = typeof streamRouter
@@ -476,7 +473,7 @@ describe('router client hooks and headers', () => {
         port: 0,
         reusePort: true,
         async fetch(request) {
-          return streamRouter.onRequest({
+          return streamRouter.onStream({
             request,
             ctx: {},
           })
@@ -623,7 +620,6 @@ describe('router client hooks and headers', () => {
           refreshToken: refreshTokenAction,
         },
         clientActions: {},
-        transport: 'http',
       })
 
       type AuthRouter = typeof authRouter

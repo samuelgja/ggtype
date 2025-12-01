@@ -57,7 +57,6 @@ describe('Quickstart Demo', () => {
     const router = createRouter({
       serverActions: { createUser, getUser },
       clientActions, // Optional - omit if you don't need server calling client
-      transport: 'stream',
     })
 
     // Define router type for type-safe client
@@ -67,7 +66,7 @@ describe('Quickstart Demo', () => {
     const server = Bun.serve({
       port: 0,
       async fetch(request) {
-        return router.onRequest({ request, ctx: {} })
+        return router.onStream({ request, ctx: {} })
       },
     })
 

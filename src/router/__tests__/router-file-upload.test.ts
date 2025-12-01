@@ -73,7 +73,6 @@ describe('router file upload', () => {
         },
         clientActions,
         responseTimeout: serverTimeout,
-        transport,
       })
       type Router = typeof router
 
@@ -84,7 +83,7 @@ describe('router file upload', () => {
           port: 0,
           reusePort: true,
           async fetch(request) {
-            return router.onRequest({
+            return router.onStream({
               request,
               ctx: {},
             })
@@ -96,7 +95,6 @@ describe('router file upload', () => {
           reusePort: true,
           fetch(request, fetchServer) {
             if (
-              router.onWebSocketMessage &&
               fetchServer.upgrade(request, {
                 data: undefined,
               })
@@ -109,17 +107,15 @@ describe('router file upload', () => {
           },
           websocket: {
             message(ws, message) {
-              if (router.onWebSocketMessage) {
-                router
-                  .onWebSocketMessage({
-                    ws,
-                    message,
-                    ctx: {},
-                  })
-                  .catch(() => {
-                    // Ignore errors in message handling
-                  })
-              }
+              router
+                .onWebSocketMessage({
+                  ws,
+                  message,
+                  ctx: {},
+                })
+                .catch(() => {
+                  // Ignore errors in message handling
+                })
             },
             close(ws) {
               ws.close()

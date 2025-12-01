@@ -1,6 +1,6 @@
 {
   "name": "ggtype",
-  "version": "0.4.8",
+  "version": "0.5.0",
   "description": "High-performance TypeScript library for type-safe data validation and client-server communication with bidirectional RPC, streaming support, and multiple transport options",
   "keywords": [
     "typescript",
@@ -81,6 +81,7 @@
     "globals": "^16.5.0",
     "prettier": "3.7.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.48.0",
+    "elysia": "^1.4.16"
   }
 }
