@@ -1,4 +1,4 @@
-let idCounter = 0
+import { nanoid } from 'nanoid'
 
 /**
  * Creates a unique identifier using a simple incrementing counter.
@@ -8,6 +8,5 @@ let idCounter = 0
  * @returns A unique string identifier
  */
 export function createId(): string {
-  idCounter++
-  return idCounter.toString(36)
+  return nanoid()
 }

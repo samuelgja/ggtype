@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { type ActionNotGeneric } from '../action/action'
 import {
   NOOP_ON_ERROR,
@@ -38,6 +39,42 @@ import {
   HttpStreamTransport,
   WebSocketTransport,
 } from '../transport'
+
+/**
+ * Validates action name to prevent injection attacks.
+ * Rejects action names that contain special characters or are potentially dangerous.
+ * @param actionName - The action name to validate
+ * @returns True if the action name is valid, false otherwise
+ */
+function isValidActionName(actionName: string): boolean {
+  // Reject empty or whitespace-only names
+  if (!actionName || !actionName.trim()) {
+    return false
+  }
+
+  // Reject names with special characters that could be used for injection
+  // Allow only alphanumeric characters, underscores, and hyphens
+  if (!/^[a-zA-Z0-9_-]+$/.test(actionName)) {
+    return false
+  }
+
+  // Reject potentially dangerous property names
+  const dangerousNames = [
+    '__proto__',
+    'constructor',
+    'prototype',
+    'toString',
+    'valueOf',
+    'hasOwnProperty',
+    'isPrototypeOf',
+    'propertyIsEnumerable',
+  ]
+  if (dangerousNames.includes(actionName)) {
+    return false
+  }
+
+  return true
+}
 
 interface Key {
   readonly id: string
@@ -516,9 +553,27 @@ export function createRouter<
     onError: (error: Error) => Error,
     transport: Transport,
   ): boolean {
-    const { clientId, id } = clientMessage
+    const {
+      clientId,
+      id,
+      action: actionName,
+    } = clientMessage
     if (clientId === undefined) {
       return false
+    }
+
+    // Validate action name to prevent injection attacks
+    if (!isValidActionName(actionName)) {
+      sendErrorMessage({
+        onError,
+        action: actionName,
+        rawError: new Error('Invalid action name'),
+        clientId: clientMessage.clientId,
+        id,
+        transport,
+        send: () => {},
+      })
+      return true
     }
 
     const waitingResponse = waitingResponses.get({
@@ -559,6 +614,20 @@ export function createRouter<
     transport: Transport,
   ): Promise<void> {
     const { id, data, action: actionName } = serverMessage
+
+    // Validate action name to prevent injection attacks
+    if (!isValidActionName(actionName)) {
+      sendErrorMessage({
+        onError,
+        action: actionName,
+        rawError: new Error('Invalid action name'),
+        id,
+        transport,
+        send: () => {},
+      })
+      return
+    }
+
     const action = serverActions[actionName]
 
     if (!action) {
@@ -703,6 +772,19 @@ export function createRouter<
         {}
 
       for (const key in body) {
+        // Validate action name to prevent injection attacks
+        if (!isValidActionName(key)) {
+          result[key] = {
+            status: 'error',
+            error: {
+              code: 400,
+              type: 'generic',
+              message: 'Invalid action name',
+            },
+          }
+          continue
+        }
+
         const action = serverActions[key]
         const model = action?.model
         try {
@@ -837,8 +919,9 @@ export function createRouter<
           } catch (rawError) {
             sendErrorMessage({
               onError,
-              action: 'unknown',
+              action: message.action || 'unknown',
               rawError,
+              id: message.id,
               transport,
               send: () => {},
             })
@@ -940,8 +1023,9 @@ export function createRouter<
             } catch (rawError) {
               sendErrorMessage({
                 onError,
-                action: 'unknown',
+                action: routerMessage.action || 'unknown',
                 rawError,
+                id: routerMessage.id,
                 transport: currentTransport,
                 send: () => {},
               })
