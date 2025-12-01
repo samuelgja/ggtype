@@ -297,6 +297,315 @@ All models are required by default. Use `` to make them optional.
 
 ---
 
+## Transport Examples
+
+### HTTP Stream Transport
+
+HTTP stream transport provides bidirectional RPC over a long-lived HTTP connection. Best for real-time applications that need persistent connections.
+
+**Server (Bun):**
+
+```typescript
+// server.ts
+import { action, createRouter, m } from 'ggtype'
+
+const getUser = action(
+  m.object({ id: m.string() }),
+  async ({ params }) => {
+    return { id: params.id, name: 'John Doe', email: 'john@example.com' }
+  }
+)
+
+const searchUsers = action(
+  m.object({ query: m.string() }),
+  async function* ({ params }) {
+    // Streaming results
+    yield { id: '1', name: 'John', query: params.query }
+    yield { id: '2', name: 'Jane', query: params.query }
+  }
+)
+
+const router = createRouter({
+  serverActions: { getUser, searchUsers },
+  transport: 'stream',
+})
+
+export type Router = typeof router
+
+Bun.serve({
+  port: 3000,
+  async fetch(request) {
+    return router.onRequest({
+      request,
+      ctx: {},
+    })
+  },
+})
+```
+
+**Client:**
+
+```typescript
+// client.ts
+import { createRouterClient, isSuccess } from 'ggtype'
+import type { Router } from './server'
+
+const client = createRouterClient<Router>({
+  url: 'http://localhost:3000',
+  transport: 'stream',
+})
+
+// Single action call
+const { getUser } = client.fetchActions
+const result = await getUser({ id: '1' })
+
+if (isSuccess(result)) {
+  console.log('User:', result.data)
+}
+
+// Streaming action
+const { searchUsers } = client.streamActions
+const stream = await searchUsers({ query: 'john' })
+
+for await (const chunk of stream) {
+  if (isSuccess(chunk.searchUsers)) {
+    console.log('Result:', chunk.searchUsers.data)
+  }
+}
+```
+
+### WebSocket Transport
+
+WebSocket transport provides persistent bidirectional communication. Best for chat applications, real-time games, and collaborative features.
+
+**Server (Bun):**
+
+```typescript
+// server.ts
+import { action, createRouter, defineClientActionsSchema, m } from 'ggtype'
+
+// Define client actions schema for bidirectional RPC
+const clientActions = defineClientActionsSchema({
+  showNotification: {
+    params: m.object({ message: m.string() }),
+    return: m.object({ acknowledged: m.boolean() }),
+  },
+})
+
+type ClientActions = typeof clientActions
+
+const getUser = action(
+  m.object({ id: m.string() }),
+  async ({ params, clientActions: client }) => {
+    // Server can call client actions
+    const { showNotification } = client<ClientActions>()
+    await showNotification?.({ message: `Fetching user ${params.id}` })
+    
+    return { id: params.id, name: 'John Doe', email: 'john@example.com' }
+  }
+)
+
+const subscribeToUpdates = action(
+  m.object({ userId: m.string() }),
+  async function* ({ params }) {
+    // Stream updates to client
+    for (let i = 0; i < 5; i++) {
+      yield { userId: params.userId, update: `Update ${i + 1}`, timestamp: Date.now() }
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+  }
+)
+
+const router = createRouter({
+  serverActions: { getUser, subscribeToUpdates },
+  clientActions,
+  transport: 'websocket',
+})
+
+export type Router = typeof router
+
+Bun.serve({
+  port: 3000,
+  fetch(request, server) {
+    // Upgrade WebSocket connections
+    if (router.onWebSocketMessage && server.upgrade(request, { data: undefined })) {
+      return
+    }
+    return new Response('Upgrade failed', { status: 500 })
+  },
+  websocket: {
+    message(ws, message) {
+      if (router.onWebSocketMessage) {
+        router.onWebSocketMessage({
+          ws,
+          message,
+          ctx: {},
+        }).catch(() => {
+          // Handle errors
+        })
+      }
+    },
+    close(ws) {
+      ws.close()
+    },
+  },
+})
+```
+
+**Client:**
+
+```typescript
+// client.ts
+import { createRouterClient, isSuccess } from 'ggtype'
+import type { Router } from './server'
+
+const client = createRouterClient<Router>({
+  url: 'ws://localhost:3000',
+  transport: 'websocket',
+  defineClientActions: {
+    showNotification: async (params) => {
+      // Handle notification from server
+      console.log('Notification:', params.message)
+      return { acknowledged: true }
+    },
+  },
+})
+
+// Call server action
+const { getUser } = client.fetchActions
+const result = await getUser({ id: '1' })
+
+if (isSuccess(result)) {
+  console.log('User:', result.data)
+}
+
+// Stream updates
+const { subscribeToUpdates } = client.streamActions
+const stream = await subscribeToUpdates({ userId: '1' })
+
+for await (const chunk of stream) {
+  if (isSuccess(chunk.subscribeToUpdates)) {
+    console.log('Update:', chunk.subscribeToUpdates.data)
+  }
+}
+```
+
+### WebSocket Transport with Elysia
+
+**Server (Elysia + Bun):**
+
+You can integrate ggtype with Elysia by using Bun's native WebSocket support alongside Elysia for HTTP routes:
+
+```typescript
+// server.ts
+import { Elysia } from 'elysia'
+import { action, createRouter, defineClientActionsSchema, m } from 'ggtype'
+
+// Define client actions schema
+const clientActions = defineClientActionsSchema({
+  showNotification: {
+    params: m.object({ message: m.string() }),
+    return: m.object({ acknowledged: m.boolean() }),
+  },
+})
+
+type ClientActions = typeof clientActions
+
+const getUser = action(
+  m.object({ id: m.string() }),
+  async ({ params, clientActions: client }) => {
+    const { showNotification } = client<ClientActions>()
+    await showNotification?.({ message: `Fetching user ${params.id}` })
+    
+    return { id: params.id, name: 'John Doe', email: 'john@example.com' }
+  }
+)
+
+const subscribeToUpdates = action(
+  m.object({ userId: m.string() }),
+  async function* ({ params }) {
+    for (let i = 0; i < 5; i++) {
+      yield { userId: params.userId, update: `Update ${i + 1}`, timestamp: Date.now() }
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+  }
+)
+
+const router = createRouter({
+  serverActions: { getUser, subscribeToUpdates },
+  clientActions,
+  transport: 'websocket',
+})
+
+export type Router = typeof router
+
+// Create Elysia app for HTTP routes
+const app = new Elysia()
+  .get('/', () => 'Hello from Elysia!')
+  .get('/health', () => ({ status: 'ok' }))
+
+// Use Bun.serve for WebSocket support
+Bun.serve({
+  port: 3000,
+  fetch(request, server) {
+    // Handle WebSocket upgrade
+    if (router.onWebSocketMessage && server.upgrade(request, { data: undefined })) {
+      return
+    }
+    
+    // Delegate HTTP requests to Elysia
+    return app.handle(request)
+  },
+  websocket: {
+    message(ws, message) {
+      if (router.onWebSocketMessage) {
+        router.onWebSocketMessage({
+          ws,
+          message,
+          ctx: {},
+        }).catch(() => {
+          // Handle errors
+        })
+      }
+    },
+    close(ws) {
+      ws.close()
+    },
+  },
+})
+
+console.log(`Server is running on http://localhost:3000`)
+```
+
+**Client:**
+
+```typescript
+// client.ts
+import { createRouterClient, isSuccess } from 'ggtype'
+import type { Router } from './server'
+
+const client = createRouterClient<Router>({
+  url: 'ws://localhost:3000',
+  transport: 'websocket',
+  defineClientActions: {
+    showNotification: async (params) => {
+      console.log('Notification:', params.message)
+      return { acknowledged: true }
+    },
+  },
+})
+
+// Use the client the same way as the Bun example above
+const { getUser } = client.fetchActions
+const result = await getUser({ id: '1' })
+
+if (isSuccess(result)) {
+  console.log('User:', result.data)
+}
+```
+
+---
+
 ## Resources
 
 - 📚 **[API Documentation](./docs/readme.md)** - Complete API reference
