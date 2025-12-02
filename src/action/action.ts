@@ -69,6 +69,8 @@ export interface ActionCbParameters<
   readonly clientActions: <
     ClientActions extends Record<string, ClientAction>,
   >() => ClientCallableActions<ClientActions>
+
+  readonly files?: Map<string, File>
 }
 
 /**
@@ -172,6 +174,7 @@ export function action<
     params,
     ctx,
     clientActions: clientActions,
+    files,
   }: ActionCbParameters<Model>) => {
     const errors = validate(params)
     if (errors) {
@@ -184,6 +187,7 @@ export function action<
       params: parsedParams,
       ctx,
       clientActions,
+      files,
     })
   }) as InferActionRun<Run>
   return {

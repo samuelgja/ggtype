@@ -1,0 +1,144 @@
+import { ValidationError } from 'ajv'
+import {
+  compileModelAndCheck,
+  type ValidationResult,
+} from '../utils/compile-model'
+import type { ClientCallableActions } from './router.client.types'
+import type {
+  ClientActionsBase,
+  ServerActionsBase,
+} from './router.type'
+import {
+  isAsyncIterable,
+  isAsyncStream,
+  isIterable,
+} from '../utils/is'
+
+interface OnClientRequest {
+  readonly params: unknown
+  readonly actionName: string
+}
+
+interface CallOptions {
+  readonly params: unknown
+  readonly ctx?: unknown
+  readonly actionName: string
+  readonly files?: Map<string, File>
+  onClientActionCall?: (
+    options: OnClientRequest,
+  ) => Promise<unknown>
+}
+
+export type CallableActions = (
+  callOptions: CallOptions,
+) => Promise<unknown>
+
+export function createCallableActions<
+  ServerActions extends ServerActionsBase,
+  ClientActions extends ClientActionsBase,
+>(options: {
+  serverActions: ServerActions
+  clientActions?: ClientActions
+}): CallableActions {
+  const { serverActions, clientActions } = options
+
+  const mappedClientActions = new Map<
+    string,
+    ValidationResult
+  >()
+  for (const actionName in clientActions) {
+    const { return: returnModel } =
+      clientActions[actionName]
+    const validate = compileModelAndCheck(returnModel)
+    mappedClientActions.set(actionName, validate)
+  }
+
+  return async function name(callOptions: CallOptions) {
+    const {
+      params,
+      ctx,
+      actionName,
+      onClientActionCall,
+      files,
+    } = callOptions
+    const action = serverActions[actionName]
+    if (!action) {
+      throw new Error(`Action ${actionName} not found`)
+    }
+    const { run } = action
+
+    const callableClientActions: ClientCallableActions<ClientActions> =
+      {} as ClientCallableActions<ClientActions>
+    for (const [
+      clientActionName,
+      validateResult,
+    ] of mappedClientActions) {
+      const clientActionFn = async (
+        clientActionParams: unknown,
+      ) => {
+        const result = await onClientActionCall?.({
+          params: clientActionParams,
+          actionName: clientActionName,
+        })
+        const errorResult = validateResult(result)
+        if (errorResult) {
+          throw new ValidationError(errorResult)
+        }
+        return result
+      }
+      // Use type assertion with unknown cast trick to avoid erroneous generic indexer error from TypeScript,
+      // while still enforcing correct structure.
+      ;(callableClientActions as Record<string, unknown>)[
+        clientActionName
+      ] = clientActionFn
+    }
+    return run({
+      params,
+      ctx,
+      clientActions() {
+        return callableClientActions
+      },
+      files,
+    })
+  }
+}
+
+/**
+ * Collects all values from a stream/iterable into an array.
+ * Used for HTTP transport where we need to send all stream values in a single response.
+ * @param actionResult - The action result which may be a stream/iterable
+ * @returns An array of all collected values, or the original value if not a stream
+ */
+export async function collectStreamValues(
+  actionResult: unknown,
+): Promise<Array<unknown>> {
+  if (
+    !isAsyncStream(actionResult) &&
+    !isAsyncIterable(actionResult) &&
+    !isIterable(actionResult)
+  ) {
+    return [actionResult]
+  }
+
+  const collectedValues: unknown[] = []
+  const iterable = actionResult as
+    | AsyncIterable<unknown>
+    | Iterable<unknown>
+
+  // Handle async iterables
+  if (
+    isAsyncStream(actionResult) ||
+    isAsyncIterable(actionResult)
+  ) {
+    for await (const value of iterable as AsyncIterable<unknown>) {
+      collectedValues.push(value)
+    }
+  } else {
+    // Handle sync iterables
+    for (const value of iterable as Iterable<unknown>) {
+      collectedValues.push(value)
+    }
+  }
+
+  return collectedValues
+}

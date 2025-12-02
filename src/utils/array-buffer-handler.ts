@@ -1,5 +1,6 @@
+export const ID_LENGTH = 16 // Length of the id in bytes
+
 type Input = File | Blob
-const ID_LENGTH = 16 // Length of the id in bytes
 
 /**
  * Converts a File or Blob to an ArrayBuffer with an embedded ID.
@@ -18,16 +19,9 @@ export async function toArrayBuffer(
       `Invalid id length. Expected ${ID_LENGTH} characters.`,
     )
   }
-  // Convert the id to a Uint8Array
   const encoder = new TextEncoder()
-  const idBuffer = encoder.encode(id) // Convert the id to a Uint8Array
+  const idBuffer = encoder.encode(id)
 
-  /**
-   * Reads a File as an ArrayBuffer.
-   * @param file - The File to read
-   * @returns The file contents as an ArrayBuffer
-   * @throws {Error} If file reading fails
-   */
   async function fromFile(
     file: File,
   ): Promise<ArrayBuffer> {
@@ -50,44 +44,33 @@ export async function toArrayBuffer(
     )
   }
 
-  // Create a new ArrayBuffer that combines the id and the data
   const combinedBuffer = new ArrayBuffer(
     idBuffer.length + dataBuffer.byteLength,
   )
   const combinedView = new Uint8Array(combinedBuffer)
 
-  // Copy the id into the combined buffer
   combinedView.set(idBuffer, 0)
-
-  // Copy the data into the combined buffer
   combinedView.set(
     new Uint8Array(dataBuffer),
     idBuffer.length,
   )
 
-  return combinedBuffer // Return the combined buffer containing both id and data
+  return combinedBuffer
 }
 
 interface Result {
-  id: string // id is required for encoding/decoding
-  input: Input // input can be a File, Blob, or ArrayBuffer
+  id: string
+  input: Input
 }
-/**
- * Extracts an ID and data from a combined ArrayBuffer.
- * Separates the first 16 bytes (ID) from the remaining data and returns both.
- * @param buffer - The combined ArrayBuffer containing ID and data
- * @returns An object with the extracted ID and a Blob containing the data
- * @throws {Error} If ID length is invalid
- */
+
 export async function fromArrayBuffer(
   buffer: ArrayBuffer,
 ): Promise<Result> {
   const decoder = new TextDecoder()
-  const idLength = ID_LENGTH // Assuming the id is 16 bytes long
-  const idBuffer = buffer.slice(0, idLength) // Extract the id part
-  const dataBuffer = buffer.slice(idLength) // Extract the data part
+  const idBuffer = buffer.slice(0, ID_LENGTH)
+  const dataBuffer = buffer.slice(ID_LENGTH)
 
-  const id = decoder.decode(idBuffer) // Decode the id
+  const id = decoder.decode(idBuffer)
   if (id.length !== ID_LENGTH) {
     throw new Error(
       `Invalid id length. Expected ${ID_LENGTH} characters.`,
@@ -95,17 +78,10 @@ export async function fromArrayBuffer(
   }
 
   const blob = new Blob([dataBuffer])
-  const input = await blob.arrayBuffer() // Create a Blob from the ArrayBuffer
-  return { id, input: new Blob([input]) } // Return the id and the Blob
+  const input = await blob.arrayBuffer()
+  return { id, input: new Blob([input]) }
 }
 
-/**
- * Type guard to check if a value is an ArrayBuffer or Buffer.
- * @group Utils
- * @internal
- * @param input - The value to check
- * @returns True if the value is an ArrayBuffer or Buffer
- */
 export function isArrayBuffer(
   input: unknown,
 ): input is ArrayBuffer {
@@ -114,34 +90,14 @@ export function isArrayBuffer(
   )
 }
 
-/**
- * Type guard to check if a value is a File.
- * @group Utils
- * @internal
- * @param input - The value to check
- * @returns True if the value is a File
- */
 export function isFile(input: unknown): input is File {
   return input instanceof File
 }
-/**
- * Type guard to check if a value is a Blob.
- * @group Utils
- * @internal
- * @param input - The value to check
- * @returns True if the value is a Blob
- */
+
 export function isBlob(input: unknown): input is Blob {
   return input instanceof Blob
 }
 
-/**
- * Type guard to check if a value is a File or Blob (Input type).
- * @group Utils
- * @internal
- * @param input - The value to check
- * @returns True if the value is a File or Blob
- */
 export function isInput(input: unknown): input is Input {
   return isFile(input) || input instanceof Blob
 }

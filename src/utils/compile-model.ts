@@ -113,3 +113,6 @@ export function compileModelAndCheck<
     return validate.errors || null
   }
 }
+export type ValidationResult = ReturnType<
+  typeof compileModelAndCheck
+>
