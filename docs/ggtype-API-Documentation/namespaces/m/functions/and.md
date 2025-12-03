@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: and()
 
-> **and**\<`M`\>(...`models`): [`AndModel`](../interfaces/AndModel.md)\<`M`, `true`\>
+> **and**\<`M`\>(...`models`): [`And`](../interfaces/And.md)\<`M`, `true`\>
 
-Defined in: [src/model/and.ts:77](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L77)
+Defined in: [src/model/and.ts:75](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L75)
 
 Creates an intersection model that combines multiple object models.
 Merges all properties from the provided models into a single object model,
@@ -30,9 +30,9 @@ Variable number of models to combine
 
 ## Returns
 
-[`AndModel`](../interfaces/AndModel.md)\<`M`, `true`\>
+[`And`](../interfaces/And.md)\<`M`, `true`\>
 
-An AndModel instance representing the intersection of all provided models
+An And instance representing the intersection of all provided models
 
 ## Example
 

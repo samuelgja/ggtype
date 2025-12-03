@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: or()
 
-> **or**\<`M`\>(...`models`): [`OrModel`](../interfaces/OrModel.md)\<`M`, `true`\>
+> **or**\<`M`\>(...`models`): [`Or`](../interfaces/Or.md)\<`M`, `true`\>
 
-Defined in: [src/model/or.ts:74](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/or.ts#L74)
+Defined in: [src/model/or.ts:72](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L72)
 
 Creates a union model that accepts any of the provided models.
 Validates data against each model in sequence, returning the first successful match.
@@ -30,9 +30,9 @@ Variable number of models to create a union from
 
 ## Returns
 
-[`OrModel`](../interfaces/OrModel.md)\<`M`, `true`\>
+[`Or`](../interfaces/Or.md)\<`M`, `true`\>
 
-An OrModel instance representing the union of all provided models
+An Or instance representing the union of all provided models
 
 ## Example
 

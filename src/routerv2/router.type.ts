@@ -13,13 +13,23 @@ import type { CallableActions } from './router.utils'
 
 import type { ClearMap } from '../utils/clear-map'
 
+/**
+ * Base type for server actions.
+ * @group Router
+ */
 export type ServerActionsBase = Record<
   string,
   ActionNotGeneric
 >
 
-export type ClientActionsBase = Record<string, ClientAction>
 /**
+ * Base type for client actions.
+ * @group Router
+ */
+export type ClientActionsBase = Record<string, ClientAction>
+
+/**
+ * Options for router calls.
  * @group Router
  */
 export interface RouterCallOptions {
@@ -36,7 +46,10 @@ export interface RouterCallOptions {
 }
 
 /**
+ * Configuration options for creating a router.
  * @group Router
+ * @template Actions - The server actions type
+ * @template ClientActions - The client actions type
  */
 export interface RouterOptions<
   Actions extends ServerActionsBase,
@@ -61,6 +74,7 @@ export interface RouterOptions<
 // ============================================================================
 
 /**
+ * Raw message type for router communication.
  * @group Router
  */
 export type RouterRawMessage = string | Bun.BufferSource
@@ -70,32 +84,38 @@ export type RouterRawMessage = string | Bun.BufferSource
 // ============================================================================
 
 /**
+ * Options for handling HTTP requests.
  * @group Router
  */
 export interface OnRequest extends RouterCallOptions {
   /**
    * The incoming HTTP request
    */
-  request: Request
-  /**
-   * The context object to pass to actions
-   */
-  ctx?: unknown
-
+  readonly request: Request
   /**
    * The type of the request
    * @default 'http'
    */
-  type?: 'http' | 'stream' | 'duplex'
+  readonly type?: 'http' | 'stream' | 'duplex'
 }
 
+/**
+ * Pending promise resolver/rejector for client action calls.
+ * @group Router
+ * @internal
+ */
 export interface Pending {
   readonly resolve: (value: unknown) => void
   readonly reject: (error: unknown) => void
 }
 
+/**
+ * Internal request options with additional router internals.
+ * @group Router
+ * @internal
+ */
 export interface OnRequestInternal extends OnRequest {
-  callableActions: CallableActions
+  readonly callableActions: CallableActions
   readonly encoder: TextEncoder
   readonly pendingClientActionCalls: ClearMap<
     string,
@@ -104,25 +124,27 @@ export interface OnRequestInternal extends OnRequest {
 }
 
 /**
+ * Options for handling WebSocket messages.
  * @group Router
  */
 export interface OnWebSocketMessage extends RouterCallOptions {
   /**
    * The WebSocket instance
    */
-  ws: ServerWebSocket<unknown>
+  readonly ws: ServerWebSocket<unknown>
   /**
    * The incoming message (Uint8Array, ArrayBuffer, or Blob)
    */
-  message: unknown
-  /**
-   * The context object to pass to actions
-   */
-  ctx?: unknown
+  readonly message: unknown
 }
 
+/**
+ * Internal WebSocket message options with additional router internals.
+ * @group Router
+ * @internal
+ */
 export interface OnWebSocketMessageInternal extends OnWebSocketMessage {
-  callableActions: CallableActions
+  readonly callableActions: CallableActions
   readonly responseTimeout?: number
   readonly encoder: TextEncoder
   readonly pendingClientActionCalls: ClearMap<
@@ -132,7 +154,9 @@ export interface OnWebSocketMessageInternal extends OnWebSocketMessage {
 }
 
 /**
+ * Options for sending error messages.
  * @group Router
+ * @internal
  */
 export interface SendErrorOptions {
   /**
@@ -140,83 +164,87 @@ export interface SendErrorOptions {
    * @param error - The raw error that occurred
    * @returns The processed error result, or undefined if the error was suppressed
    */
-  onError: (error: Error) => Error
+  readonly onError: (error: Error) => Error
   /**
    * The action name associated with the error
    */
-  action: string
+  readonly action: string
   /**
    * The raw error that occurred
    */
-  rawError: unknown
+  readonly rawError: unknown
   /**
    * The client ID to send the error to
    */
-  clientId?: string
+  readonly clientId?: string
   /**
    * Optional message ID (will be generated if not provided)
    */
-  id?: string
+  readonly id?: string
   /**
    * Function to send a raw message (not used in current implementation)
    */
-  send: (message: RouterRawMessage) => void
+  readonly send: (message: RouterRawMessage) => void
 }
 
 /**
+ * Options for sending messages to clients.
  * @group Router
+ * @internal
  */
 export interface SendMessageToClient {
   /**
    * The action name
    */
-  action: string
+  readonly action: string
   /**
    * The data to send (can be File, Blob, or any serializable value)
    */
-  data: unknown
+  readonly data: unknown
   /**
    * The client ID to send the message to
    */
-  clientId?: string
+  readonly clientId?: string
   /**
    * Optional message ID (will be generated if not provided)
    */
-  id?: string
+  readonly id?: string
   /**
    * Whether this is the last message in a stream
    */
-  isLast?: boolean
+  readonly isLast?: boolean
   /**
    * Function to send a raw message (not used in current implementation)
    */
-  send: (message: RouterRawMessage) => void
+  readonly send: (message: RouterRawMessage) => void
 }
 
 /**
+ * Options for handling streams.
  * @group Router
+ * @internal
  */
 export interface HandleStream {
   /**
    * Error handler function
    */
-  onError: (error: Error) => Error
+  readonly onError: (error: Error) => Error
   /**
    * The action name
    */
-  action: string
+  readonly action: string
   /**
    * The async iterable stream to process
    */
-  data: AsyncIterable<unknown>
+  readonly data: AsyncIterable<unknown>
   /**
    * The message ID
    */
-  id?: string
+  readonly id?: string
   /**
    * Function to send a raw message (not used in current implementation)
    */
-  send: (message: RouterRawMessage) => void
+  readonly send: (message: RouterRawMessage) => void
 }
 
 // ============================================================================
@@ -224,29 +252,36 @@ export interface HandleStream {
 // ============================================================================
 
 /**
+ * Non-generic router inference type.
  * @group Router
  */
 export type RouterInferNotGeneric = Record<
   string,
   {
-    params: unknown
-    result: RouterResultNotGeneric
+    readonly params: unknown
+    readonly result: RouterResultNotGeneric
   }
 >
 
+/**
+ * Type inference helper for router types.
+ * @group Router
+ * @template ServerActions - The server actions type
+ * @template ClientActions - The client actions type
+ */
 export type InferRouter<
   ServerActions extends ServerActionsBase,
   ClientActions extends ClientActionsBase,
 > = {
-  serverActions: {
-    [ActionName in keyof ServerActions]: {
-      params: ServerActions[ActionName]['model']['infer']
-      result: Awaited<
+  readonly serverActions: {
+    readonly [ActionName in keyof ServerActions]: {
+      readonly params: ServerActions[ActionName]['model']['infer']
+      readonly result: Awaited<
         ReturnType<ServerActions[ActionName]['run']>
       >
     }
   }
-  clientActions: ClientActions
+  readonly clientActions: ClientActions
 }
 
 /**
@@ -366,11 +401,20 @@ export type ResultInfer<
 // Router Interface Types
 // ============================================================================
 
+/**
+ * Base router interface.
+ * @group Router
+ */
 export interface RouterBase {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly infer: any
+  readonly infer: unknown
 }
 
+/**
+ * Router interface for handling requests and WebSocket messages.
+ * @group Router
+ * @template ServerActions - The server actions type
+ * @template ClientActions - The client actions type
+ */
 export interface Router<
   ServerActions extends ServerActionsBase =
     ServerActionsBase,
@@ -379,7 +423,7 @@ export interface Router<
 > {
   /**
    * Handles HTTP requests for the router
-   * @param options - Request handling options
+   * @param options - Request handling options. See OnRequest interface for details.
    * @returns A Response object for the HTTP request
    */
   readonly onRequest: (
@@ -388,7 +432,7 @@ export interface Router<
 
   /**
    * Handles WebSocket messages for the router
-   * @param options - WebSocket message handling options
+   * @param options - WebSocket message handling options. See OnWebSocketMessage interface for details.
    */
   readonly onWebSocketMessage: (
     options: OnWebSocketMessage,
@@ -397,10 +441,16 @@ export interface Router<
    * Type inference helper for router types
    */
   readonly infer: InferRouter<ServerActions, ClientActions>
-
+  /**
+   * Cleanup function called when WebSocket connection closes
+   */
   readonly onWebsocketCleanUp: () => void
 }
 
+/**
+ * Types of stream messages.
+ * @group Router
+ */
 export enum StreamMessageType {
   CLIENT_ACTION_CALL,
   CLIENT_ACTION_CALL_RESULT,
@@ -409,12 +459,38 @@ export enum StreamMessageType {
   WS_SEND_FROM_CLIENT,
   UPLOAD_FILE,
 }
+
+/**
+ * Stream message format for communication between client and server.
+ * @group Router
+ */
 export interface StreamMessage extends RouterResultNotGeneric {
-  action: string
-  id: string
-  withFile?: boolean
-  fileSize?: number // bytes, without the ID prefix
-  file?: Blob // client-side hydrated file/blob
-  type: StreamMessageType
-  isLast?: boolean
+  /**
+   * The action name
+   */
+  readonly action: string
+  /**
+   * Unique message identifier
+   */
+  readonly id: string
+  /**
+   * Whether this message includes a file
+   */
+  readonly withFile?: boolean
+  /**
+   * File size in bytes (without the ID prefix)
+   */
+  readonly fileSize?: number
+  /**
+   * Client-side hydrated file/blob
+   */
+  readonly file?: Blob
+  /**
+   * Message type
+   */
+  readonly type: StreamMessageType
+  /**
+   * Whether this is the last message in a stream
+   */
+  readonly isLast?: boolean
 }

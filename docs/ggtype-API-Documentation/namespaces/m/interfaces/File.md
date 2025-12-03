@@ -1,14 +1,14 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: BlobModel\<R\>
+# Interface: File\<R\>
 
-Defined in: [src/model/blob.ts:12](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/blob.ts#L12)
+Defined in: [src/model/file.ts:12](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L12)
 
 ## Extends
 
-- [`Model`](Model.md)\<`Blob`, `R`\>
+- [`Model`](Model.md)\<`globalThis.File`, `R`\>
 
 ## Type Parameters
 
@@ -22,7 +22,7 @@ Defined in: [src/model/blob.ts:12](https://github.com/samuelgja/ggtype/blob/fd36
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -34,9 +34,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `BlobModel`\<`R`\>
+> `readonly` **description**: (`description`) => `File`\<`R`\>
 
-Defined in: [src/model/blob.ts:35](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/blob.ts#L35)
+Defined in: [src/model/file.ts:35](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L35)
 
 Sets a human-readable description for the model
 
@@ -50,9 +50,9 @@ The description to set
 
 #### Returns
 
-`BlobModel`\<`R`\>
+`File`\<`R`\>
 
-A new BlobModel instance with the updated description
+A new File instance with the updated description
 
 #### Overrides
 
@@ -64,7 +64,7 @@ A new BlobModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -110,11 +110,11 @@ The JSON Schema object with $defs for referenced models
 
 ### infer
 
-> `readonly` **infer**: `Blob`
+> `readonly` **infer**: `File`
 
-Defined in: [src/model/blob.ts:23](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/blob.ts#L23)
+Defined in: [src/model/file.ts:23](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L23)
 
-Inferred TypeScript type for the blob model (always Blob)
+Inferred TypeScript type for the file model (always File)
 
 #### Overrides
 
@@ -124,17 +124,17 @@ Inferred TypeScript type for the blob model (always Blob)
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `BlobModel`\<`false`\>
+> `readonly` **isOptional**: () => `File`\<`false`\>
 
-Defined in: [src/model/blob.ts:19](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/blob.ts#L19)
+Defined in: [src/model/file.ts:19](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L19)
 
-Marks the blob model as optional
+Marks the file model as optional
 
 #### Returns
 
-`BlobModel`\<`false`\>
+`File`\<`false`\>
 
-A new BlobModel instance marked as optional
+A new File instance marked as optional
 
 #### Overrides
 
@@ -144,9 +144,9 @@ A new BlobModel instance marked as optional
 
 ### onParse()
 
-> `readonly` **onParse**: (`data`) => `Blob`
+> `readonly` **onParse**: (`data`) => `File`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -160,7 +160,7 @@ The data to parse
 
 #### Returns
 
-`Blob`
+`File`
 
 The parsed and validated data of type T
 
@@ -174,7 +174,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -196,9 +196,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `BlobModel`\<`R`\>
+> `readonly` **title**: (`name`) => `File`\<`R`\>
 
-Defined in: [src/model/blob.ts:29](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/blob.ts#L29)
+Defined in: [src/model/file.ts:29](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L29)
 
 Sets a human-readable title for the model
 
@@ -212,9 +212,9 @@ The title to set
 
 #### Returns
 
-`BlobModel`\<`R`\>
+`File`\<`R`\>
 
-A new BlobModel instance with the updated title
+A new File instance with the updated title
 
 #### Overrides
 

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **action**\<`Model`, `Run`\>(`parameterModel`, `run`): [`Action`](../type-aliases/Action.md)\<`Model`, `InferActionRun`\<`Run`\>\>
 
-Defined in: [src/action/action.ts:161](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L161)
+Defined in: [src/action/action.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/action/action.ts#L177)
 
 Creates an action that validates input parameters and executes a callback function.
 The action automatically validates parameters against the provided model before execution.
@@ -25,6 +25,8 @@ The model type for parameter validation
 
 `Run` *extends* (`parameters`) => `unknown`
 
+The callback function type
+
 ## Parameters
 
 ### parameterModel
@@ -37,7 +39,7 @@ The model to validate parameters against
 
 `Run`
 
-The callback function to execute with validated parameters
+The callback function to execute with validated parameters. See ActionCbParameters interface for parameter details.
 
 ## Returns
 
@@ -55,7 +57,7 @@ const userParams = m.object({
   id: m.string(),
   name: m.string(),
   email: m.string().isEmail(),
-})
+}).isOptional()
 
 // Create action with validated parameters
 const createUser = action(userParams, async ({ params }) => {

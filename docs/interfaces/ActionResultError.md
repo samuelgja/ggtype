@@ -1,10 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Interface: ActionResultError\<T\>
 
-Defined in: [src/types.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L177)
+Defined in: [src/types.ts:193](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L193)
+
+Error result for an action.
 
 ## Extends
 
@@ -16,13 +18,15 @@ Defined in: [src/types.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756
 
 `T`
 
+The result type
+
 ## Properties
 
 ### data?
 
-> `optional` **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
+> `readonly` `optional` **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
 
-Defined in: [src/types.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L157)
+Defined in: [src/types.ts:163](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L163)
 
 Success data with unwrapped stream types (present when status is 'ok')
 
@@ -34,9 +38,9 @@ Success data with unwrapped stream types (present when status is 'ok')
 
 ### error
 
-> **error**: [`OutputError`](../type-aliases/OutputError.md)
+> `readonly` **error**: [`OutputError`](../type-aliases/OutputError.md)
 
-Defined in: [src/types.ts:187](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L187)
+Defined in: [src/types.ts:203](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L203)
 
 Error information
 
@@ -48,9 +52,9 @@ Error information
 
 ### status
 
-> **status**: `"error"`
+> `readonly` **status**: `"error"`
 
-Defined in: [src/types.ts:183](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L183)
+Defined in: [src/types.ts:199](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L199)
 
 Result status (always 'error' for failure)
 

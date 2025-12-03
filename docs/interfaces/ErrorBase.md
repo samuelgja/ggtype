@@ -1,10 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Interface: ErrorBase
 
-Defined in: [src/types.ts:49](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L49)
+Defined in: [src/types.ts:47](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L47)
+
+Base interface for error types.
 
 ## Extended by
 
@@ -17,7 +19,7 @@ Defined in: [src/types.ts:49](https://github.com/samuelgja/ggtype/blob/fd3607568
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [src/types.ts:57](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L57)
+Defined in: [src/types.ts:55](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L55)
 
 Optional cause of the error
 
@@ -27,7 +29,7 @@ Optional cause of the error
 
 > `readonly` **code**: `number`
 
-Defined in: [src/types.ts:61](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L61)
+Defined in: [src/types.ts:59](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L59)
 
 HTTP status code
 
@@ -37,6 +39,6 @@ HTTP status code
 
 > `readonly` **type**: `string`
 
-Defined in: [src/types.ts:53](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L53)
+Defined in: [src/types.ts:51](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L51)
 
 Error type identifier

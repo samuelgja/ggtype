@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: enums()
 
-> **enums**\<`T`\>(...`enumParameters`): [`EnumModel`](../interfaces/EnumModel.md)\<`T`, `true`\>
+> **enums**\<`T`\>(...`enumParameters`): [`Enum`](../interfaces/Enum.md)\<`T`, `true`\>
 
-Defined in: [src/model/enums.ts:100](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/enums.ts#L100)
+Defined in: [src/model/enums.ts:98](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/enums.ts#L98)
 
 Creates an enum model for validation and type inference.
 Returns a model that validates string values against a set of allowed enum values.
@@ -30,9 +30,9 @@ Array of allowed string values for the enum
 
 ## Returns
 
-[`EnumModel`](../interfaces/EnumModel.md)\<`T`, `true`\>
+[`Enum`](../interfaces/Enum.md)\<`T`, `true`\>
 
-An EnumModel instance for validating enum string values
+An Enum instance for validating enum string values
 
 ## Example
 

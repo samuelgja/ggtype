@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: number()
 
-> **number**(): [`NumberModel`](../interfaces/NumberModel.md)\<`true`\>
+> **number**(): [`Number`](../interfaces/Number.md)\<`true`\>
 
-Defined in: [src/model/number.ts:98](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/number.ts#L98)
+Defined in: [src/model/number.ts:96](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/number.ts#L96)
 
 Creates a number model for validation and type inference.
 Returns a model that validates number values with optional constraints like
@@ -14,9 +14,9 @@ minimum/maximum values, positive/negative checks, and custom validation.
 
 ## Returns
 
-[`NumberModel`](../interfaces/NumberModel.md)\<`true`\>
+[`Number`](../interfaces/Number.md)\<`true`\>
 
-A NumberModel instance for validating number values
+A Number instance for validating number values
 
 ## Example
 

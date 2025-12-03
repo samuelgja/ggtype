@@ -1,15 +1,19 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Type Alias: ActionsResult\<Actions\>
 
-> **ActionsResult**\<`Actions`\> = `{ [ActionName in keyof Actions]: ActionResult<Awaited<ReturnType<Actions[ActionName]["run"]>>> }`
+> **ActionsResult**\<`Actions`\> = `{ readonly [ActionName in keyof Actions]: ActionResult<Awaited<ReturnType<Actions[ActionName]["run"]>>> }`
 
-Defined in: [src/types.ts:194](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L194)
+Defined in: [src/types.ts:215](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L215)
+
+Type representing results for multiple actions.
 
 ## Type Parameters
 
 ### Actions
 
 `Actions` *extends* `Record`\<`string`, [`Action`](Action.md)\>
+
+The actions record type

@@ -14,13 +14,18 @@ import {
   type StreamMessage,
 } from '../router.type'
 
+/**
+ * Options for handling stream responses.
+ * @group Router
+ * @internal
+ */
 interface Options {
-  send: (message: Uint8Array) => void
-  actionResult: unknown
-  actionName: string
-  id: string
-  encoder: TextEncoder
-  type: StreamMessageType
+  readonly send: (message: Uint8Array) => void
+  readonly actionResult: unknown
+  readonly actionName: string
+  readonly id: string
+  readonly encoder: TextEncoder
+  readonly type: StreamMessageType
 }
 
 /**
@@ -144,6 +149,12 @@ function handleNormalStreamResponse(
   send(encodedMessage)
 }
 
+/**
+ * Handles stream response encoding for action results.
+ * @group Router
+ * @internal
+ * @param options - Stream response options. See Options interface for details.
+ */
 export async function handleStreamResponse(
   options: Options,
 ) {
@@ -198,8 +209,15 @@ export async function handleStreamResponse(
   )
 }
 
+/**
+ * State for file mode parsing.
+ * @group Router
+ * @internal
+ */
 type FileModeState = {
-  header: StreamMessage & { fileSize: number }
+  readonly header: StreamMessage & {
+    readonly fileSize: number
+  }
   remaining: number
   chunks: Uint8Array[]
 }
@@ -499,6 +517,11 @@ async function parseBufferChunk(
   }
 }
 
+/**
+ * Options for finalizing parser state.
+ * @group Router
+ * @internal
+ */
 export interface ParserFinalizeOptions {
   /**
    * When true, if we only ever received a header for an UPLOAD_FILE
@@ -508,12 +531,14 @@ export interface ParserFinalizeOptions {
    *  - "return header message when only file header is received
    *     for UPLOAD_FILE type"
    */
-  allowUploadHeaderWithoutFile?: boolean
+  readonly allowUploadHeaderWithoutFile?: boolean
 }
 
 /**
  * Stateful parser that can be reused per connection / per stream.
  * Safe for concurrent connections (one Parser per connection).
+ * @group Router
+ * @internal
  */
 export class Parser {
   private readonly textDecoder: TextDecoder
@@ -531,10 +556,12 @@ export class Parser {
   /**
    * Feed one or more buffers into the parser and get
    * zero or more fully parsed StreamMessages.
+   * @param input - Buffer(s) to parse
+   * @returns Array of parsed stream messages
    */
   async feed(
-    input: Uint8Array | Uint8Array[],
-  ): Promise<StreamMessage[]> {
+    input: Uint8Array | readonly Uint8Array[],
+  ): Promise<readonly StreamMessage[]> {
     const buffers = Array.isArray(input) ? input : [input]
 
     let merged: Uint8Array
@@ -597,10 +624,12 @@ export class Parser {
    *     allowUploadHeaderWithoutFile: true -> emit header-only message.
    *   - Otherwise, treated as incomplete file and throws.
    * - If pending JSON without newline -> parse it as one message (best effort).
+   * @param options - Finalize options. See ParserFinalizeOptions interface for details.
+   * @returns Array of remaining stream messages
    */
   finalize(
     options: ParserFinalizeOptions = {},
-  ): StreamMessage[] {
+  ): readonly StreamMessage[] {
     const messages: StreamMessage[] = []
     const { allowUploadHeaderWithoutFile } = options
 
@@ -648,6 +677,13 @@ export class Parser {
  * HTTP stream parser (ReadableStream)
  * ------------------------------------------------------------------ */
 
+/**
+ * Parses a stream response into an async iterable of stream messages.
+ * @group Router
+ * @internal
+ * @param reader - Readable stream reader
+ * @returns Async iterable of stream messages
+ */
 export function parseStreamResponse(
   reader: ReadableStreamDefaultReader<Uint8Array>,
 ): AsyncIterable<StreamMessage> {
@@ -695,9 +731,16 @@ export function parseStreamResponse(
  * WebSocket helper (for tests)
  * ------------------------------------------------------------------ */
 
+/**
+ * Parses WebSocket stream buffers into stream messages.
+ * @group Router
+ * @internal
+ * @param buffers - Array of buffers to parse
+ * @returns Array of parsed stream messages
+ */
 export async function parseWsStream(
-  buffers: Uint8Array[],
-): Promise<StreamMessage[]> {
+  buffers: readonly Uint8Array[],
+): Promise<readonly StreamMessage[]> {
   const parser = new Parser()
   const messages = await parser.feed(buffers)
   const tail = parser.finalize({

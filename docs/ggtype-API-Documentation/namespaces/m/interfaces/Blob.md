@@ -1,14 +1,14 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: BooleanModel\<R\>
+# Interface: Blob\<R\>
 
-Defined in: [src/model/boolean.ts:11](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/boolean.ts#L11)
+Defined in: [src/model/blob.ts:12](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/blob.ts#L12)
 
 ## Extends
 
-- [`Model`](Model.md)\<`boolean`, `R`\>
+- [`Model`](Model.md)\<`globalThis.Blob`, `R`\>
 
 ## Type Parameters
 
@@ -22,7 +22,7 @@ Defined in: [src/model/boolean.ts:11](https://github.com/samuelgja/ggtype/blob/f
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -34,9 +34,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `BooleanModel`\<`R`\>
+> `readonly` **description**: (`description`) => `Blob`\<`R`\>
 
-Defined in: [src/model/boolean.ts:34](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/boolean.ts#L34)
+Defined in: [src/model/blob.ts:35](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/blob.ts#L35)
 
 Sets a human-readable description for the model
 
@@ -50,9 +50,9 @@ The description to set
 
 #### Returns
 
-`BooleanModel`\<`R`\>
+`Blob`\<`R`\>
 
-A new BooleanModel instance with the updated description
+A new Blob instance with the updated description
 
 #### Overrides
 
@@ -64,7 +64,7 @@ A new BooleanModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -92,7 +92,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -110,11 +110,11 @@ The JSON Schema object with $defs for referenced models
 
 ### infer
 
-> `readonly` **infer**: `boolean`
+> `readonly` **infer**: `Blob`
 
-Defined in: [src/model/boolean.ts:22](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/boolean.ts#L22)
+Defined in: [src/model/blob.ts:23](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/blob.ts#L23)
 
-Inferred TypeScript type for the boolean model (always boolean)
+Inferred TypeScript type for the blob model (always Blob)
 
 #### Overrides
 
@@ -124,17 +124,17 @@ Inferred TypeScript type for the boolean model (always boolean)
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `BooleanModel`\<`false`\>
+> `readonly` **isOptional**: () => `Blob`\<`false`\>
 
-Defined in: [src/model/boolean.ts:18](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/boolean.ts#L18)
+Defined in: [src/model/blob.ts:19](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/blob.ts#L19)
 
-Marks the boolean model as optional
+Marks the blob model as optional
 
 #### Returns
 
-`BooleanModel`\<`false`\>
+`Blob`\<`false`\>
 
-A new BooleanModel instance marked as optional
+A new Blob instance marked as optional
 
 #### Overrides
 
@@ -144,9 +144,9 @@ A new BooleanModel instance marked as optional
 
 ### onParse()
 
-> `readonly` **onParse**: (`data`) => `boolean`
+> `readonly` **onParse**: (`data`) => `Blob`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -160,7 +160,7 @@ The data to parse
 
 #### Returns
 
-`boolean`
+`Blob`
 
 The parsed and validated data of type T
 
@@ -174,7 +174,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -196,9 +196,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `BooleanModel`\<`R`\>
+> `readonly` **title**: (`name`) => `Blob`\<`R`\>
 
-Defined in: [src/model/boolean.ts:28](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/boolean.ts#L28)
+Defined in: [src/model/blob.ts:29](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/blob.ts#L29)
 
 Sets a human-readable title for the model
 
@@ -212,9 +212,9 @@ The title to set
 
 #### Returns
 
-`BooleanModel`\<`R`\>
+`Blob`\<`R`\>
 
-A new BooleanModel instance with the updated title
+A new Blob instance with the updated title
 
 #### Overrides
 

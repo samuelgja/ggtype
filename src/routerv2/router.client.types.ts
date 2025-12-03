@@ -5,7 +5,6 @@ import type {
   ResultStatus,
   RouterResultNotGeneric,
 } from '../types'
-import type { AsyncStream } from '../utils/async-stream'
 import type {
   ClientActionsBase,
   Router,
@@ -37,6 +36,12 @@ export type ResultFor<
   [P in keyof Params]: RouterResultNotGeneric
 }
 
+/**
+ * Type representing callable client actions from the client perspective.
+ * Maps action names to async functions that accept parameters and return results.
+ * @group Client
+ * @template T - The client actions base type
+ */
 export type ClientCallableActionsFromClient<
   T extends ClientActionsBase,
 > = {
@@ -45,6 +50,12 @@ export type ClientCallableActionsFromClient<
   ) => Promise<T[K]['return']['infer']>
 }
 
+/**
+ * Type representing the result object with action results wrapped in ActionResult format.
+ * @group Client
+ * @template R - The router type
+ * @template Params - The parameters type
+ */
 export type ResultForWithActionResult<
   R extends Router<ServerActionsBase, ClientActionsBase>,
   Params extends ParamsIt<R>,
@@ -60,18 +71,23 @@ export type ResultForWithActionResult<
  * @group Client
  * @template R - The router type
  */
+/**
+ * Options for fetch and stream calls.
+ * @group Client
+ * @template R - The router type
+ */
 export interface FetchOptions<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
   /**
    * Optional array of files to upload
    */
-  files?: File[]
+  readonly files?: readonly File[]
   /**
    * Partial client action handlers that override client-level handlers for this specific request.
    * If an action is defined here, it will be used instead of the client-level definition.
    */
-  defineClientActions?: Partial<
+  readonly defineClientActions?: Partial<
     ClientCallableActionsFromClient<
       R['infer']['clientActions']
     >
@@ -82,12 +98,18 @@ export interface FetchOptions<
    * Note: Stream transport requires POST (or other methods that support request bodies).
    * For GET requests with HTTP transport, parameters are sent as query parameters.
    */
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  readonly method?:
+    | 'GET'
+    | 'POST'
+    | 'PUT'
+    | 'PATCH'
+    | 'DELETE'
 }
 
 /**
  * Helper function to define client action models with proper typing.
  * This is a type-only function that returns the input unchanged, used for type inference.
+ * @group Client
  * @template T - The client actions record type
  * @param data - The client actions record to define
  * @returns The same data with proper typing
@@ -98,18 +120,23 @@ export function defineClientActionsSchema<
   return data
 }
 
+/**
+ * Options for duplex (bidirectional) stream calls.
+ * @group Client
+ * @template R - The router type
+ */
 export interface DuplexOptions<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
   /**
    * Optional array of files to upload
    */
-  files?: File[]
+  readonly files?: readonly File[]
   /**
    * Partial client action handlers that override client-level handlers for this specific request.
    * If an action is defined here, it will be used instead of the client-level definition.
    */
-  defineClientActions?: Partial<
+  readonly defineClientActions?: Partial<
     ClientCallableActionsFromClient<
       R['infer']['clientActions']
     >
@@ -120,8 +147,13 @@ export interface DuplexOptions<
    * Note: Stream transport requires POST (or other methods that support request bodies).
    * For GET requests with HTTP transport, parameters are sent as query parameters.
    */
-  method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  readonly method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 }
+/**
+ * Options for WebSocket calls.
+ * @group Client
+ * @template R - The router type
+ */
 export interface WebsocketOptions<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
@@ -129,7 +161,7 @@ export interface WebsocketOptions<
    * Partial client action handlers that override client-level handlers for this specific request.
    * If an action is defined here, it will be used instead of the client-level definition.
    */
-  defineClientActions?: Partial<
+  readonly defineClientActions?: Partial<
     ClientCallableActionsFromClient<
       R['infer']['clientActions']
     >
@@ -140,15 +172,28 @@ export interface WebsocketOptions<
    * Note: Stream transport requires POST (or other methods that support request bodies).
    * For GET requests with HTTP transport, parameters are sent as query parameters.
    */
-  method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  files?: File[]
+  readonly method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  /**
+   * Optional array of files to upload
+   */
+  readonly files?: readonly File[]
 }
 
+/**
+ * Configuration options for creating a router client.
+ * @group Client
+ * @template R - The router type
+ */
 export interface RouterClientOptions<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
+  /**
+   * URL for stream transport
+   */
   readonly streamURL?: string | URL
-
+  /**
+   * URL for half-duplex (bidirectional) stream transport
+   */
   readonly halfDuplexUrl?: string | URL
   /**
    * URL for WebSocket transport. If provided and streamURL is not provided, will be used.
@@ -161,26 +206,25 @@ export interface RouterClientOptions<
   /**
    * Handlers for client actions (called by server)
    */
-  defineClientActions?: ClientCallableActionsFromClient<
+  readonly defineClientActions?: ClientCallableActionsFromClient<
     R['infer']['clientActions']
   >
   /**
    * Timeout in milliseconds for waiting responses (default: 60000)
    */
-  responseTimeout?: number
+  readonly responseTimeout?: number
   /**
    * Optional callback invoked after receiving a response.
    * Can modify the response or throw an error to retry.
-   * @param options - Response options with json (result), statusCode, and runAgain method
-   * @param options.json - The response result
-   * @param options.statusCode - The HTTP status code of the response
-   * @param options.runAgain - Method to retry the request (with optional new params and options)
+   * @param options - Response options with json (result), statusCode, and runAgain method. See the inline type definition for property details.
    * @returns The modified response JSON, or undefined to use the original
    */
   onResponse?: <Params extends ParamsIt<R>>(options: {
-    json: ResultForWithActionResult<R, Params>
-    statusCode: number
-    runAgain: <NewParams extends ParamsIt<R> = Params>(
+    readonly json: ResultForWithActionResult<R, Params>
+    readonly statusCode: number
+    readonly runAgain: <
+      NewParams extends ParamsIt<R> = Params,
+    >(
       newParams?: NewParams,
       newOptions?: FetchOptions<R>,
     ) => Promise<ResultForWithActionResult<R, NewParams>>
@@ -199,27 +243,129 @@ export interface RouterClientOptions<
   readonly onError?: (error: Error) => Error
 }
 
+type ActionProxy<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+  ActionName extends keyof R['infer']['serverActions'],
+> = (
+  params: R['infer']['serverActions'][ActionName]['params'],
+  options?: FetchOptions<R>,
+) => Promise<{
+  [K in ActionName]: ActionResult<
+    R['infer']['serverActions'][ActionName]['result']
+  >
+}>
+
+type StreamActionProxy<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+  ActionName extends keyof R['infer']['serverActions'],
+> = (
+  params: R['infer']['serverActions'][ActionName]['params'],
+  options?: FetchOptions<R>,
+) => AsyncGenerator<{
+  [K in ActionName]: ActionResult<
+    R['infer']['serverActions'][ActionName]['result']
+  >
+}>
+
+type DuplexActionProxy<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+  ActionName extends keyof R['infer']['serverActions'],
+> = (
+  params: R['infer']['serverActions'][ActionName]['params'],
+  options?: DuplexOptions<R>,
+) => AsyncGenerator<{
+  [K in ActionName]: ActionResult<
+    R['infer']['serverActions'][ActionName]['result']
+  >
+}>
+
+export type FetchActionsProxyType<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> = {
+  readonly [ActionName in keyof R['infer']['serverActions']]: ActionProxy<
+    R,
+    ActionName
+  >
+} & {
+  readonly __brand?: never
+}
+
+export type StreamActionsProxyType<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> = {
+  readonly [ActionName in keyof R['infer']['serverActions']]: StreamActionProxy<
+    R,
+    ActionName
+  >
+} & {
+  readonly __brand?: never
+}
+
+export type DuplexActionsProxyType<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> = {
+  readonly [ActionName in keyof R['infer']['serverActions']]: DuplexActionProxy<
+    R,
+    ActionName
+  >
+} & {
+  readonly __brand?: never
+}
+
+/**
+ * Router client for making requests to a router server.
+ * @group Client
+ * @template R - The router type
+ */
 export interface RouterClient<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
+  /**
+   * Fetches results for the given parameters using HTTP transport.
+   * @param params - Parameters to send. See ParamsIt type for details.
+   * @param fetchOptions - Optional fetch options. See FetchOptions interface for details.
+   * @returns Promise resolving to action results
+   */
   readonly fetch: <Params extends ParamsIt<R>>(
     params: Params,
     fetchOptions?: FetchOptions<R>,
   ) => Promise<ResultForWithActionResult<R, Params>>
+  /**
+   * Streams results for the given parameters using stream transport.
+   * @param params - Parameters to send. See ParamsIt type for details.
+   * @param streamOptions - Optional stream options. See FetchOptions interface for details.
+   * @returns Async generator yielding action results
+   */
   readonly stream: <Params extends ParamsIt<R>>(
     params: Params,
     streamOptions?: FetchOptions<R>,
-  ) => Promise<
-    AsyncStream<ResultForWithActionResult<R, Params>>
-  >
-}
-
-export interface RouterClientState {
-  defaultHeaders: Headers
-  onError: (error: Error) => Error
+  ) => AsyncGenerator<ResultForWithActionResult<R, Params>>
+  /**
+   * Object with methods for fetching individual actions by name
+   */
+  readonly fetchActions: FetchActionsProxyType<R>
+  /**
+   * Object with methods for streaming individual actions by name
+   */
+  readonly streamActions: StreamActionsProxyType<R>
+  /**
+   * Object with methods for duplex (bidirectional) streaming individual actions by name
+   */
+  readonly duplexActions: DuplexActionsProxyType<R>
 }
 
 /**
+ * Internal state for router client.
+ * @group Client
+ * @internal
+ */
+export interface RouterClientState {
+  defaultHeaders: Headers
+  readonly onError: (error: Error) => Error
+}
+
+/**
+ * Definition of a client action that can be called by the server.
  * @group Client
  */
 export interface ClientAction {
@@ -234,7 +380,9 @@ export interface ClientAction {
 }
 
 /**
+ * Result of a client action call.
  * @group Client
+ * @template T - The client action type
  */
 export interface ClientActionResult<
   T extends ClientAction,
@@ -242,19 +390,21 @@ export interface ClientActionResult<
   /**
    * Status of the client action result
    */
-  status: ResultStatus
+  readonly status: ResultStatus
   /**
    * Success data (present when status is 'ok')
    */
-  data?: T['return']['infer']
+  readonly data?: T['return']['infer']
   /**
    * Error information (present when status is 'error')
    */
-  error?: OutputError
+  readonly error?: OutputError
 }
 
 /**
+ * Type representing callable client actions that return ClientActionResult.
  * @group Client
+ * @template T - The client actions base type
  */
 export type ClientCallableActions<
   T extends ClientActionsBase,
@@ -264,16 +414,31 @@ export type ClientCallableActions<
   ) => Promise<ClientActionResult<T[K]>>
 }
 
+/**
+ * Bidirectional connection for sending and receiving messages.
+ * @group Client
+ * @template R - The router type
+ */
 export interface BidirectionalConnection<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
+  /**
+   * Async generator for receiving messages from the server
+   */
   readonly stream: AsyncGenerator<
     ResultForWithActionResult<R, ParamsIt<R>>,
     void,
     unknown
   >
+  /**
+   * Sends parameters to the server
+   * @param params - Parameters to send. See ParamsIt type for details.
+   */
   readonly send: <Params extends ParamsIt<R>>(
     params: Params,
   ) => Promise<void>
+  /**
+   * Closes the connection
+   */
   readonly close: () => void
 }

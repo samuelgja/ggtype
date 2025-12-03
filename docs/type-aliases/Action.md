@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 > **Action**\<`M`, `F`\> = `object`
 
-Defined in: [src/action/action.ts:86](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L86)
+Defined in: [src/action/action.ts:98](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/action/action.ts#L98)
+
+Action definition with model and execution function.
 
 ## Type Parameters
 
@@ -14,17 +16,21 @@ Defined in: [src/action/action.ts:86](https://github.com/samuelgja/ggtype/blob/f
 
 `M` *extends* [`ModelNotGeneric`](../ggtype-API-Documentation/namespaces/m/interfaces/ModelNotGeneric.md) = [`ModelNotGeneric`](../ggtype-API-Documentation/namespaces/m/interfaces/ModelNotGeneric.md)
 
+The model type for parameters
+
 ### F
 
 `F` *extends* [`ActionFn`](ActionFn.md)\<`M`\> = [`ActionFn`](ActionFn.md)
+
+The action function type
 
 ## Properties
 
 ### model
 
-> **model**: `M`
+> `readonly` **model**: `M`
 
-Defined in: [src/action/action.ts:93](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L93)
+Defined in: [src/action/action.ts:105](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/action/action.ts#L105)
 
 The model used for parameter validation
 
@@ -32,8 +38,8 @@ The model used for parameter validation
 
 ### run
 
-> **run**: `F`
+> `readonly` **run**: `F`
 
-Defined in: [src/action/action.ts:97](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/action/action.ts#L97)
+Defined in: [src/action/action.ts:109](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/action/action.ts#L109)
 
 The action execution function

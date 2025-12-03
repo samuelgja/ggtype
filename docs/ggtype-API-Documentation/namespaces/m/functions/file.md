@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: file()
 
-> **file**(): [`FileModel`](../interfaces/FileModel.md)\<`true`\>
+> **file**(): [`File`](../interfaces/File.md)\<`true`\>
 
-Defined in: [src/model/file.ts:62](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/file.ts#L62)
+Defined in: [src/model/file.ts:60](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L60)
 
 Creates a file model for validation and type inference.
 Returns a model that validates File values, automatically converting Blob and ArrayBuffer
@@ -14,9 +14,9 @@ instances to File objects when needed. Supports optional required constraint.
 
 ## Returns
 
-[`FileModel`](../interfaces/FileModel.md)\<`true`\>
+[`File`](../interfaces/File.md)\<`true`\>
 
-A FileModel instance for validating File values
+A File instance for validating File values
 
 ## Example
 

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **isError**\<`T`\>(`result`): `result is ActionResultError<T>`
 
-Defined in: [src/utils/is.ts:101](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/utils/is.ts#L101)
+Defined in: [src/utils/is.ts:101](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/utils/is.ts#L101)
 
 Type guard to check if a router result is an error result.
 

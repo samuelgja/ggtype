@@ -41,6 +41,7 @@ export const DEFAULT_ROUTER_TIMEOUT = 60 * 1000
 export type AppError = ValidationError | Error
 
 /**
+ * Base interface for error types.
  * @group Utils
  */
 export interface ErrorBase {
@@ -59,6 +60,7 @@ export interface ErrorBase {
 }
 
 /**
+ * Generic error output format.
  * @group Utils
  */
 export interface OutputErrorGeneric extends ErrorBase {
@@ -73,6 +75,7 @@ export interface OutputErrorGeneric extends ErrorBase {
 }
 
 /**
+ * Validation error output format.
  * @group Utils
  */
 export interface OutputValidationError extends ErrorBase {
@@ -87,7 +90,7 @@ export interface OutputValidationError extends ErrorBase {
   /**
    * Detailed validation errors from AJV
    */
-  readonly errors?: ErrorObject<
+  readonly errors?: readonly ErrorObject<
     string,
     Record<string, unknown>,
     unknown
@@ -111,21 +114,22 @@ export type OutputError =
 export type ResultStatus = 'ok' | 'error'
 
 /**
+ * Non-generic router result format.
  * @group Utils
  */
 export interface RouterResultNotGeneric {
   /**
    * Result status: 'ok' for success, 'error' for failure
    */
-  status: ResultStatus
+  readonly status: ResultStatus
   /**
    * Success data (present when status is 'ok')
    */
-  data?: unknown
+  readonly data?: unknown
   /**
    * Error information (present when status is 'error')
    */
-  error?: OutputError
+  readonly error?: OutputError
 }
 
 /**
@@ -145,53 +149,73 @@ export type UnwrapStreamType<T> = T extends void
             ? U
             : T
 
+/**
+ * Base interface for action results.
+ * @group Utils
+ * @template T - The result type
+ */
 export interface ActionResultBase<
   T,
 > extends RouterResultNotGeneric {
   /**
    * Success data with unwrapped stream types (present when status is 'ok')
    */
-  data?: UnwrapStreamType<T>
+  readonly data?: UnwrapStreamType<T>
   /**
    * Error information (present when status is 'error')
    */
-  error?: OutputError
+  readonly error?: OutputError
 }
 
+/**
+ * Success result for an action.
+ * @group Utils
+ * @template T - The result type
+ */
 export interface ActionResultOk<
   T,
 > extends ActionResultBase<T> {
   /**
    * Result status (always 'ok' for success)
    */
-  status: 'ok'
+  readonly status: 'ok'
   /**
    * Success data with unwrapped stream types
    */
-  data: UnwrapStreamType<T>
+  readonly data: UnwrapStreamType<T>
 }
 
+/**
+ * Error result for an action.
+ * @group Utils
+ * @template T - The result type
+ */
 export interface ActionResultError<
   T,
 > extends ActionResultBase<T> {
   /**
    * Result status (always 'error' for failure)
    */
-  status: 'error'
+  readonly status: 'error'
   /**
    * Error information
    */
-  error: OutputError
+  readonly error: OutputError
 }
 
 export type ActionResult<T> =
   | ActionResultOk<T>
   | ActionResultError<T>
 
+/**
+ * Type representing results for multiple actions.
+ * @group Utils
+ * @template Actions - The actions record type
+ */
 export type ActionsResult<
   Actions extends Record<string, Action>,
 > = {
-  [ActionName in keyof Actions]: ActionResult<
+  readonly [ActionName in keyof Actions]: ActionResult<
     Awaited<ReturnType<Actions[ActionName]['run']>>
   >
 }
@@ -200,12 +224,21 @@ export type ActionsResult<
 // Parameter Types
 // ============================================================================
 
+/**
+ * Non-generic type for action parameters.
+ * @group Utils
+ */
 export type ActionsParamsNotGeneric = Record<string, Action>
 
+/**
+ * Type representing parameters for multiple actions.
+ * @group Utils
+ * @template Actions - The actions record type
+ */
 export type ActionsParams<
   Actions extends Record<string, Action>,
 > = {
-  [ActionName in keyof Actions]?: Parameters<
+  readonly [ActionName in keyof Actions]?: Parameters<
     Actions[ActionName]['run']
   >[0]['params']
 }

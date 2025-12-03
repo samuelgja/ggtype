@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: AndModel\<M, R\>
+# Interface: And\<M, R\>
 
-Defined in: [src/model/and.ts:12](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L12)
+Defined in: [src/model/and.ts:12](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L12)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/model/and.ts:12](https://github.com/samuelgja/ggtype/blob/fd360
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -38,9 +38,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `AndModel`\<`M`, `R`\>
+> `readonly` **description**: (`description`) => `And`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:44](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L44)
+Defined in: [src/model/and.ts:44](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L44)
 
 Sets a human-readable description for the model
 
@@ -54,9 +54,9 @@ The description to set
 
 #### Returns
 
-`AndModel`\<`M`, `R`\>
+`And`\<`M`, `R`\>
 
-A new AndModel instance with the updated description
+A new And instance with the updated description
 
 #### Overrides
 
@@ -68,7 +68,7 @@ A new AndModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -116,7 +116,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `Intersect`\<`M`\[`number`\]\[`"infer"`\]\>
 
-Defined in: [src/model/and.ts:19](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L19)
+Defined in: [src/model/and.ts:19](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L19)
 
 Inferred TypeScript type for the intersection model (intersection of all model inferred types)
 
@@ -128,17 +128,17 @@ Inferred TypeScript type for the intersection model (intersection of all model i
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `AndModel`\<`M`, `false`\>
+> `readonly` **isOptional**: () => `And`\<`M`, `false`\>
 
-Defined in: [src/model/and.ts:24](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L24)
+Defined in: [src/model/and.ts:24](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L24)
 
 Marks the intersection model as optional
 
 #### Returns
 
-`AndModel`\<`M`, `false`\>
+`And`\<`M`, `false`\>
 
-A new AndModel instance marked as optional
+A new And instance marked as optional
 
 #### Overrides
 
@@ -150,7 +150,7 @@ A new AndModel instance marked as optional
 
 > `readonly` **onParse**: (`data`) => `Intersect`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -178,7 +178,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -200,9 +200,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `AndModel`\<`M`, `R`\>
+> `readonly` **title**: (`name`) => `And`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:38](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L38)
+Defined in: [src/model/and.ts:38](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L38)
 
 Sets a human-readable title for the model
 
@@ -216,9 +216,9 @@ The title to set
 
 #### Returns
 
-`AndModel`\<`M`, `R`\>
+`And`\<`M`, `R`\>
 
-A new AndModel instance with the updated title
+A new And instance with the updated title
 
 #### Overrides
 
@@ -228,9 +228,9 @@ A new AndModel instance with the updated title
 
 ### validate()
 
-> `readonly` **validate**: (`onValidate`) => `AndModel`\<`M`, `R`\>
+> `readonly` **validate**: (`onValidate`) => `And`\<`M`, `R`\>
 
-Defined in: [src/model/and.ts:30](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/and.ts#L30)
+Defined in: [src/model/and.ts:30](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L30)
 
 Adds custom validation logic to the model
 
@@ -244,6 +244,6 @@ Validation function that receives the parsed data
 
 #### Returns
 
-`AndModel`\<`M`, `R`\>
+`And`\<`M`, `R`\>
 
-A new AndModel instance with the validation function
+A new And instance with the validation function

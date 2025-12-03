@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: ArrayModel\<T, R\>
+# Interface: Array\<T, R\>
 
-Defined in: [src/model/array.ts:13](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L13)
+Defined in: [src/model/array.ts:13](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L13)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/model/array.ts:13](https://github.com/samuelgja/ggtype/blob/fd3
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -38,9 +38,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `ArrayModel`\<`T`, `R`\>
+> `readonly` **description**: (`description`) => `Array`\<`T`, `R`\>
 
-Defined in: [src/model/array.ts:57](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L57)
+Defined in: [src/model/array.ts:57](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L57)
 
 Sets a human-readable description for the model
 
@@ -54,9 +54,9 @@ The description to set
 
 #### Returns
 
-`ArrayModel`\<`T`, `R`\>
+`Array`\<`T`, `R`\>
 
-A new ArrayModel instance with the updated description
+A new Array instance with the updated description
 
 #### Overrides
 
@@ -68,7 +68,7 @@ A new ArrayModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -116,7 +116,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `T`\[`"infer"`\][]
 
-Defined in: [src/model/array.ts:32](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L32)
+Defined in: [src/model/array.ts:32](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L32)
 
 Inferred TypeScript type for the array model (array of the item model's inferred type)
 
@@ -128,17 +128,17 @@ Inferred TypeScript type for the array model (array of the item model's inferred
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `ArrayModel`\<`T`, `false`\>
+> `readonly` **isOptional**: () => `Array`\<`T`, `false`\>
 
-Defined in: [src/model/array.ts:37](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L37)
+Defined in: [src/model/array.ts:37](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L37)
 
 Marks the array model as optional
 
 #### Returns
 
-`ArrayModel`\<`T`, `false`\>
+`Array`\<`T`, `false`\>
 
-A new ArrayModel instance marked as optional
+A new Array instance marked as optional
 
 #### Overrides
 
@@ -148,9 +148,9 @@ A new ArrayModel instance marked as optional
 
 ### maxItems()
 
-> `readonly` **maxItems**: (`length`) => `ArrayModel`\<`T`, `R`\>
+> `readonly` **maxItems**: (`length`) => `Array`\<`T`, `R`\>
 
-Defined in: [src/model/array.ts:22](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L22)
+Defined in: [src/model/array.ts:22](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L22)
 
 Sets the maximum number of items allowed in the array
 
@@ -164,17 +164,17 @@ Maximum number of items
 
 #### Returns
 
-`ArrayModel`\<`T`, `R`\>
+`Array`\<`T`, `R`\>
 
-A new ArrayModel instance with the constraint
+A new Array instance with the constraint
 
 ***
 
 ### minItems()
 
-> `readonly` **minItems**: (`length`) => `ArrayModel`\<`T`, `R`\>
+> `readonly` **minItems**: (`length`) => `Array`\<`T`, `R`\>
 
-Defined in: [src/model/array.ts:28](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L28)
+Defined in: [src/model/array.ts:28](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L28)
 
 Sets the minimum number of items required in the array
 
@@ -188,9 +188,9 @@ Minimum number of items
 
 #### Returns
 
-`ArrayModel`\<`T`, `R`\>
+`Array`\<`T`, `R`\>
 
-A new ArrayModel instance with the constraint
+A new Array instance with the constraint
 
 ***
 
@@ -198,7 +198,7 @@ A new ArrayModel instance with the constraint
 
 > `readonly` **onParse**: (`data`) => `T`[]
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -226,7 +226,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -248,9 +248,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `ArrayModel`\<`T`, `R`\>
+> `readonly` **title**: (`name`) => `Array`\<`T`, `R`\>
 
-Defined in: [src/model/array.ts:51](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L51)
+Defined in: [src/model/array.ts:51](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L51)
 
 Sets a human-readable title for the model
 
@@ -264,9 +264,9 @@ The title to set
 
 #### Returns
 
-`ArrayModel`\<`T`, `R`\>
+`Array`\<`T`, `R`\>
 
-A new ArrayModel instance with the updated title
+A new Array instance with the updated title
 
 #### Overrides
 
@@ -276,9 +276,9 @@ A new ArrayModel instance with the updated title
 
 ### validate()
 
-> `readonly` **validate**: (`onValidate`) => `ArrayModel`\<`T`, `R`\>
+> `readonly` **validate**: (`onValidate`) => `Array`\<`T`, `R`\>
 
-Defined in: [src/model/array.ts:43](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L43)
+Defined in: [src/model/array.ts:43](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L43)
 
 Adds custom validation logic to the model
 
@@ -292,6 +292,6 @@ Validation function that receives the parsed array data
 
 #### Returns
 
-`ArrayModel`\<`T`, `R`\>
+`Array`\<`T`, `R`\>
 
-A new ArrayModel instance with the validation function
+A new Array instance with the validation function

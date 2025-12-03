@@ -14,6 +14,14 @@ import { handleHttpRequest } from './transports/handle-http.request'
 import { handleStreamRequest } from './transports/handle-stream-request'
 import { handleWebSocket } from './transports/handle-websocket'
 
+/**
+ * Creates a router instance for handling HTTP requests and WebSocket messages.
+ * @group Router
+ * @template ServerActions - The server actions type
+ * @template ClientActions - The client actions type
+ * @param options - Router configuration options. See RouterOptions interface for details.
+ * @returns A router instance with onRequest and onWebSocketMessage handlers
+ */
 export function createRouter<
   ServerActions extends ServerActionsBase,
   ClientActions extends ClientActionsBase,

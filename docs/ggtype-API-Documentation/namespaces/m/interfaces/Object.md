@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: ObjectModel\<T, R\>
+# Interface: Object\<T, R\>
 
-Defined in: [src/model/object.ts:24](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L24)
+Defined in: [src/model/object.ts:24](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L24)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/model/object.ts:24](https://github.com/samuelgja/ggtype/blob/fd
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -38,9 +38,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `ObjectModel`\<`T`, `R`\>
+> `readonly` **description**: (`description`) => `Object`\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:109](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L109)
+Defined in: [src/model/object.ts:109](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L109)
 
 Sets a human-readable description for the model
 
@@ -54,9 +54,9 @@ The description to set
 
 #### Returns
 
-`ObjectModel`\<`T`, `R`\>
+`Object`\<`T`, `R`\>
 
-A new ObjectModel instance with the updated description
+A new Object instance with the updated description
 
 #### Overrides
 
@@ -68,7 +68,7 @@ A new ObjectModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -116,7 +116,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: \{ \[K in string \| number \| symbol as T\[K\] extends ModelNotGeneric ? any\[any\]\["$internals"\]\["isRequired"\] extends true ? K : never : never\]: T\[K\] extends ModelNotGeneric ? any\[any\]\["infer"\] : never \} & \{ \[K in string \| number \| symbol as T\[K\] extends ModelNotGeneric ? any\[any\]\["$internals"\]\["isRequired"\] extends false ? K : never : never\]?: T\[K\] extends ModelNotGeneric ? any\[any\]\["infer"\] : never \}
 
-Defined in: [src/model/object.ts:32](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L32)
+Defined in: [src/model/object.ts:32](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L32)
 
 Inferred TypeScript type for the object model
 Required properties are non-optional, optional properties are marked with ?
@@ -129,17 +129,17 @@ Required properties are non-optional, optional properties are marked with ?
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `ObjectModel`\<`T`, `false`\>
+> `readonly` **isOptional**: () => `Object`\<`T`, `false`\>
 
-Defined in: [src/model/object.ts:65](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L65)
+Defined in: [src/model/object.ts:65](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L65)
 
 Marks the object model as optional
 
 #### Returns
 
-`ObjectModel`\<`T`, `false`\>
+`Object`\<`T`, `false`\>
 
-A new ObjectModel instance marked as optional
+A new Object instance marked as optional
 
 #### Overrides
 
@@ -149,9 +149,9 @@ A new ObjectModel instance marked as optional
 
 ### maxKeys()
 
-> `readonly` **maxKeys**: (`maxKeys`) => `ObjectModel`\<`T`, `R`\>
+> `readonly` **maxKeys**: (`maxKeys`) => `Object`\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:54](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L54)
+Defined in: [src/model/object.ts:54](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L54)
 
 Sets the maximum number of keys allowed in the object
 
@@ -165,17 +165,17 @@ Maximum number of keys
 
 #### Returns
 
-`ObjectModel`\<`T`, `R`\>
+`Object`\<`T`, `R`\>
 
-A new ObjectModel instance with the constraint
+A new Object instance with the constraint
 
 ***
 
 ### minKeys()
 
-> `readonly` **minKeys**: (`minKeys`) => `ObjectModel`\<`T`, `R`\>
+> `readonly` **minKeys**: (`minKeys`) => `Object`\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:60](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L60)
+Defined in: [src/model/object.ts:60](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L60)
 
 Sets the minimum number of keys required in the object
 
@@ -189,9 +189,9 @@ Minimum number of keys
 
 #### Returns
 
-`ObjectModel`\<`T`, `R`\>
+`Object`\<`T`, `R`\>
 
-A new ObjectModel instance with the constraint
+A new Object instance with the constraint
 
 ***
 
@@ -199,7 +199,7 @@ A new ObjectModel instance with the constraint
 
 > `readonly` **onParse**: (`data`) => `T`
 
-Defined in: [src/model/object.ts:71](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L71)
+Defined in: [src/model/object.ts:71](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L71)
 
 Parses and validates an object according to the model
 
@@ -227,7 +227,7 @@ The parsed and validated object of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -249,9 +249,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `ObjectModel`\<`T`, `R`\>
+> `readonly` **title**: (`name`) => `Object`\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:103](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L103)
+Defined in: [src/model/object.ts:103](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L103)
 
 Sets a human-readable title for the model
 
@@ -265,9 +265,9 @@ The title to set
 
 #### Returns
 
-`ObjectModel`\<`T`, `R`\>
+`Object`\<`T`, `R`\>
 
-A new ObjectModel instance with the updated title
+A new Object instance with the updated title
 
 #### Overrides
 
@@ -277,9 +277,9 @@ A new ObjectModel instance with the updated title
 
 ### validate()
 
-> `readonly` **validate**: (`onValidate`) => `ObjectModel`\<`T`, `R`\>
+> `readonly` **validate**: (`onValidate`) => `Object`\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:95](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L95)
+Defined in: [src/model/object.ts:95](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L95)
 
 Adds custom validation logic to the model
 
@@ -293,6 +293,6 @@ Validation function that receives the parsed data
 
 #### Returns
 
-`ObjectModel`\<`T`, `R`\>
+`Object`\<`T`, `R`\>
 
-A new ObjectModel instance with the validation function
+A new Object instance with the validation function

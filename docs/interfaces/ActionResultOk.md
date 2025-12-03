@@ -1,10 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Interface: ActionResultOk\<T\>
 
-Defined in: [src/types.ts:164](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L164)
+Defined in: [src/types.ts:175](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L175)
+
+Success result for an action.
 
 ## Extends
 
@@ -16,13 +18,15 @@ Defined in: [src/types.ts:164](https://github.com/samuelgja/ggtype/blob/fd360756
 
 `T`
 
+The result type
+
 ## Properties
 
 ### data
 
-> **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
+> `readonly` **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
 
-Defined in: [src/types.ts:174](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L174)
+Defined in: [src/types.ts:185](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L185)
 
 Success data with unwrapped stream types
 
@@ -34,9 +38,9 @@ Success data with unwrapped stream types
 
 ### error?
 
-> `optional` **error**: [`OutputError`](../type-aliases/OutputError.md)
+> `readonly` `optional` **error**: [`OutputError`](../type-aliases/OutputError.md)
 
-Defined in: [src/types.ts:161](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L161)
+Defined in: [src/types.ts:167](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L167)
 
 Error information (present when status is 'error')
 
@@ -48,9 +52,9 @@ Error information (present when status is 'error')
 
 ### status
 
-> **status**: `"ok"`
+> `readonly` **status**: `"ok"`
 
-Defined in: [src/types.ts:170](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L170)
+Defined in: [src/types.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L181)
 
 Result status (always 'ok' for success)
 

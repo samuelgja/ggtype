@@ -5,7 +5,15 @@ import { AJV } from './compile-model'
 import Standalone from 'ajv/dist/standalone'
 import * as fs from 'node:fs'
 
+/**
+ * Options for schema compilation.
+ * @group Utils
+ * @internal
+ */
 interface CompileOptions {
+  /**
+   * Optional file path to write standalone validation code
+   */
   readonly compilePath?: string
 }
 

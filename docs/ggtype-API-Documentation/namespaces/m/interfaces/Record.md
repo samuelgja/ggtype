@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
-# Interface: RecordModel\<M, R\>
+# Interface: Record\<M, R\>
 
-Defined in: [src/model/record.ts:13](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L13)
+Defined in: [src/model/record.ts:19](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L19)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/model/record.ts:13](https://github.com/samuelgja/ggtype/blob/fd
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -38,9 +38,9 @@ Internal model configuration and metadata with type-safe required flag
 
 ### description()
 
-> `readonly` **description**: (`description`) => `RecordModel`\<`M`, `R`\>
+> `readonly` **description**: (`description`) => `Record`\<`M`, `R`\>
 
-Defined in: [src/model/record.ts:45](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L45)
+Defined in: [src/model/record.ts:51](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L51)
 
 Sets a human-readable description for the model
 
@@ -54,9 +54,9 @@ The description to set
 
 #### Returns
 
-`RecordModel`\<`M`, `R`\>
+`Record`\<`M`, `R`\>
 
-A new RecordModel instance with the updated description
+A new Record instance with the updated description
 
 #### Overrides
 
@@ -68,7 +68,7 @@ A new RecordModel instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -114,9 +114,9 @@ The JSON Schema object with $defs for referenced models
 
 ### infer
 
-> `readonly` **infer**: `Record`\<`string`, `M`\[`"infer"`\]\>
+> `readonly` **infer**: `StdRecord`\<`string`, `M`\[`"infer"`\]\>
 
-Defined in: [src/model/record.ts:20](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L20)
+Defined in: [src/model/record.ts:26](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L26)
 
 Inferred TypeScript type for the record model (object with string keys and values matching the item model)
 
@@ -128,17 +128,17 @@ Inferred TypeScript type for the record model (object with string keys and value
 
 ### isOptional()
 
-> `readonly` **isOptional**: () => `RecordModel`\<`M`, `false`\>
+> `readonly` **isOptional**: () => `Record`\<`M`, `false`\>
 
-Defined in: [src/model/record.ts:25](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L25)
+Defined in: [src/model/record.ts:31](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L31)
 
 Marks the record model as optional
 
 #### Returns
 
-`RecordModel`\<`M`, `false`\>
+`Record`\<`M`, `false`\>
 
-A new RecordModel instance marked as optional
+A new Record instance marked as optional
 
 #### Overrides
 
@@ -150,7 +150,7 @@ A new RecordModel instance marked as optional
 
 > `readonly` **onParse**: (`data`) => `M`
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -178,7 +178,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -200,9 +200,9 @@ Optional function to transform data when stringifying (for serialization)
 
 ### title()
 
-> `readonly` **title**: (`name`) => `RecordModel`\<`M`, `R`\>
+> `readonly` **title**: (`name`) => `Record`\<`M`, `R`\>
 
-Defined in: [src/model/record.ts:39](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L39)
+Defined in: [src/model/record.ts:45](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L45)
 
 Sets a human-readable title for the model
 
@@ -216,9 +216,9 @@ The title to set
 
 #### Returns
 
-`RecordModel`\<`M`, `R`\>
+`Record`\<`M`, `R`\>
 
-A new RecordModel instance with the updated title
+A new Record instance with the updated title
 
 #### Overrides
 
@@ -228,9 +228,9 @@ A new RecordModel instance with the updated title
 
 ### validate()
 
-> `readonly` **validate**: (`onValidate`) => `RecordModel`\<`M`, `R`\>
+> `readonly` **validate**: (`onValidate`) => `Record`\<`M`, `R`\>
 
-Defined in: [src/model/record.ts:31](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L31)
+Defined in: [src/model/record.ts:37](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L37)
 
 Adds custom validation logic to the model
 
@@ -244,6 +244,6 @@ Validation function that receives the parsed record data
 
 #### Returns
 
-`RecordModel`\<`M`, `R`\>
+`Record`\<`M`, `R`\>
 
-A new RecordModel instance with the validation function
+A new Record instance with the validation function

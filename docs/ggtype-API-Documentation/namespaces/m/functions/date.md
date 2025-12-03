@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: date()
 
-> **date**(): [`DateModel`](../interfaces/DateModel.md)\<`true`\>
+> **date**(): [`Date`](../interfaces/Date.md)\<`true`\>
 
-Defined in: [src/model/date.ts:135](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/date.ts#L135)
+Defined in: [src/model/date.ts:133](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/date.ts#L133)
 
 Creates a date model for validation and type inference.
 Returns a model that validates Date values with optional custom validation.
@@ -14,9 +14,9 @@ Supports parsing from strings, numbers (timestamps), and Date instances.
 
 ## Returns
 
-[`DateModel`](../interfaces/DateModel.md)\<`true`\>
+[`Date`](../interfaces/Date.md)\<`true`\>
 
-A DateModel instance for validating Date values
+A Date instance for validating Date values
 
 ## Example
 

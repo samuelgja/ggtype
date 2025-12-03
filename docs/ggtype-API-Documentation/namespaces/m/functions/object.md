@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: object()
 
-> **object**\<`T`, `R`\>(`properties`): [`ObjectModel`](../interfaces/ObjectModel.md)\<`T`, `R`\>
+> **object**\<`T`, `R`\>(`properties`): [`Object`](../interfaces/Object.md)\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:148](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/object.ts#L148)
+Defined in: [src/model/object.ts:148](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L148)
 
 Creates an object model for validation and type inference.
 Returns a model that validates objects with specified properties, where each property
@@ -36,9 +36,9 @@ Record of property names to their corresponding models
 
 ## Returns
 
-[`ObjectModel`](../interfaces/ObjectModel.md)\<`T`, `R`\>
+[`Object`](../interfaces/Object.md)\<`T`, `R`\>
 
-An ObjectModel instance for validating objects with the specified structure
+An Object instance for validating objects with the specified structure
 
 ## Example
 

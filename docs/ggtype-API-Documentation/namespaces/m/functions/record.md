@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: record()
 
-> **record**\<`M`\>(`item`): [`RecordModel`](../interfaces/RecordModel.md)\<`M`, `true`\>
+> **record**\<`M`\>(`item`): [`Record`](../interfaces/Record.md)\<`M`, `true`\>
 
-Defined in: [src/model/record.ts:78](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/record.ts#L78)
+Defined in: [src/model/record.ts:84](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L84)
 
 Creates a record model for validating objects with dynamic keys.
 Returns a model that validates objects where all values match the provided item model,
@@ -30,9 +30,9 @@ The model to validate each value in the record against
 
 ## Returns
 
-[`RecordModel`](../interfaces/RecordModel.md)\<`M`, `true`\>
+[`Record`](../interfaces/Record.md)\<`M`, `true`\>
 
-A RecordModel instance for validating record objects
+A Record instance for validating record objects
 
 ## Example
 

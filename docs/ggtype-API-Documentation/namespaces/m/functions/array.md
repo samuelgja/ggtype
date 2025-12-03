@@ -1,12 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
 # Function: array()
 
-> **array**\<`T`\>(`list`): [`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `true`\>
+> **array**\<`T`\>(`list`): [`Array`](../interfaces/Array.md)\<`T`, `true`\>
 
-Defined in: [src/model/array.ts:91](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/array.ts#L91)
+Defined in: [src/model/array.ts:89](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/array.ts#L89)
 
 Creates an array model for validation and type inference.
 Returns a model that validates arrays of items matching the provided model type,
@@ -30,9 +30,9 @@ The model to validate each array item against
 
 ## Returns
 
-[`ArrayModel`](../interfaces/ArrayModel.md)\<`T`, `true`\>
+[`Array`](../interfaces/Array.md)\<`T`, `true`\>
 
-An ArrayModel instance for validating arrays of the specified type
+An Array instance for validating arrays of the specified type
 
 ## Example
 

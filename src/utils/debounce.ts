@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Creates a debounced version of a function that delays execution until after wait milliseconds
  * have elapsed since the last time it was invoked. Useful for limiting the rate of function calls,
@@ -10,6 +9,7 @@
  * @param wait - The number of milliseconds to delay
  * @returns A debounced version of the function
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounce<T extends (...args: any[]) => any>(
   function_: T,
   wait: number,

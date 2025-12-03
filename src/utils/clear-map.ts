@@ -1,26 +1,42 @@
+/**
+ * Options for creating a clear map.
+ * @group Utils
+ * @internal
+ * @template K - The key type
+ * @template V - The value type
+ */
 interface Options<K, V> {
   /**
    * Time in milliseconds before entries expire
    */
-  expiresMs: number
+  readonly expiresMs: number
   /**
    * Interval in milliseconds to check for expired entries
    */
-  checkIntervalMs: number
+  readonly checkIntervalMs: number
   /**
    * Optional function to convert keys to strings (default: converts to string)
    */
-  getKey?: (key: K) => string
-
-  onExpire?: (
+  readonly getKey?: (key: K) => string
+  /**
+   * Optional callback when entries expire
+   */
+  readonly onExpire?: (
     key: K,
     value: {
-      value: V
-      expires: number
-      clear?: () => void
+      readonly value: V
+      readonly expires: number
+      readonly clear?: () => void
     },
   ) => void
 }
+/**
+ * Map-like data structure with automatic entry expiration.
+ * @group Utils
+ * @internal
+ * @template K - The key type
+ * @template V - The value type
+ */
 export interface ClearMap<K, V> {
   /**
    * Adds a value to the map with optional expiration callback
@@ -28,7 +44,7 @@ export interface ClearMap<K, V> {
    * @param value - The value to store
    * @param clearCallback - Optional callback to execute when the entry expires
    */
-  add: (
+  readonly add: (
     key: K,
     value: V,
     clearCallback?: () => void,
@@ -39,32 +55,39 @@ export interface ClearMap<K, V> {
    * @param reset - Whether to reset the expiration time (default: false)
    * @returns The value if found, undefined otherwise
    */
-  get: (key: K, reset?: boolean) => V | undefined
+  readonly get: (key: K, reset?: boolean) => V | undefined
   /**
    * Gets and removes a value from the map
    * @param key - The key to look up
    * @returns The value if found, undefined otherwise
    */
-  take: (key: K) => V | undefined
+  readonly take: (key: K) => V | undefined
   /**
    * Deletes a value from the map
    * @param key - The key to delete
    */
-  delete: (key: K) => void
+  readonly delete: (key: K) => void
   /**
    * Disposes of the map and stops the expiration checking interval
    */
-  dispose: () => void
+  readonly dispose: () => void
   /**
    * Gets the number of entries in the map
    * @returns The number of entries
    */
-  length: () => number
+  readonly length: () => number
   /**
    * Iterator for iterating over map entries
    */
-  [Symbol.iterator]: () => IterableIterator<
-    [K, { value: V; expires: number; clear?: () => void }]
+  readonly [Symbol.iterator]: () => IterableIterator<
+    [
+      K,
+      {
+        readonly value: V
+        readonly expires: number
+        readonly clear?: () => void
+      },
+    ]
   >
 }
 

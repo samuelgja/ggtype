@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.8**](../../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **copyModel**\<`T`\>(`model`): `T`
 
-Defined in: [src/model/model.ts:262](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/model/model.ts#L262)
+Defined in: [src/model/model.ts:262](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L262)
 
 Creates a deep copy of a model with a new unique ID.
 Copies all model properties and internals, but assigns a new unique ID to the copy.

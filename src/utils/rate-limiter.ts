@@ -2,16 +2,35 @@ const DEFAULT_MAX_RUN_PER_WINDOW = 10
 const DEFAULT_WINDOW_MS = 1000
 const DEFAULT_BLOCK_MS = 1000
 
+/**
+ * Options for rate limiter configuration.
+ * @group Utils
+ * @internal
+ */
 interface RateLimiterOptions {
-  readonly maxRunPerWindow?: number // Maximum runs allowed per window
-  readonly blockMs?: number // How long to block after exceeding limit
-  readonly windowMs?: number // Window duration in milliseconds
+  /**
+   * Maximum runs allowed per window
+   */
+  readonly maxRunPerWindow?: number
+  /**
+   * How long to block after exceeding limit
+   */
+  readonly blockMs?: number
+  /**
+   * Window duration in milliseconds
+   */
+  readonly windowMs?: number
 }
 
+/**
+ * Rate limiter function interface.
+ * @group Utils
+ * @internal
+ */
 interface RateLimiter {
   (): void
-  getLength: () => number
-  onCleanup: (callback: () => void) => void
+  readonly getLength: () => number
+  readonly onCleanup: (callback: () => void) => void
 }
 
 /**

@@ -1,10 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Interface: OutputValidationError
 
-Defined in: [src/types.ts:81](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L81)
+Defined in: [src/types.ts:81](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L81)
+
+Validation error output format.
 
 ## Extends
 
@@ -16,7 +18,7 @@ Defined in: [src/types.ts:81](https://github.com/samuelgja/ggtype/blob/fd3607568
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [src/types.ts:57](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L57)
+Defined in: [src/types.ts:55](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L55)
 
 Optional cause of the error
 
@@ -30,7 +32,7 @@ Optional cause of the error
 
 > `readonly` **code**: `number`
 
-Defined in: [src/types.ts:61](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L61)
+Defined in: [src/types.ts:59](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L59)
 
 HTTP status code
 
@@ -42,9 +44,9 @@ HTTP status code
 
 ### errors?
 
-> `readonly` `optional` **errors**: `ErrorObject`\<`string`, `Record`\<`string`, `unknown`\>, `unknown`\>[]
+> `readonly` `optional` **errors**: readonly `ErrorObject`\<`string`, `Record`\<`string`, `unknown`\>, `unknown`\>[]
 
-Defined in: [src/types.ts:93](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L93)
+Defined in: [src/types.ts:93](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L93)
 
 Detailed validation errors from AJV
 
@@ -54,7 +56,7 @@ Detailed validation errors from AJV
 
 > `readonly` **message**: `string`
 
-Defined in: [src/types.ts:89](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L89)
+Defined in: [src/types.ts:89](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L89)
 
 Human-readable error message
 
@@ -64,7 +66,7 @@ Human-readable error message
 
 > `readonly` **type**: `"validation"`
 
-Defined in: [src/types.ts:85](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L85)
+Defined in: [src/types.ts:85](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L85)
 
 Error type identifier (always 'validation')
 

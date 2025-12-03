@@ -41,6 +41,7 @@ export function getCtx<T>(ctx: unknown): T {
 }
 
 /**
+ * Possible return value types for actions.
  * @group Router
  */
 export type ReturnValue =
@@ -49,7 +50,9 @@ export type ReturnValue =
   | null
 
 /**
+ * Parameters passed to action callback functions.
  * @group Router
+ * @template M - The model type for parameters
  */
 export interface ActionCbParameters<
   M extends ModelNotGeneric = ModelNotGeneric,
@@ -69,12 +72,16 @@ export interface ActionCbParameters<
   readonly clientActions: <
     ClientActions extends Record<string, ClientAction>,
   >() => ClientCallableActions<ClientActions>
-
-  readonly files?: Map<string, File>
+  /**
+   * Optional map of uploaded files keyed by file ID
+   */
+  readonly files?: ReadonlyMap<string, File>
 }
 
 /**
+ * Function type for action callbacks.
  * @group Router
+ * @template M - The model type for parameters
  */
 export type ActionFn<
   M extends ModelNotGeneric = ModelNotGeneric,
@@ -83,7 +90,10 @@ export type ActionFn<
 ) => Awaited<ReturnValue>
 
 /**
+ * Action definition with model and execution function.
  * @group Router
+ * @template M - The model type for parameters
+ * @template F - The action function type
  */
 export type Action<
   M extends ModelNotGeneric = ModelNotGeneric,
@@ -92,15 +102,19 @@ export type Action<
   /**
    * The model used for parameter validation
    */
-  model: M
+  readonly model: M
   /**
    * The action execution function
    */
-  run: F
+  readonly run: F
 }
 
 /**
+ * Non-generic action type for internal use.
+ * This type accepts any action with a ModelNotGeneric model and any compatible run function.
+ * The run function signature is intentionally flexible to accept all action implementations.
  * @group Router
+ * @internal
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ActionNotGeneric = Action<ModelNotGeneric, any>
@@ -116,9 +130,9 @@ type InferActionRun<Run> = Run extends (
  * context and client actions for bidirectional communication.
  * @group Router
  * @template Model - The model type for parameter validation
- * @template Callback - The callback function type
+ * @template Run - The callback function type
  * @param parameterModel - The model to validate parameters against
- * @param run - The callback function to execute with validated parameters
+ * @param run - The callback function to execute with validated parameters. See ActionCbParameters interface for parameter details.
  * @returns An action object with the model and run function
  * @example
  * ```ts

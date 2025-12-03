@@ -14,7 +14,7 @@
 Here's the simplest example - a type-safe HTTP JSON API:
 
 ```typescript
-// server.ts
+// 1. Define Server Router (server.ts)
 import { action, createRouter, m } from 'ggtype'
 
 // Define an action
@@ -30,7 +30,7 @@ const router = createRouter({
   serverActions: { getUser },
 })
 
-// Export router type for client
+// 2. Export Router Type for Client
 export type Router = typeof router
 
 // Start server
@@ -43,27 +43,49 @@ Bun.serve({
 ```
 
 ```typescript
-// client.ts
+// 3. Use in Client (client.ts)
 import { createRouterClient, isSuccess } from 'ggtype'
-import type { Router } from './server'
+import type { Router } from './server' // Import type only
 
 // Create client
 const client = createRouterClient<Router>({
   httpURL: 'http://localhost:3000',
 })
 
-// Call the action
-const { getUser } = client.fetchActions
-const result = await getUser({ id: '1' })
+// Call the action using proxy (recommended - automatic type narrowing)
+const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result)) {
-  console.log('User:', result.data) // Fully typed!
+if (isSuccess(result.getUser)) {
+  console.log('User:', result.getUser.data) // Fully typed! Result only has getUser
 }
 ```
 
 **That's it!** You get automatic validation, full TypeScript types, and a simple HTTP API.
 
 ### More Examples
+
+**Using proxy methods (recommended - automatic type narrowing):**
+```typescript
+// Single action with narrowed type
+const result = await client.fetchActions.getUser({ id: '1' })
+// result only has .getUser property, not other actions
+
+// Streaming with proxy
+for await (const item of client.streamActions.getUser({ id: '1' })) {
+  // item only has .getUser property
+  if (isSuccess(item.getUser)) {
+    console.log('User:', item.getUser.data)
+  }
+}
+
+// Duplex streaming with proxy
+for await (const item of client.duplexActions.getUser({ id: '1' })) {
+  // item only has .getUser property
+  if (isSuccess(item.getUser)) {
+    console.log('User:', item.getUser.data)
+  }
+}
+```
 
 **Multiple actions in one request:**
 ```typescript
@@ -75,13 +97,9 @@ const results = await client.fetch({
 if (isSuccess(results.getUser)) {
   console.log('User:', results.getUser.data)
 }
-```
-
-**Multiple actions:**
-```typescript
-const router = createRouter({
-  serverActions: { getUser, createUser, updateUser },
-})
+if (isSuccess(results.getPosts)) {
+  console.log('Posts:', results.getPosts.data)
+}
 ```
 
 ---
@@ -114,27 +132,50 @@ yarn add ggtype
 
 ### 🎯 Type Safety
 
-Everything is fully typed. No `any`, no manual type definitions. Types are automatically shared between client and server.
+Everything is fully typed. Types are automatically shared between client and server. When using proxy methods (`fetchActions`, `streamActions`, `duplexActions`), the result type is automatically narrowed to only include the specific action you called. The codebase uses proper TypeScript types throughout, with minimal use of `any` only where necessary for generic utilities (properly documented).
 
 ### ✅ Automatic Validation
 
-Parameters are validated automatically before your action runs. Invalid data throws `ValidationError` with detailed messages.
+Parameters are validated automatically before your action runs. Invalid data throws `ValidationError` with detailed messages. Uses AJV for fast, efficient validation.
 
 ### 🔄 Bidirectional RPC
 
-Server can call client actions (like notifications, UI updates). Client can call server actions. Full bidirectional communication.
+Server can call client actions (like notifications, UI updates). Client can call server actions. Full bidirectional communication with type safety on both sides.
 
 ### 📡 Streaming Support
 
-Return streams from actions for real-time data. Use async generators to yield results as they become available.
+Return streams from actions for real-time data. Use async generators to yield results as they become available. Supports both server-to-client and client-to-server streaming.
 
 ### 🚀 Multiple Transports
 
 - **`httpURL`** - Simple request/response (like REST). Best for CRUD operations.
 - **`streamURL`** - HTTP streaming with bidirectional RPC. Best for real-time apps.
+- **`halfDuplexUrl`** - Half-duplex streaming (bidirectional over HTTP). Best for interactive streaming.
 - **`websocketURL`** - WebSocket connection. Best for chat, games, real-time collaboration.
 
 **Transport Selection:** When multiple URLs are provided, the client uses the first available transport in priority order (stream → websocket → http). If the selected transport fails, the error is thrown (no automatic downgrade).
+
+### 🎨 Proxy Actions (Sugar Methods)
+
+Convenient proxy methods for calling individual actions with automatic type narrowing:
+
+- **`fetchActions`** - Call individual actions via HTTP with narrowed result types
+- **`streamActions`** - Stream individual actions with narrowed result types
+- **`duplexActions`** - Half Duplex stream individual actions with narrowed result types
+
+### 📁 File Upload Support
+
+Built-in support for file uploads across all transports. Files are automatically handled and passed to your actions via the `files` parameter.
+
+### 🛡️ Comprehensive Model System
+
+Rich model system with validation:
+- **Primitives**: `m.string()`, `m.number()`, `m.boolean()`, `m.date()`, `m.null()`
+- **Files**: `m.file()`, `m.blob()`
+- **Collections**: `m.array(model)`, `m.object(properties)`, `m.record(model)`
+- **Unions**: `m.or(...models)`, `m.and(...models)`, `m.enums(...values)`
+- **Constraints**: `.min()`, `.max()`, `.pattern()`, `.default()`, `.isOptional()`
+- **Custom Validation**: `.validate(callback)`
 
 ---
 
@@ -179,11 +220,11 @@ const searchUsers = action(
   }
 )
 
-// Client: Use streamActions sugar
-const { searchUsers } = client.streamActions
-const stream = await searchUsers({ query: 'john' })
+// Client: Use streamActions proxy (automatic type narrowing)
+const stream = client.streamActions.searchUsers({ query: 'john' })
 
 for await (const result of stream) {
+  // result only has .searchUsers property
   if (isSuccess(result.searchUsers)) {
     console.log('Result:', result.searchUsers.data)
   }
@@ -241,6 +282,17 @@ const client = createRouterClient<Router>({
 })
 ```
 
+### Advanced Capabilities
+
+**Graceful Shutdown:** The client and server are designed to handle graceful shutdowns. The server can continue processing ongoing requests while rejecting new ones.
+
+**Concurrency:** The router handles multiple concurrent requests efficiently, whether they are HTTP, Stream, or WebSocket.
+
+**Edge Cases:**
+- **Optional Params:** Actions can define optional parameters using `.isOptional()`.
+- **Empty Responses:** Actions can return `void` or empty objects.
+- **Security:** Input parameters are strictly validated. Internal server errors are sanitized before being sent to the client to prevent information leakage.
+
 ---
 
 ## API Reference
@@ -270,14 +322,20 @@ All models are required by default. Use `` to make them optional.
 - `createRouterClient<Router>(options)` - Create client
   - `options.streamURL` - Server URL for HTTP stream transport (optional)
   - `options.websocketURL` - Server URL for WebSocket transport (optional)
+  - `options.halfDuplexUrl` - Server URL for half-duplex streaming (optional)
   - `options.httpURL` - Server URL for HTTP transport (optional)
   - **Transport Selection:** If multiple URLs are provided, the client uses the first available transport in priority order (stream → websocket → http). No automatic downgrade.
   - `options.defineClientActions` - Client action handlers (optional)
+  - `options.onResponse` - Optional response hook for intercepting responses (optional)
+  - `options.onError` - Optional error handler (optional)
+  - `options.defaultHeaders` - Default headers for all requests (optional)
   - Returns: 
     - `fetch(params, options?)` - Fetch multiple actions
     - `stream(params, options?)` - Stream multiple actions
-    - `fetchActions` - Sugar: per-action fetch methods
-    - `streamActions` - Sugar: per-action stream methods
+    - `duplex(params, options?)` - Duplex stream multiple actions
+    - `fetchActions` - Proxy: per-action fetch methods with type narrowing
+    - `streamActions` - Proxy: per-action stream methods with type narrowing
+    - `duplexActions` - Proxy: per-action duplex methods with type narrowing
 
 **Actions**
 - `action(model, callback)` - Create validated action
@@ -356,19 +414,18 @@ const client = createRouterClient<Router>({
   streamURL: 'http://localhost:3000',
 })
 
-// Single action call
-const { getUser } = client.fetchActions
-const result = await getUser({ id: '1' })
+// Single action call with proxy (automatic type narrowing)
+const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result)) {
-  console.log('User:', result.data)
+if (isSuccess(result.getUser)) {
+  console.log('User:', result.getUser.data)
 }
 
-// Streaming action
-const { searchUsers } = client.streamActions
-const stream = await searchUsers({ query: 'john' })
+// Streaming action with proxy
+const stream = client.streamActions.searchUsers({ query: 'john' })
 
 for await (const chunk of stream) {
+  // chunk only has .searchUsers property
   if (isSuccess(chunk.searchUsers)) {
     console.log('Result:', chunk.searchUsers.data)
   }
@@ -470,19 +527,18 @@ const client = createRouterClient<Router>({
   },
 })
 
-// Call server action
-const { getUser } = client.fetchActions
-const result = await getUser({ id: '1' })
+// Call server action with proxy (automatic type narrowing)
+const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result)) {
-  console.log('User:', result.data)
+if (isSuccess(result.getUser)) {
+  console.log('User:', result.getUser.data)
 }
 
-// Stream updates
-const { subscribeToUpdates } = client.streamActions
-const stream = await subscribeToUpdates({ userId: '1' })
+// Stream updates with proxy
+const stream = client.streamActions.subscribeToUpdates({ userId: '1' })
 
 for await (const chunk of stream) {
+  // chunk only has .subscribeToUpdates property
   if (isSuccess(chunk.subscribeToUpdates)) {
     console.log('Update:', chunk.subscribeToUpdates.data)
   }
@@ -594,11 +650,10 @@ const client = createRouterClient<Router>({
 })
 
 // Use the client the same way as the Bun example above
-const { getUser } = client.fetchActions
-const result = await getUser({ id: '1' })
+const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result)) {
-  console.log('User:', result.data)
+if (isSuccess(result.getUser)) {
+  console.log('User:', result.getUser.data)
 }
 ```
 
@@ -637,6 +692,7 @@ Provide multiple URLs to specify transport priority. The client will use the fir
 const client = createRouterClient<Router>({
   streamURL: 'http://localhost:3000/stream',    // Used first if available
   websocketURL: 'ws://localhost:3000/ws',       // Used if streamURL not provided
+  halfDuplexUrl: 'http://localhost:3000/duplex', // Used for bidirectional streaming
   httpURL: 'http://localhost:3000/http',        // Used if neither streamURL nor websocketURL provided
   defineClientActions: {
     showNotification: async (params) => {
@@ -650,6 +706,66 @@ const client = createRouterClient<Router>({
 // If streamURL is not provided, it will use websocketURL.
 // If neither streamURL nor websocketURL are provided, it will use httpURL.
 // If the selected transport fails, an error is thrown (no automatic downgrade).
+```
+
+### File Uploads
+
+File uploads are supported across all transports:
+
+```typescript
+// Client: Upload files
+const result = await client.fetchActions.uploadImage({
+  title: 'My Image',
+}, {
+  files: [imageFile], // File or File[] array
+})
+
+// Server: Receive files
+const uploadImage = action(
+  m.object({ title: m.string() }),
+  async ({ params, files }) => {
+    const imageFile = files?.get('file') // Access uploaded file
+    // Process file...
+    return { success: true }
+  }
+)
+```
+
+### File Downloads (Return File)
+
+Actions and client actions can return `File` objects, which are automatically handled and streamed.
+
+```typescript
+// Server: Return a file
+const getFile = action(
+  m.object({ id: m.string() }),
+  async ({ params }) => {
+    // Read file from disk or generate it
+    const fileContent = await readFileFromDisk(params.id)
+    return new File([fileContent], 'document.pdf', {
+      type: 'application/pdf',
+    })
+  }
+)
+
+// Client: Receive file
+const result = await client.fetchActions.getFile({ id: '123' })
+if (isSuccess(result.getFile)) {
+  const file = result.getFile.data // File object
+  // Use the file (download, display, etc.)
+  const url = URL.createObjectURL(file)
+}
+```
+
+```typescript
+// Client Action Returning File
+// Server calls client, client returns file
+const clientActions = defineClientActionsSchema({
+  generateFile: {
+    params: m.object({ data: m.string() }),
+    return: m.file(), // Specify return type as file
+  },
+})
 ```
 
 **Use Cases:**
@@ -671,6 +787,3 @@ const client = createRouterClient<Router>({
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
----
-
-Made with ❤️ by the ggtype team

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.4.8**](../../../README.md)
+[**ggtype API Documentation v0.5.1**](../../../README.md)
 
 ***
 
@@ -26,25 +26,25 @@
 
 ## Interfaces
 
-- [AndModel](interfaces/AndModel.md)
-- [ArrayModel](interfaces/ArrayModel.md)
-- [BlobModel](interfaces/BlobModel.md)
-- [BooleanModel](interfaces/BooleanModel.md)
-- [DateModel](interfaces/DateModel.md)
-- [EnumModel](interfaces/EnumModel.md)
-- [FileModel](interfaces/FileModel.md)
+- [And](interfaces/And.md)
+- [Array](interfaces/Array.md)
+- [Blob](interfaces/Blob.md)
+- [Boolean](interfaces/Boolean.md)
+- [Date](interfaces/Date.md)
+- [Enum](interfaces/Enum.md)
+- [File](interfaces/File.md)
 - [GetSchemaOptions](interfaces/GetSchemaOptions.md)
 - [Model](interfaces/Model.md)
 - [ModelBase](interfaces/ModelBase.md)
 - [ModelInternals](interfaces/ModelInternals.md)
 - [ModelInternalsNotGeneric](interfaces/ModelInternalsNotGeneric.md)
 - [ModelNotGeneric](interfaces/ModelNotGeneric.md)
-- [NullModel](interfaces/NullModel.md)
-- [NumberModel](interfaces/NumberModel.md)
-- [ObjectModel](interfaces/ObjectModel.md)
-- [OrModel](interfaces/OrModel.md)
-- [RecordModel](interfaces/RecordModel.md)
-- [StringModel](interfaces/StringModel.md)
+- [Null](interfaces/Null.md)
+- [Number](interfaces/Number.md)
+- [Object](interfaces/Object.md)
+- [Or](interfaces/Or.md)
+- [Record](interfaces/Record.md)
+- [String](interfaces/String.md)
 
 ## Type Aliases
 

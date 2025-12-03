@@ -15,31 +15,55 @@ import {
 } from '../utils/is'
 import type { RouterResultNotGeneric } from '../types'
 
+/**
+ * Options for client action requests.
+ * @group Router
+ * @internal
+ */
 interface OnClientRequest {
   readonly params: unknown
   readonly actionName: string
 }
 
+/**
+ * Options for calling actions.
+ * @group Router
+ * @internal
+ */
 interface CallOptions {
   readonly params: unknown
   readonly ctx?: unknown
   readonly actionName: string
-  readonly files?: Map<string, File>
-  onClientActionCall?: (
+  readonly files?: ReadonlyMap<string, File>
+  readonly onClientActionCall?: (
     options: OnClientRequest,
   ) => Promise<RouterResultNotGeneric>
 }
 
+/**
+ * Type for callable actions function.
+ * @group Router
+ * @internal
+ */
 export type CallableActions = (
   callOptions: CallOptions,
 ) => Promise<unknown>
 
+/**
+ * Creates a callable actions function that handles action execution.
+ * @group Router
+ * @internal
+ * @template ServerActions - The server actions type
+ * @template ClientActions - The client actions type
+ * @param options - Options with serverActions and optional clientActions
+ * @returns A callable actions function
+ */
 export function createCallableActions<
   ServerActions extends ServerActionsBase,
   ClientActions extends ClientActionsBase,
 >(options: {
-  serverActions: ServerActions
-  clientActions?: ClientActions
+  readonly serverActions: ServerActions
+  readonly clientActions?: ClientActions
 }): CallableActions {
   const { serverActions, clientActions } = options
 

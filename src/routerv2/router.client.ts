@@ -10,12 +10,15 @@ import { JSONL } from '../utils/stream-helpers'
 import {
   UPLOAD_FILE,
   type BidirectionalConnection,
+  type DuplexActionsProxyType,
   type DuplexOptions,
+  type FetchActionsProxyType,
   type FetchOptions,
   type ParamsIt,
   type ResultForWithActionResult,
   type RouterClientOptions,
   type RouterClientState,
+  type StreamActionsProxyType,
   type WebsocketOptions,
 } from './router.client.types'
 import {
@@ -358,7 +361,7 @@ export function createRouterClient<
     }
   }
 
-  return {
+  const client = {
     /**
      * Sets headers to be included in all requests.
      * Call with an object to set headers, or with no arguments to reset headers.
@@ -1200,4 +1203,128 @@ export function createRouterClient<
       }
     },
   }
+
+  return {
+    ...client,
+    fetchActions:
+      createFetchActionsProxy<RouterType>(executeFetch),
+    streamActions: createStreamActionsProxy<RouterType>(
+      async function* (params, streamOptions) {
+        yield* client.stream(params, streamOptions)
+      },
+    ),
+    duplexActions: createDuplexActionsProxy<RouterType>(
+      async function* (params, duplexOptions) {
+        yield* client.duplex(params, duplexOptions)
+      },
+    ),
+  }
+}
+
+function createFetchActionsProxy<
+  RouterType extends Router<
+    ServerActionsBase,
+    ClientActionsBase
+  >,
+>(
+  executeFetch: <Params extends ParamsIt<RouterType>>(
+    params: Params,
+    fetchOptions?: FetchOptions<RouterType>,
+  ) => Promise<
+    ResultForWithActionResult<RouterType, Params>
+  >,
+): FetchActionsProxyType<RouterType> {
+  return new Proxy(
+    {} as FetchActionsProxyType<RouterType>,
+    {
+      get(_target, actionName: string | symbol) {
+        if (typeof actionName !== 'string') {
+          return
+        }
+        return (
+          params: unknown,
+          options?: FetchOptions<RouterType>,
+        ) => {
+          return executeFetch(
+            {
+              [actionName]: params,
+            } as unknown as ParamsIt<RouterType>,
+            options,
+          )
+        }
+      },
+    },
+  ) as FetchActionsProxyType<RouterType>
+}
+
+function createStreamActionsProxy<
+  RouterType extends Router<
+    ServerActionsBase,
+    ClientActionsBase
+  >,
+>(
+  streamFn: <Params extends ParamsIt<RouterType>>(
+    params: Params,
+    options?: FetchOptions<RouterType>,
+  ) => AsyncGenerator<
+    ResultForWithActionResult<RouterType, Params>
+  >,
+): StreamActionsProxyType<RouterType> {
+  return new Proxy(
+    {} as StreamActionsProxyType<RouterType>,
+    {
+      get(_target, actionName: string | symbol) {
+        if (typeof actionName !== 'string') {
+          return
+        }
+        return async function* (
+          params: unknown,
+          options?: FetchOptions<RouterType>,
+        ) {
+          yield* streamFn(
+            {
+              [actionName]: params,
+            } as unknown as ParamsIt<RouterType>,
+            options,
+          )
+        }
+      },
+    },
+  ) as StreamActionsProxyType<RouterType>
+}
+
+function createDuplexActionsProxy<
+  RouterType extends Router<
+    ServerActionsBase,
+    ClientActionsBase
+  >,
+>(
+  duplexFn: <Params extends ParamsIt<RouterType>>(
+    params: Params,
+    options?: DuplexOptions<RouterType>,
+  ) => AsyncGenerator<
+    ResultForWithActionResult<RouterType, Params>
+  >,
+): DuplexActionsProxyType<RouterType> {
+  return new Proxy(
+    {} as DuplexActionsProxyType<RouterType>,
+    {
+      get(_target, actionName: string | symbol) {
+        if (typeof actionName !== 'string') {
+          return
+        }
+        return async function* (
+          params: unknown,
+          options?: DuplexOptions<RouterType>,
+        ) {
+          yield* duplexFn(
+            {
+              [actionName]: params,
+            } as unknown as ParamsIt<RouterType>,
+            options,
+          )
+        }
+      },
+    },
+  ) as DuplexActionsProxyType<RouterType>
 }

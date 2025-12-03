@@ -1,10 +1,12 @@
-[**ggtype API Documentation v0.4.8**](../README.md)
+[**ggtype API Documentation v0.5.1**](../README.md)
 
 ***
 
 # Interface: OutputErrorGeneric
 
-Defined in: [src/types.ts:67](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L67)
+Defined in: [src/types.ts:66](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L66)
+
+Generic error output format.
 
 ## Extends
 
@@ -16,7 +18,7 @@ Defined in: [src/types.ts:67](https://github.com/samuelgja/ggtype/blob/fd3607568
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [src/types.ts:57](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L57)
+Defined in: [src/types.ts:55](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L55)
 
 Optional cause of the error
 
@@ -30,7 +32,7 @@ Optional cause of the error
 
 > `readonly` **code**: `number`
 
-Defined in: [src/types.ts:61](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L61)
+Defined in: [src/types.ts:59](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L59)
 
 HTTP status code
 
@@ -44,7 +46,7 @@ HTTP status code
 
 > `readonly` **message**: `string`
 
-Defined in: [src/types.ts:75](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L75)
+Defined in: [src/types.ts:74](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L74)
 
 Human-readable error message
 
@@ -54,7 +56,7 @@ Human-readable error message
 
 > `readonly` **type**: `"generic"`
 
-Defined in: [src/types.ts:71](https://github.com/samuelgja/ggtype/blob/fd360756890d582812f02b807f249b2b8ebd62d5/src/types.ts#L71)
+Defined in: [src/types.ts:70](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L70)
 
 Error type identifier (always 'generic')
 
