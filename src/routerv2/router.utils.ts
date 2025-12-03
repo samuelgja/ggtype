@@ -13,6 +13,7 @@ import {
   isAsyncStream,
   isIterable,
 } from '../utils/is'
+import type { RouterResultNotGeneric } from '../types'
 
 interface OnClientRequest {
   readonly params: unknown
@@ -53,7 +54,7 @@ export function createCallableActions<
     mappedClientActions.set(actionName, validate)
   }
 
-  return async function name(callOptions: CallOptions) {
+  return async function (callOptions: CallOptions) {
     const {
       params,
       ctx,
@@ -65,10 +66,12 @@ export function createCallableActions<
     if (!action) {
       throw new Error(`Action ${actionName} not found`)
     }
+
     const { run } = action
 
     const callableClientActions: ClientCallableActions<ClientActions> =
       {} as ClientCallableActions<ClientActions>
+
     for (const [
       clientActionName,
       validateResult,
@@ -80,11 +83,17 @@ export function createCallableActions<
           params: clientActionParams,
           actionName: clientActionName,
         })
+
+        const actionResult: RouterResultNotGeneric = {
+          status: 'ok',
+          data: result,
+        }
+
         const errorResult = validateResult(result)
         if (errorResult) {
           throw new ValidationError(errorResult)
         }
-        return result
+        return actionResult
       }
       // Use type assertion with unknown cast trick to avoid erroneous generic indexer error from TypeScript,
       // while still enforcing correct structure.

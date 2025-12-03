@@ -1,6 +1,10 @@
 import type { ErrorObject, ValidationError } from 'ajv'
 import type { Action } from './action/action'
 import type { AsyncStream } from './utils/async-stream'
+import type {
+  ClientAction,
+  ClientCallableActions,
+} from './routerv2/router.client.types'
 
 // ============================================================================
 // Constants

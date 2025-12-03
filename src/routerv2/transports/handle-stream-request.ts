@@ -2,9 +2,10 @@ import { NOOP_ON_ERROR } from '../../types'
 import { createId } from '../../utils/create-id'
 import { handleError } from '../../utils/handle-error'
 import { JSONL } from '../../utils/stream-helpers'
-import type {
-  OnRequestInternal,
-  StreamMessage,
+import {
+  StreamMessageType,
+  type OnRequestInternal,
+  type StreamMessage,
 } from '../router.type'
 import { getParams } from './handle-http.request'
 import { handleStreamResponse } from './handle-stream'
@@ -17,9 +18,8 @@ export async function handleStreamRequest(
     callableActions,
     onError = NOOP_ON_ERROR,
     ctx,
+    encoder,
   } = options
-
-  const encoder = new TextEncoder()
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -39,10 +39,12 @@ export async function handleStreamRequest(
 
             await handleStreamResponse({
               actionResult,
-              controller,
+              send: (message) =>
+                controller.enqueue(message),
               actionName,
               id,
               encoder,
+              type: StreamMessageType.SERVER_ACTION_RESULT,
             })
           } catch (rawError) {
             const error = handleError(onError, rawError)
@@ -51,11 +53,13 @@ export async function handleStreamRequest(
               id,
               status: 'error',
               error: error?.error,
+              type: StreamMessageType.SERVER_ACTION_RESULT,
             }
             const rawMessage = JSONL(message)
             const encodedMessage =
               encoder.encode(rawMessage)
             controller.enqueue(encodedMessage)
+            controller.close()
           }
         }
         const promise = run()

@@ -2,7 +2,7 @@ import type { ModelNotGeneric } from '../model/model'
 import type {
   ClientAction,
   ClientCallableActions,
-} from '../router/router-client.types-shared'
+} from '../routerv2/router.client.types'
 import { compileModelAndCheck } from '../utils/compile-model'
 import { ValidationError } from '../utils/errors'
 

@@ -1,6 +1,9 @@
+import { DEFAULT_ROUTER_TIMEOUT } from '../types'
+import { clearMap } from '../utils/clear-map'
 import type {
   ClientActionsBase,
   InferRouter,
+  Pending,
   Router,
   RouterOptions,
   ServerActionsBase,
@@ -8,7 +11,9 @@ import type {
 import { createCallableActions } from './router.utils'
 import { handleDuplexRequest } from './transports/handle-duplex-request'
 import { handleHttpRequest } from './transports/handle-http.request'
+import { Parser } from './transports/handle-stream'
 import { handleStreamRequest } from './transports/handle-stream-request'
+import { handleWebSocket } from './transports/handle-websocket'
 
 export function createRouter<
   ServerActions extends ServerActionsBase,
@@ -16,14 +21,27 @@ export function createRouter<
 >(
   options: RouterOptions<ServerActions, ClientActions>,
 ): Router<ServerActions, ClientActions> {
-  const { serverActions, clientActions } = options
+  const {
+    serverActions,
+    clientActions,
+    responseTimeout = DEFAULT_ROUTER_TIMEOUT,
+  } = options
   const callableActions = createCallableActions({
     clientActions,
     serverActions,
   })
 
+  const encoder = new TextEncoder()
+  const pendingClientActionCalls = clearMap<
+    string,
+    Pending
+  >({
+    checkIntervalMs: 500,
+    expiresMs: responseTimeout,
+  })
+
   return {
-    infer: null as unknown as InferRouter<
+    infer: undefined as unknown as InferRouter<
       ServerActions,
       ClientActions
     >,
@@ -34,18 +52,24 @@ export function createRouter<
           return handleHttpRequest({
             ...requestOptions,
             callableActions,
+            encoder,
+            pendingClientActionCalls,
           })
         }
         case 'stream': {
           return handleStreamRequest({
             ...requestOptions,
             callableActions,
+            encoder,
+            pendingClientActionCalls,
           })
         }
         case 'duplex': {
           return handleDuplexRequest({
             ...requestOptions,
             callableActions,
+            encoder,
+            pendingClientActionCalls,
           })
         }
         default: {
@@ -53,6 +77,16 @@ export function createRouter<
         }
       }
     },
-    async onWebSocketMessage(options) {},
+    async onWebSocketMessage(wsOptions) {
+      return handleWebSocket({
+        ...wsOptions,
+        callableActions,
+        responseTimeout,
+        encoder,
+        pendingClientActionCalls,
+      })
+    },
+
+    onWebsocketCleanUp() {},
   }
 }

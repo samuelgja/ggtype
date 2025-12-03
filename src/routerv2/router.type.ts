@@ -1,6 +1,7 @@
 // ============================================================================
 // Router Configuration Types
 // ============================================================================
+import type { ServerWebSocket } from 'bun'
 import type { ActionNotGeneric } from '../action/action'
 import type {
   ActionResult,
@@ -9,6 +10,8 @@ import type {
 } from '../types'
 import type { ClientAction } from './router.client.types'
 import type { CallableActions } from './router.utils'
+
+import type { ClearMap } from '../utils/clear-map'
 
 export type ServerActionsBase = Record<
   string,
@@ -86,8 +89,18 @@ export interface OnRequest extends RouterCallOptions {
   type?: 'http' | 'stream' | 'duplex'
 }
 
+export interface Pending {
+  readonly resolve: (value: unknown) => void
+  readonly reject: (error: unknown) => void
+}
+
 export interface OnRequestInternal extends OnRequest {
   callableActions: CallableActions
+  readonly encoder: TextEncoder
+  readonly pendingClientActionCalls: ClearMap<
+    string,
+    Pending
+  >
 }
 
 /**
@@ -97,7 +110,7 @@ export interface OnWebSocketMessage extends RouterCallOptions {
   /**
    * The WebSocket instance
    */
-  ws: Bun.ServerWebSocket<unknown>
+  ws: ServerWebSocket<unknown>
   /**
    * The incoming message (Uint8Array, ArrayBuffer, or Blob)
    */
@@ -106,6 +119,16 @@ export interface OnWebSocketMessage extends RouterCallOptions {
    * The context object to pass to actions
    */
   ctx?: unknown
+}
+
+export interface OnWebSocketMessageInternal extends OnWebSocketMessage {
+  callableActions: CallableActions
+  readonly responseTimeout?: number
+  readonly encoder: TextEncoder
+  readonly pendingClientActionCalls: ClearMap<
+    string,
+    Pending
+  >
 }
 
 /**
@@ -374,13 +397,24 @@ export interface Router<
    * Type inference helper for router types
    */
   readonly infer: InferRouter<ServerActions, ClientActions>
+
+  readonly onWebsocketCleanUp: () => void
 }
 
+export enum StreamMessageType {
+  CLIENT_ACTION_CALL,
+  CLIENT_ACTION_CALL_RESULT,
+  RESPONSE,
+  SERVER_ACTION_RESULT,
+  WS_SEND_FROM_CLIENT,
+  UPLOAD_FILE,
+}
 export interface StreamMessage extends RouterResultNotGeneric {
   action: string
   id: string
-  // file-related
   withFile?: boolean
   fileSize?: number // bytes, without the ID prefix
   file?: Blob // client-side hydrated file/blob
+  type: StreamMessageType
+  isLast?: boolean
 }

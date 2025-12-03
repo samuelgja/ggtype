@@ -11,7 +11,7 @@ import type {
   Router,
   ServerActionsBase,
 } from './router.type'
-
+export const UPLOAD_FILE = '__uploadFile'
 /**
  * Type representing the parameters object for router client fetch/stream calls.
  * Maps action names to their parameter types.
@@ -85,6 +85,65 @@ export interface FetchOptions<
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 }
 
+/**
+ * Helper function to define client action models with proper typing.
+ * This is a type-only function that returns the input unchanged, used for type inference.
+ * @template T - The client actions record type
+ * @param data - The client actions record to define
+ * @returns The same data with proper typing
+ */
+export function defineClientActionsSchema<
+  T extends Record<string, ClientAction>,
+>(data: T): T {
+  return data
+}
+
+export interface DuplexOptions<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> {
+  /**
+   * Optional array of files to upload
+   */
+  files?: File[]
+  /**
+   * Partial client action handlers that override client-level handlers for this specific request.
+   * If an action is defined here, it will be used instead of the client-level definition.
+   */
+  defineClientActions?: Partial<
+    ClientCallableActionsFromClient<
+      R['infer']['clientActions']
+    >
+  >
+  /**
+   * HTTP method to use for the request.
+   * Defaults to 'GET' for HTTP transport, 'POST' for stream transport.
+   * Note: Stream transport requires POST (or other methods that support request bodies).
+   * For GET requests with HTTP transport, parameters are sent as query parameters.
+   */
+  method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+}
+export interface WebsocketOptions<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> {
+  /**
+   * Partial client action handlers that override client-level handlers for this specific request.
+   * If an action is defined here, it will be used instead of the client-level definition.
+   */
+  defineClientActions?: Partial<
+    ClientCallableActionsFromClient<
+      R['infer']['clientActions']
+    >
+  >
+  /**
+   * HTTP method to use for the request.
+   * Defaults to 'GET' for HTTP transport, 'POST' for stream transport.
+   * Note: Stream transport requires POST (or other methods that support request bodies).
+   * For GET requests with HTTP transport, parameters are sent as query parameters.
+   */
+  method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  files?: File[]
+}
+
 export interface RouterClientOptions<
   R extends Router<ServerActionsBase, ClientActionsBase>,
 > {
@@ -109,18 +168,6 @@ export interface RouterClientOptions<
    * Timeout in milliseconds for waiting responses (default: 60000)
    */
   responseTimeout?: number
-  /**
-   * Optional callback invoked before sending a request.
-   * Receives the request parameters and a runAgain method to retry the request.
-   * @param options - Request options with params and runAgain method
-   * @returns The modified parameters to send, or undefined to use the original
-   */
-  onRequest?: <Params extends ParamsIt<R>>(options: {
-    params: Params
-    runAgain: () => Promise<
-      ResultForWithActionResult<R, Params>
-    >
-  }) => Params | void | Promise<Params | void>
   /**
    * Optional callback invoked after receiving a response.
    * Can modify the response or throw an error to retry.

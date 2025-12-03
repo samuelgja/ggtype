@@ -1,4 +1,4 @@
-interface Options<K> {
+interface Options<K, V> {
   /**
    * Time in milliseconds before entries expire
    */
@@ -11,6 +11,15 @@ interface Options<K> {
    * Optional function to convert keys to strings (default: converts to string)
    */
   getKey?: (key: K) => string
+
+  onExpire?: (
+    key: K,
+    value: {
+      value: V
+      expires: number
+      clear?: () => void
+    },
+  ) => void
 }
 export interface ClearMap<K, V> {
   /**
@@ -55,10 +64,7 @@ export interface ClearMap<K, V> {
    * Iterator for iterating over map entries
    */
   [Symbol.iterator]: () => IterableIterator<
-    [
-      string,
-      { value: V; expires: number; clear?: () => void },
-    ]
+    [K, { value: V; expires: number; clear?: () => void }]
   >
 }
 
@@ -77,15 +83,11 @@ export interface ClearMap<K, V> {
  * @returns A ClearMap instance with add, get, take, delete, dispose, and length methods
  */
 export function clearMap<K, V>(
-  options: Options<K>,
+  options: Options<K, V>,
 ): ClearMap<K, V> {
-  const {
-    expiresMs,
-    checkIntervalMs,
-    getKey = (key) => `${key}`,
-  } = options
+  const { expiresMs, checkIntervalMs, onExpire } = options
   const map = new Map<
-    string,
+    K,
     { value: V; expires: number; clear?: () => void }
   >()
   const interval = setInterval(() => {
@@ -94,6 +96,7 @@ export function clearMap<K, V>(
       if (value.expires <= now) {
         map.delete(key)
         if (value.clear) {
+          onExpire?.(key, value)
           value.clear()
         }
       }
@@ -102,14 +105,14 @@ export function clearMap<K, V>(
 
   return {
     add(key: K, value: V, clearCallback?: () => void) {
-      map.set(getKey(key), {
+      map.set(key, {
         value,
         expires: Date.now() + expiresMs,
         clear: clearCallback,
       })
     },
     get(key: K, reset = false) {
-      const item = map.get(getKey(key))
+      const item = map.get(key)
       if (item) {
         if (reset) {
           item.expires = Date.now() + expiresMs
@@ -119,24 +122,24 @@ export function clearMap<K, V>(
       return
     },
     take(key: K) {
-      const entry = map.get(getKey(key))
+      const entry = map.get(key)
       if (entry) {
-        map.delete(getKey(key))
+        map.delete(key)
         return entry.value
       }
       return
     },
     delete(key: K) {
-      map.delete(getKey(key))
+      map.delete(key)
     },
     dispose() {
       clearInterval(interval)
     },
-    [Symbol.iterator]() {
-      return map.entries()
-    },
     length() {
       return map.size
+    },
+    [Symbol.iterator]() {
+      return map.entries()
     },
   }
 }

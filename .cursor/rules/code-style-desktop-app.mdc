@@ -1,16 +1,145 @@
 ---
 alwaysApply: true
 ---
-We are using bun for all scripts, do not use npm or yarn.
-We are focusing on the desktop app, so do not use any other packages or libraries that are not related to the desktop app.
+Coding Guidelines
+1. General
+Prefer clear, explicit code over clever one-liners. Maintainability > brevity.
+When editing existing code, preserve the existing style unless you are explicitly doing a refactor.
+Keep functions small and focused. If a function does too many things, split it.
+Avoid hidden magic. Prefer explicit, predictable behavior over clever tricks.
+2. Naming (all languages)
+Variable names must be descriptive. Avoid meaningless shortcuts like val, obj, data1, tmp.
+Function names should describe behavior, not implementation details.
+Prefer names that explain why something exists and how it’s used.
+Booleans
+Boolean names must read like conditions:
+Use prefixes: is, has, should, can, must, needs
+Examples: isOpen, hasError, shouldRetry, canExecute, needsRefresh
+Avoid generic boolean names without context:
+Avoid: flag, ok, state, enabled, active
+3. File naming (TypeScript / JavaScript)
+All .ts, .tsx, .js, .jsx files use kebab-case:
+Examples: user-profile.ts, trade-table.tsx, use-wallet-state.ts
+React component files:
+File: kebab-case → Component: PascalCase
+Example: file user-profile-card.tsx → component UserProfileCard.
+4. TypeScript
+Never use any in new code.
+Prefer proper types, generics, unions, unknown + narrowing.
+If you must interact with untyped code, isolate any to the smallest boundary and add a clear TODO comment.
+Write strict-friendly code:
+No implicit any.
+Avoid sloppy as casts if you can model it with proper types.
+Avoid as any and non-null ! unless absolutely necessary and justified with a short comment.
+Use interface/type for data structures instead of loose objects.
+Exported functions must have explicit, well-typed signatures.
+Prefer readonly / immutable data where reasonable:
+readonly props and fields, avoid mutating function arguments.
+Prefer returning new objects instead of mutating inputs (unless in a very hot path where mutation is intentional and documented).
+5. React (TypeScript + React)
+Components
+Use function components with hooks (no class components).
+Component names are always PascalCase.
+Keep components focused and small. Extract subcomponents when a component:
+Has too many responsibilities, or
+Has large chunks of conditional UI.
+Props
+Define explicit Props interfaces/types:
+interface UserProfileCardProps {
+  readonly userName: string;
+  readonly avatarUrl?: string;
+  readonly isSelected?: boolean;
+}
+Boolean props must be clearly named:
+Examples: isDisabled, isActive, hasBorder, shouldAutoFocus.
+Hooks
+Custom hooks:
+Must be prefixed with use and live in *.ts or *.tsx files (still kebab-case filenames).
+Keep dependencies under control. Avoid inline objects/arrays in dependency arrays.
+Use useMemo / useCallback only when they prevent real work (e.g. expensive computations, stable callback props for memoized children).
+JSX
+Keep JSX readable:
+Pull heavy logic or complex conditions above the JSX into well-named variables.
+Extract large sections into smaller components.
+Avoid heavy logic inside JSX expressions:
+// Prefer:
+const shouldShowBalance = isWalletLoaded && !hasError;
 
-Performance is much more important than readability, so do not hesitate to use any performance optimizations.
-Never use any in typescript.
+return shouldShowBalance ? <Balance value={walletBalance} /> : null;
+6. Control Flow & Guard Clauses (your “left assignment” style)
+Principle
+Prefer guard clauses (early returns) over deeply nested if blocks.
+Instead of:
+function doSomething() {
+  if (isUserAuthenticated) {
+    if (hasPermissionToRunAction) {
+      performAction();
+    }
+  }
+}
+Use guard clauses:
+function doSomething() {
+  if (!isUserAuthenticated) {
+    return;
+  }
 
-Tests are must have! Unit tests are must have! Integration tests are must have!
+  if (!hasPermissionToRunAction) {
+    return;
+  }
 
-Prefer descriptive names over short names. boolean variables should be prefixed with is or has (e.g. isLoading, hasError).
+  performAction();
+}
+This keeps the “happy path” to the left, with minimal nesting.
+When to use guard clauses
+On input validation:
+function createUser(userName: string | null) {
+  if (userName === null) {
+    throw new Error('userName must not be null');
+  }
 
-Use the latest and greatest features of the language. Think twice before creating new features.
+  // happy path
+  return { userName };
+}
+On early exit conditions:
+function processOrder(order: Order | null) {
+  if (order === null) {
+    return;
+  }
 
-Never update unnecessary code. Touch always code which is related to the task at hand.
+  if (order.items.length === 0) {
+    return;
+  }
+
+  // happy path
+  finalizeOrder(order);
+}
+To avoid if / else / else if pyramids when you only care about one success path.
+When nested conditionals are acceptable
+When multiple branches are truly different and all are meaningful:
+if (status === 'idle') {
+  showIdleMessage();
+} else if (status === 'loading') {
+  showLoadingSpinner();
+} else if (status === 'error') {
+  showErrorMessage();
+} else {
+  showContent();
+}
+7. Performance Mindset (TS + React + General)
+Avoid unnecessary allocations and copies:
+Do not use ...spread, JSON.parse/stringify, or cloneDeep in hot paths without a strong reason.
+Avoid creating new functions/objects inside tight loops or very frequently rendered components unless:
+They are memoized, or
+The performance impact is negligible and the code is much clearer.
+Be careful not to introduce extra re-renders in React:
+Keep prop shapes stable when possible.
+Avoid passing new inline objects/arrays to memoized children without useMemo.
+Prefer algorithmic improvements and good data structures over micro-optimizations.
+8. Tests & Safety
+For non-trivial logic changes, add or update tests:
+Unit tests for pure logic.
+Integration tests for behavior across components/modules.
+Cover edge cases and failure modes, not just the happy path.
+Avoid introducing implicit or “magic” behavior. If behavior is non-obvious:
+Add a short comment explaining why (not what).
+Prefer making the behavior explicit in the API rather than relying on hidden conventions.
