@@ -176,6 +176,23 @@ export function action<
     clientActions: clientActions,
     files,
   }: ActionCbParameters<Model>) => {
+    // Handle null/undefined for optional models
+    if (
+      (params === null || params === undefined) &&
+      !parameterModel.$internals.isRequired
+    ) {
+      // For optional models, null/undefined is valid
+      const parsedParams = parameterModel.onParse(
+        params as never,
+      )
+      return run({
+        params: parsedParams,
+        ctx,
+        clientActions,
+        files,
+      })
+    }
+
     const errors = validate(params)
     if (errors) {
       throw new ValidationError(errors)

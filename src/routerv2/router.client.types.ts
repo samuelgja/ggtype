@@ -171,21 +171,32 @@ export interface RouterClientOptions<
   /**
    * Optional callback invoked after receiving a response.
    * Can modify the response or throw an error to retry.
-   * @param options - Response options with json (result) and runAgain method
+   * @param options - Response options with json (result), statusCode, and runAgain method
    * @param options.json - The response result
-   * @param options.runAgain - Method to retry the request with optional new params and options
+   * @param options.statusCode - The HTTP status code of the response
+   * @param options.runAgain - Method to retry the request (with optional new params and options)
    * @returns The modified response JSON, or undefined to use the original
    */
   onResponse?: <Params extends ParamsIt<R>>(options: {
     json: ResultForWithActionResult<R, Params>
-    runAgain: (
-      newParams?: Params,
+    statusCode: number
+    runAgain: <NewParams extends ParamsIt<R> = Params>(
+      newParams?: NewParams,
       newOptions?: FetchOptions<R>,
-    ) => Promise<ResultForWithActionResult<R, Params>>
+    ) => Promise<ResultForWithActionResult<R, NewParams>>
   }) =>
-    | ResultForWithActionResult<R, Params>
+    | ResultForWithActionResult<R, ParamsIt<R>>
     | void
-    | Promise<ResultForWithActionResult<R, Params> | void>
+    | Promise<ResultForWithActionResult<
+        R,
+        ParamsIt<R>
+      > | void>
+  /**
+   * Optional error handler invoked whenever the client encounters a transport
+   * error or client action failure before propagation. Should return the error
+   * that will be thrown to the caller.
+   */
+  readonly onError?: (error: Error) => Error
 }
 
 export interface RouterClient<
@@ -204,7 +215,8 @@ export interface RouterClient<
 }
 
 export interface RouterClientState {
-  defaultHeaders: Record<string, string>
+  defaultHeaders: Headers
+  onError: (error: Error) => Error
 }
 
 /**
@@ -250,4 +262,18 @@ export type ClientCallableActions<
   [K in keyof T]: (
     params: T[K]['params']['infer'],
   ) => Promise<ClientActionResult<T[K]>>
+}
+
+export interface BidirectionalConnection<
+  R extends Router<ServerActionsBase, ClientActionsBase>,
+> {
+  readonly stream: AsyncGenerator<
+    ResultForWithActionResult<R, ParamsIt<R>>,
+    void,
+    unknown
+  >
+  readonly send: <Params extends ParamsIt<R>>(
+    params: Params,
+  ) => Promise<void>
+  readonly close: () => void
 }

@@ -11,7 +11,6 @@ import type {
 import { createCallableActions } from './router.utils'
 import { handleDuplexRequest } from './transports/handle-duplex-request'
 import { handleHttpRequest } from './transports/handle-http.request'
-import { Parser } from './transports/handle-stream'
 import { handleStreamRequest } from './transports/handle-stream-request'
 import { handleWebSocket } from './transports/handle-websocket'
 

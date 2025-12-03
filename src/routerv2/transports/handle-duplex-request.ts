@@ -1,7 +1,11 @@
 /* eslint-disable sonarjs/no-nested-functions */
-import { NOOP_ON_ERROR } from '../../types'
+import {
+  NOOP_ON_ERROR,
+  type RouterResultNotGeneric,
+} from '../../types'
 import { createId } from '../../utils/create-id'
 import { handleError } from '../../utils/handle-error'
+import { readable } from '../../utils/readable'
 import { JSONL } from '../../utils/stream-helpers'
 import {
   StreamMessageType,
@@ -25,7 +29,7 @@ export async function handleDuplexRequest(
     pendingClientActionCalls,
   } = options
 
-  const stream = new ReadableStream({
+  const stream = readable({
     async start(controller) {
       const files = new Map<string, File>()
       const promises: Promise<void>[] = []
@@ -81,12 +85,14 @@ export async function handleDuplexRequest(
                       encoder,
                       type: StreamMessageType.CLIENT_ACTION_CALL,
                     })
-                    return new Promise(
+                    return new Promise<RouterResultNotGeneric>(
                       (resolve, reject) => {
                         pendingClientActionCalls.add(
                           clientActionId,
                           {
-                            resolve,
+                            resolve: resolve as (
+                              value: unknown,
+                            ) => void,
                             reject,
                           },
                           () => {
@@ -119,12 +125,13 @@ export async function handleDuplexRequest(
                   status: 'error',
                   error: error?.error,
                   type: StreamMessageType.RESPONSE,
+                  isLast: true,
                 }
                 const rawMessage = JSONL(message)
                 const encodedMessage =
                   encoder.encode(rawMessage)
                 controller.enqueue(encodedMessage)
-                controller.close()
+                // Don't close immediately - let it close naturally after all responses
               }
             }
             promises.push(run())
@@ -143,7 +150,17 @@ export async function handleDuplexRequest(
                 'Client action call result not found',
               )
             }
-            pending.resolve(item.file ?? item.data)
+            const resultPayload: RouterResultNotGeneric =
+              item.status === 'ok'
+                ? {
+                    status: 'ok',
+                    data: item.file ?? item.data,
+                  }
+                : {
+                    status: 'error',
+                    error: item.error,
+                  }
+            pending.resolve(resultPayload)
             continue
           }
         }

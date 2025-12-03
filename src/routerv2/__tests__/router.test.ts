@@ -51,6 +51,13 @@ describe('router', () => {
             id: `${params.id}-CALL`,
           })
 
+          if (result.status === 'error') {
+            throw new Error(
+              result.error?.message ??
+                'Client action failed',
+            )
+          }
+
           return { id: result.data?.id ?? 'error' }
         },
       ),
@@ -122,6 +129,7 @@ describe('router', () => {
                 schemaPath: '#/properties/id',
                 keyword: 'custom',
                 message: 'ID is invalid',
+                params: {},
               },
             ])
           }
@@ -137,7 +145,10 @@ describe('router', () => {
             id: params.id,
           })
           if (result.status === 'error') {
-            throw new Error('Client action failed')
+            throw new Error(
+              result.error?.message ??
+                'Client action failed',
+            )
           }
           return { id: result.data?.id ?? 'error' }
         },
@@ -611,6 +622,7 @@ describe('router', () => {
               schemaPath: '#/properties/id',
               keyword: 'custom',
               message: 'ID is invalid',
+              params: {},
             },
           ],
         },
@@ -727,9 +739,11 @@ describe('router', () => {
 
     it('should handle optional params', async () => {
       const result = await client.fetch({
-        getUserOptional: undefined as unknown as {
-          id?: string
-        },
+        getUserOptional: undefined as unknown as
+          | {
+              id: string
+            }
+          | undefined,
       })
       expect(result.getUserOptional).toEqual({
         status: 'ok',
@@ -884,10 +898,12 @@ describe('router', () => {
   describe('onResponse Hook', () => {
     it('should call onResponse hook', async () => {
       let hookCalled = false
+      let receivedStatusCode = 0
       const client = createRouterClient<Router>({
         httpURL: `http://localhost:${PORT}/http`,
-        onResponse: ({ json }) => {
+        onResponse: ({ json, statusCode }) => {
           hookCalled = true
+          receivedStatusCode = statusCode
           return json
         },
       })
@@ -895,6 +911,7 @@ describe('router', () => {
         getUser: { id: '1' },
       })
       expect(hookCalled).toBe(true)
+      expect(receivedStatusCode).toBe(200)
       expect(result.getUser.status).toBe('ok')
     })
 
@@ -924,8 +941,9 @@ describe('router', () => {
       let attemptCount = 0
       const client = createRouterClient<Router>({
         httpURL: `http://localhost:${PORT}/http`,
-        onResponse: ({ json, runAgain }) => {
+        onResponse: ({ json, statusCode, runAgain }) => {
           attemptCount++
+          expect(statusCode).toBe(200)
           if (attemptCount === 1) {
             return runAgain()
           }
@@ -937,6 +955,166 @@ describe('router', () => {
       })
       expect(attemptCount).toBe(2)
       expect(result.getUser.status).toBe('ok')
+    })
+
+    it('should allow retrying with runAgain with new params', async () => {
+      let attemptCount = 0
+      const client = createRouterClient<Router>({
+        httpURL: `http://localhost:${PORT}/http`,
+        onResponse: ({ json, statusCode, runAgain }) => {
+          attemptCount++
+          expect(statusCode).toBe(200)
+          if (attemptCount === 1) {
+            return runAgain({ getUser: { id: '2' } })
+          }
+          return json
+        },
+      })
+      const result = await client.fetch({
+        getUser: { id: '1' },
+      })
+      expect(attemptCount).toBe(2)
+      expect(result.getUser.data?.id).toBe('2')
+    })
+
+    it('should allow retrying with runAgain with new options', async () => {
+      let attemptCount = 0
+      const client = createRouterClient<Router>({
+        httpURL: `http://localhost:${PORT}/http`,
+        onResponse: ({ json, statusCode, runAgain }) => {
+          attemptCount++
+          expect(statusCode).toBe(200)
+          if (attemptCount === 1) {
+            return runAgain(undefined, { method: 'POST' })
+          }
+          return json
+        },
+      })
+      const result = await client.fetch(
+        { getUser: { id: '1' } },
+        { method: 'GET' },
+      )
+      expect(attemptCount).toBe(2)
+      expect(result.getUser.status).toBe('ok')
+    })
+
+    it('should handle errors thrown by runAgain', async () => {
+      // Create a client with an invalid URL to force network error
+      const invalidClient = createRouterClient<Router>({
+        httpURL: `http://localhost:99999/invalid`,
+        onResponse: ({ runAgain }) => {
+          // runAgain will fail because the URL is invalid
+          return runAgain()
+        },
+      })
+
+      await expect(
+        invalidClient.fetch({ getUser: { id: '1' } }),
+      ).rejects.toThrow()
+    })
+
+    it('should handle runAgain throwing synchronously in onResponse', async () => {
+      const client = createRouterClient<Router>({
+        httpURL: `http://localhost:${PORT}/http`,
+        onResponse: () => {
+          // Throw an error directly in onResponse
+          throw new Error('onResponse error')
+        },
+      })
+
+      await expect(
+        client.fetch({ getUser: { id: '1' } }),
+      ).rejects.toThrow('onResponse error')
+    })
+
+    it('should handle multiple retries with runAgain', async () => {
+      let attemptCount = 0
+      const client = createRouterClient<Router>({
+        httpURL: `http://localhost:${PORT}/http`,
+        onResponse: ({ json, statusCode, runAgain }) => {
+          attemptCount++
+          expect(statusCode).toBe(200)
+          if (attemptCount < 3) {
+            return runAgain()
+          }
+          return json
+        },
+      })
+      const result = await client.fetch({
+        getUser: { id: '1' },
+      })
+      expect(attemptCount).toBe(3)
+      expect(result.getUser.status).toBe('ok')
+    })
+  })
+
+  // ==========================================================================
+  // setHeaders API - All Transports
+  // ==========================================================================
+  describe('setHeaders API - All Transports', () => {
+    it('should work with stream transport', async () => {
+      const client = createRouterClient<Router>({
+        streamURL: `http://localhost:${PORT}/stream`,
+      })
+      client.setHeaders({ 'X-Custom-Header': 'test-value' })
+      const result = client.stream({
+        getUserStream: { id: '1' },
+      })
+      const results: unknown[] = []
+      for await (const item of result) {
+        results.push(item)
+      }
+      expect(results.length).toBeGreaterThan(0)
+    })
+
+    it('should work with websocket transport', async () => {
+      const client = createRouterClient<Router>({
+        websocketURL: `ws://localhost:${PORT}/ws`,
+        defineClientActions: {
+          useUser: async (value) => ({
+            id: value.id,
+            value: 'test',
+          }),
+          useProcess: async (value) => {
+            await delay(value.duration)
+            return { completed: true }
+          },
+        },
+      })
+      client.setHeaders({ 'X-Custom-Header': 'test-value' })
+      const result = client.websocket({
+        getUser: { id: '1' },
+      })
+      const results: unknown[] = []
+      for await (const item of result) {
+        results.push(item)
+      }
+      expect(results.length).toBeGreaterThan(0)
+    })
+
+    it('should work with duplex transport', async () => {
+      const client = createRouterClient<Router>({
+        halfDuplexUrl: `http://localhost:${PORT}/duplex`,
+        defineClientActions: {
+          useUser: async (value) => ({
+            id: value.id,
+            value: 'test',
+          }),
+          useProcess: async (value) => {
+            await delay(value.duration)
+            return { completed: true }
+          },
+        },
+      })
+      client.setHeaders({ 'X-Custom-Header': 'test-value' })
+      const result = client.duplex({
+        getUser: { id: '1' },
+      })
+      const results: unknown[] = []
+      for await (const item of result) {
+        results.push(item)
+      }
+      expect(results.length).toBeGreaterThan(0)
     })
   })
 
@@ -965,7 +1143,7 @@ describe('router', () => {
       const results: unknown[] = []
       for await (const item of connection.stream) {
         results.push(item)
-        if (results.length >= 1) {
+        if (results.length > 0) {
           break
         }
       }
@@ -1010,7 +1188,7 @@ describe('router', () => {
       const results: unknown[] = []
       for await (const item of connection.stream) {
         results.push(item)
-        if (results.length >= 1) {
+        if (results.length > 0) {
           break
         }
       }
@@ -1060,7 +1238,7 @@ describe('router', () => {
       const results: unknown[] = []
       for await (const item of connection.stream) {
         results.push(item)
-        if (results.length >= 1) {
+        if (results.length > 0) {
           break
         }
       }
@@ -1104,7 +1282,7 @@ describe('router', () => {
       const results: unknown[] = []
       for await (const item of connection.stream) {
         results.push(item)
-        if (results.length >= 1) {
+        if (results.length > 0) {
           break
         }
       }
@@ -1151,22 +1329,21 @@ describe('router', () => {
         getUserWithClientAction: { id: '1' },
       })
 
-      let errorThrown = false
-      let errorMessage = ''
-
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for await (const item of result) {
-          item.getUserWithClientAction.error
-          // Consume the stream to trigger the error
-        }
-      } catch (error: unknown) {
-        errorThrown = true
-        errorMessage = (error as Error).message
+      const outputs: unknown[] = []
+      for await (const item of result) {
+        outputs.push(item)
       }
 
-      expect(errorThrown).toBe(true)
-      expect(errorMessage).toContain('Client action error')
+      expect(outputs).toHaveLength(1)
+      expect(
+        (
+          outputs[0] as {
+            getUserWithClientAction: {
+              error?: { message?: string }
+            }
+          }
+        ).getUserWithClientAction.error?.message,
+      ).toContain('Client action error')
     })
 
     it('should handle client action returning error status', async () => {
@@ -1188,18 +1365,21 @@ describe('router', () => {
         getClientActionError: { id: '1' },
       })
 
-      let errorThrown = false
-
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for await (const _item of result) {
-          // Consume the stream to trigger the error
-        }
-      } catch {
-        errorThrown = true
+      const outputs: unknown[] = []
+      for await (const item of result) {
+        outputs.push(item)
       }
 
-      expect(errorThrown).toBe(true)
+      expect(outputs).toHaveLength(1)
+      expect(
+        (
+          outputs[0] as {
+            getClientActionError: {
+              error?: { message?: string }
+            }
+          }
+        ).getClientActionError.error?.message,
+      ).toContain('Client action failed')
     })
   })
 })

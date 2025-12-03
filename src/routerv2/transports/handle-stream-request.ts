@@ -1,6 +1,7 @@
 import { NOOP_ON_ERROR } from '../../types'
 import { createId } from '../../utils/create-id'
 import { handleError } from '../../utils/handle-error'
+import { readable } from '../../utils/readable'
 import { JSONL } from '../../utils/stream-helpers'
 import {
   StreamMessageType,
@@ -21,8 +22,16 @@ export async function handleStreamRequest(
     encoder,
   } = options
 
-  const stream = new ReadableStream({
+  const stream = readable({
     async start(controller) {
+      let isControllerClosed = false
+      const closeController = () => {
+        if (isControllerClosed) {
+          return
+        }
+        isControllerClosed = true
+        controller.close()
+      }
       const { params, files } = await getParams(request)
       const promises: Promise<void>[] = []
       for (const actionName in params) {
@@ -59,14 +68,14 @@ export async function handleStreamRequest(
             const encodedMessage =
               encoder.encode(rawMessage)
             controller.enqueue(encodedMessage)
-            controller.close()
+            closeController()
           }
         }
         const promise = run()
         promises.push(promise)
       }
       await Promise.all(promises)
-      controller.close()
+      closeController()
     },
   })
 

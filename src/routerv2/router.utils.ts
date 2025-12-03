@@ -27,7 +27,7 @@ interface CallOptions {
   readonly files?: Map<string, File>
   onClientActionCall?: (
     options: OnClientRequest,
-  ) => Promise<unknown>
+  ) => Promise<RouterResultNotGeneric>
 }
 
 export type CallableActions = (
@@ -79,21 +79,22 @@ export function createCallableActions<
       const clientActionFn = async (
         clientActionParams: unknown,
       ) => {
-        const result = await onClientActionCall?.({
+        if (!onClientActionCall) {
+          throw new Error(
+            `Client action ${clientActionName} is not available for this transport`,
+          )
+        }
+        const result = await onClientActionCall({
           params: clientActionParams,
           actionName: clientActionName,
         })
-
-        const actionResult: RouterResultNotGeneric = {
-          status: 'ok',
-          data: result,
+        if (result.status === 'ok') {
+          const errorResult = validateResult(result.data)
+          if (errorResult) {
+            throw new ValidationError(errorResult)
+          }
         }
-
-        const errorResult = validateResult(result)
-        if (errorResult) {
-          throw new ValidationError(errorResult)
-        }
-        return actionResult
+        return result
       }
       // Use type assertion with unknown cast trick to avoid erroneous generic indexer error from TypeScript,
       // while still enforcing correct structure.

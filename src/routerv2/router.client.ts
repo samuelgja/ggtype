@@ -1,10 +1,15 @@
-/* eslint-disable sonarjs/no-nested-functions */
-/* eslint-disable sonarjs/cognitive-complexity */
-
+import {
+  NOOP_ON_ERROR,
+  type RouterResultNotGeneric,
+} from '../types'
 import { createId } from '../utils/create-id'
+import { handleError } from '../utils/handle-error'
 import { hasStreamData } from '../utils/is'
+import { readable } from '../utils/readable'
+import { JSONL } from '../utils/stream-helpers'
 import {
   UPLOAD_FILE,
+  type BidirectionalConnection,
   type DuplexOptions,
   type FetchOptions,
   type ParamsIt,
@@ -18,6 +23,7 @@ import {
   type ClientActionsBase,
   type Router,
   type ServerActionsBase,
+  type StreamMessage,
 } from './router.type'
 import { handleHttpClient } from './transports/handle-http-client'
 import {
@@ -25,6 +31,150 @@ import {
   Parser,
   parseStreamResponse,
 } from './transports/handle-stream'
+
+async function* createStreamGenerator<T>(
+  stream: ReadableStream<T>,
+): AsyncGenerator<T, void, unknown> {
+  const reader = stream.getReader()
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) {
+        break
+      }
+      if (value !== undefined) {
+        yield value
+      }
+    }
+  } finally {
+    reader.releaseLock()
+  }
+}
+
+async function handleClientActionCall(
+  item: StreamMessage,
+  clientActions: Record<
+    string,
+    (params: unknown) => Promise<unknown>
+  >,
+  encoder: TextEncoder,
+  send: (message: Uint8Array) => void,
+  onError: (error: Error) => Error,
+): Promise<boolean> {
+  if (item.type !== StreamMessageType.CLIENT_ACTION_CALL) {
+    return false
+  }
+
+  const sendErrorPayload = (
+    errorResult: RouterResultNotGeneric,
+  ) => {
+    const message: StreamMessage = {
+      action: item.action,
+      id: item.id,
+      status: 'error',
+      error: errorResult.error,
+      type: StreamMessageType.CLIENT_ACTION_CALL_RESULT,
+      isLast: true,
+    }
+    const rawMessage = JSONL(message)
+    const encodedMessage = encoder.encode(rawMessage)
+    send(encodedMessage)
+  }
+
+  const normalizeErrorResult = (
+    rawError: unknown,
+    defaultMessage: string,
+  ): RouterResultNotGeneric => {
+    const normalized = handleError(
+      onError,
+      rawError instanceof Error
+        ? rawError
+        : new Error(defaultMessage),
+    )
+    if (normalized) {
+      return normalized
+    }
+    return {
+      status: 'error',
+      error: {
+        type: 'generic',
+        message: defaultMessage,
+        code: 400,
+      },
+    }
+  }
+
+  const clientAction = clientActions[item.action]
+  if (!clientAction) {
+    sendErrorPayload(
+      normalizeErrorResult(
+        new Error(`Client action ${item.action} not found`),
+        `Client action ${item.action} not found`,
+      ),
+    )
+    return true
+  }
+
+  try {
+    const result = await clientAction(item.data)
+    await handleStreamResponse({
+      actionName: item.action,
+      actionResult: result,
+      id: item.id,
+      encoder,
+      type: StreamMessageType.CLIENT_ACTION_CALL_RESULT,
+      send,
+    })
+  } catch (rawError) {
+    const actionError = normalizeErrorResult(
+      rawError,
+      'Client action failed',
+    )
+    sendErrorPayload(actionError)
+  }
+  return true
+}
+
+function normalizeError(error: unknown): Error {
+  if (error instanceof Error) {
+    return error
+  }
+  if (typeof error === 'string') {
+    return new Error(error)
+  }
+  return new Error('Unknown client error')
+}
+
+function createWaitForStreamFunction(
+  streamControllerRef: {
+    current: ReadableStreamDefaultController<unknown> | null
+  },
+  streamResolverRef: {
+    current: (() => void) | null
+  },
+): () => Promise<void> {
+  return async (): Promise<void> => {
+    if (streamControllerRef.current) {
+      return
+    }
+    return new Promise((resolve) => {
+      streamResolverRef.current = resolve
+    })
+  }
+}
+
+function processQueueAfterStreamReady(
+  waitForStream: () => Promise<void>,
+  streamController: ReadableStreamDefaultController<unknown> | null,
+  messageQueue: unknown[],
+): void {
+  waitForStream().then(() => {
+    for (const queued of messageQueue) {
+      streamController?.enqueue(queued)
+    }
+    messageQueue.length = 0
+  })
+}
 
 export function createRouterClient<
   RouterType extends Router<
@@ -37,7 +187,7 @@ export function createRouterClient<
     halfDuplexUrl,
     httpURL,
     onResponse,
-    responseTimeout,
+    onError = NOOP_ON_ERROR,
     streamURL,
     websocketURL,
   } = options
@@ -45,24 +195,94 @@ export function createRouterClient<
   type ResultForLocal<Params extends ParamsIt<RouterType>> =
     ResultForWithActionResult<RouterType, Params>
 
+  function streamMessageToResult<
+    Params extends ParamsIt<RouterType>,
+  >(item: StreamMessage): ResultForLocal<Params> | null {
+    if (!hasStreamData(item)) {
+      return null
+    }
+
+    if (item.status === 'ok') {
+      return {
+        [item.action]: {
+          data: item.file ?? item.data,
+          status: item.status,
+        },
+      } as ResultForLocal<Params>
+    }
+
+    if (item.status === 'error') {
+      return {
+        [item.action]: {
+          error: item.error,
+          status: item.status,
+        },
+      } as ResultForLocal<Params>
+    }
+
+    return null
+  }
+
+  async function sendInitialParams(
+    params: ParamsIt<RouterType>,
+    files: readonly File[],
+    encoder: TextEncoder,
+    send: (message: Uint8Array) => void,
+  ): Promise<void> {
+    for (const file of files) {
+      await handleStreamResponse({
+        actionName: UPLOAD_FILE,
+        actionResult: file,
+        encoder,
+        send,
+        id: createId(),
+        type: StreamMessageType.UPLOAD_FILE,
+      })
+    }
+
+    for (const actionName in params) {
+      const actionParams = params[actionName]
+      await handleStreamResponse({
+        actionName,
+        actionResult: actionParams,
+        encoder,
+        send,
+        id: createId(),
+        type: StreamMessageType.WS_SEND_FROM_CLIENT,
+      })
+    }
+  }
+
   const state: RouterClientState = {
-    defaultHeaders: {},
+    defaultHeaders: new Headers(),
+    onError,
   }
 
   async function onResponseHook<
     Params extends ParamsIt<RouterType>,
   >(onResponseHookOptions: {
     json: ResultForWithActionResult<RouterType, Params>
-    runAgain: () => Promise<
-      ResultForWithActionResult<RouterType, Params>
+    statusCode: number
+    runAgain: <
+      NewParams extends ParamsIt<RouterType> = Params,
+    >(
+      newParams?: NewParams,
+      newOptions?: FetchOptions<RouterType>,
+    ) => Promise<
+      ResultForWithActionResult<RouterType, NewParams>
     >
   }): Promise<
-    ResultForWithActionResult<RouterType, Params>
+    ResultForWithActionResult<
+      RouterType,
+      ParamsIt<RouterType>
+    >
   > {
-    const { json, runAgain } = onResponseHookOptions
+    const { json, statusCode, runAgain } =
+      onResponseHookOptions
     if (onResponse) {
       const modifiedJson = await onResponse({
         json,
+        statusCode,
         runAgain,
       })
       if (modifiedJson !== undefined) {
@@ -72,37 +292,53 @@ export function createRouterClient<
     return json
   }
 
-  return {
-    /**
-     * Sets headers to be included in all requests.
-     * Call with an object to set headers, or with no arguments to reset headers.
-     * @param newHeaders - Optional headers object. If not provided, headers are reset.
-     */
-    setHeaders(newHeaders?: Record<string, string>): void {
-      state.defaultHeaders = {
-        ...state.defaultHeaders,
-        ...newHeaders,
-      }
-    },
+  const processError = (error: unknown): Error => {
+    const normalized = normalizeError(error)
+    return state.onError(normalized)
+  }
 
-    async fetch<Params extends ParamsIt<RouterType>>(
-      params: Params,
-      fetchOptions?: FetchOptions<RouterType>,
-    ): Promise<ResultForLocal<Params>> {
-      if (!httpURL) {
-        throw new Error('httpURL is required')
-      }
-      // Create runAgain function for onRequest hook
-      const runAgain = async (): Promise<
-        ResultForWithActionResult<RouterType, Params>
-      > => {
-        return this.fetch(params, fetchOptions)
-      }
+  const throwClientError = (error: unknown): never => {
+    throw processError(error)
+  }
 
+  const executeFetch = async <
+    Params extends ParamsIt<RouterType>,
+  >(
+    params: Params,
+    fetchOptions?: FetchOptions<RouterType>,
+  ): Promise<ResultForLocal<Params>> => {
+    if (!httpURL) {
+      throwClientError(new Error('httpURL is required'))
+    }
+
+    const runAgain = <
+      NewParams extends ParamsIt<RouterType> = Params,
+    >(
+      newParams?: NewParams,
+      newOptions?: FetchOptions<RouterType>,
+    ): Promise<ResultForLocal<NewParams>> => {
+      if (newParams !== undefined) {
+        return executeFetch(
+          newParams as unknown as Params,
+          newOptions ?? fetchOptions,
+        ) as Promise<ResultForLocal<NewParams>>
+      }
+      if (newOptions !== undefined) {
+        return executeFetch(params, newOptions) as Promise<
+          ResultForLocal<NewParams>
+        >
+      }
+      return executeFetch(params, fetchOptions) as Promise<
+        ResultForLocal<NewParams>
+      >
+    }
+
+    try {
       const response = await handleHttpClient(
-        httpURL,
+        httpURL!,
         params,
         fetchOptions,
+        state.defaultHeaders,
       )
       if (!response.ok) {
         throw new Error(
@@ -110,67 +346,80 @@ export function createRouterClient<
         )
       }
       const json = await response.json()
-      const modifiedJson = await onResponseHook({
+      return await onResponseHook({
         json,
+        statusCode: response.status,
         runAgain,
       })
-      return modifiedJson
+    } catch (error) {
+      throwClientError(error)
+      // This line is never reached, but TypeScript needs it for type checking
+      throw new Error('Unreachable')
+    }
+  }
+
+  return {
+    /**
+     * Sets headers to be included in all requests.
+     * Call with an object to set headers, or with no arguments to reset headers.
+     * @param newHeaders - Optional headers object. If not provided, headers are reset.
+     */
+    setHeaders(newHeaders?: Record<string, string>): void {
+      state.defaultHeaders = new Headers(
+        newHeaders ?? undefined,
+      )
+    },
+
+    async fetch<Params extends ParamsIt<RouterType>>(
+      params: Params,
+      fetchOptions?: FetchOptions<RouterType>,
+    ): Promise<ResultForLocal<Params>> {
+      return executeFetch(params, fetchOptions)
     },
     async *stream<Params extends ParamsIt<RouterType>>(
       params: Params,
       fetchOptions?: FetchOptions<RouterType>,
     ): AsyncGenerator<ResultForLocal<Params>> {
       if (!streamURL) {
-        throw new Error('streamURL is required')
+        throwClientError(new Error('streamURL is required'))
       }
 
-      const response = await handleHttpClient(
-        streamURL,
-        params,
-        fetchOptions,
-      )
-      if (!response.ok) {
-        throw new Error(
-          `HTTP request failed: ${response.status} ${response.statusText}`,
+      let response: Response
+      try {
+        response = await handleHttpClient(
+          streamURL!,
+          params,
+          fetchOptions,
+          state.defaultHeaders,
+        )
+      } catch (error) {
+        throwClientError(error)
+      }
+      // TypeScript control flow: response is definitely assigned here
+      // because throwClientError never returns
+      const finalResponse = response!
+      if (!finalResponse.ok) {
+        throwClientError(
+          `HTTP request failed: ${finalResponse.status} ${finalResponse.statusText}`,
         )
       }
-      const reader = response.body?.getReader()
+      const reader = finalResponse.body?.getReader()
       if (!reader) {
-        throw new Error('Reader is not available')
+        throwClientError(
+          new Error('Reader is not available'),
+        )
       }
-      const stream = parseStreamResponse(reader)
+      const stream = parseStreamResponse(
+        reader as ReadableStreamDefaultReader<Uint8Array>,
+      )
       for await (const item of stream) {
-        if (!hasStreamData(item)) {
-          continue
-        }
-        switch (item.status) {
-          case 'ok': {
-            yield {
-              [item.action]: {
-                data: item.file ?? item.data,
-                status: item.status,
-              },
-            } as ResultForWithActionResult<
-              RouterType,
-              Params
-            >
-            break
-          }
-          case 'error': {
-            yield {
-              [item.action]: {
-                error: item.error,
-                status: item.status,
-              },
-            } as ResultForWithActionResult<
-              RouterType,
-              Params
-            >
-            break
-          }
+        const result = streamMessageToResult<Params>(item)
+        if (result) {
+          yield result
         }
       }
     },
+
     async *duplex<Params extends ParamsIt<RouterType>>(
       params: Params,
       fetchOptions?: DuplexOptions<RouterType>,
@@ -184,111 +433,122 @@ export function createRouterClient<
         ...maybeClientActions,
       }
       if (!halfDuplexUrl) {
-        throw new Error('streamURL is required')
+        throwClientError(
+          new Error('halfDuplexUrl is required'),
+        )
       }
 
-      const url = new URL(halfDuplexUrl)
+      const url = new URL(halfDuplexUrl!)
 
       const encoder = new TextEncoder()
       let controller:
         | ReadableStreamDefaultController<unknown>
         | undefined = undefined
-      const readableStream = new ReadableStream({
+      const readableStream = readable({
         async start(c) {
           controller = c
-          // Send files first, similar to WebSocket
-          for (const file of files) {
-            await handleStreamResponse({
-              actionName: UPLOAD_FILE,
-              actionResult: file,
-              encoder,
-              send: (message) =>
-                controller?.enqueue(message),
-              id: createId(),
-              type: StreamMessageType.UPLOAD_FILE,
-            })
-          }
-
-          // Send actions
-          for (const actionName in params) {
-            const actionParams = params[actionName]
-            await handleStreamResponse({
-              actionName,
-              actionResult: actionParams,
-              encoder,
-              send: (message) => controller?.enqueue(message),
-              id: createId(),
-              type: StreamMessageType.WS_SEND_FROM_CLIENT,
-            })
-          }
+          await sendInitialParams(
+            params,
+            files,
+            encoder,
+            (message) => controller?.enqueue(message),
+          )
         },
       })
-      const response = await fetch(url, {
-        method: 'POST',
-        body: readableStream,
-      })
-
-      const reader = response.body?.getReader()
-      if (!reader) {
-        throw new Error('Reader is not available')
+      const headers = new Headers(state.defaultHeaders)
+      let response: Response
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          body: readableStream,
+          headers,
+        })
+      } catch (error) {
+        throwClientError(error)
       }
-      const stream = parseStreamResponse(reader)
-      for await (const item of stream) {
-        if (!hasStreamData(item)) {
-          continue
+      // TypeScript: response is definitely assigned because throwClientError never returns
+      const finalResponse = response!
+      const reader = finalResponse.body?.getReader()
+      if (!reader) {
+        throwClientError(
+          new Error('Reader is not available'),
+        )
+      }
+      const stream = parseStreamResponse(
+        reader as ReadableStreamDefaultReader<Uint8Array>,
+      )
+      let isControllerClosed = false
+
+      const duplexSendFunction = (message: Uint8Array) => {
+        if (!controller || isControllerClosed) {
+          throwClientError(
+            new Error('Controller is not available'),
+          )
         }
+        // TypeScript: controller is defined after the check above
+        controller!.enqueue(message)
+      }
+
+      const processDuplexStreamItem = async (
+        item: StreamMessage,
+      ): Promise<ResultForLocal<Params> | null> => {
+        const handled = await handleClientActionCall(
+          item,
+          clientActions as Record<
+            string,
+            (params: unknown) => Promise<unknown>
+          >,
+          encoder,
+          duplexSendFunction,
+          state.onError,
+        )
+        if (handled) {
+          return null
+        }
+
+        const result = streamMessageToResult<Params>(item)
         if (
-          item.type === StreamMessageType.CLIENT_ACTION_CALL
+          item.isLast &&
+          controller &&
+          !isControllerClosed
         ) {
-          const clientAction = clientActions[item.action]
-          if (!clientAction) {
-            throw new Error(
-              `Client action ${item.action} not found`,
-            )
-          }
-          const result = await clientAction(item.data)
-          if (!controller) {
-            throw new Error('Controller is not available')
-          }
-          await handleStreamResponse({
-            actionName: item.action,
-            actionResult: result,
-            id: item.id,
-            encoder,
-            type: StreamMessageType.CLIENT_ACTION_CALL_RESULT,
-            send: (message) => controller?.enqueue(message),
-          })
-          continue
-        }
-        switch (item.status) {
-          case 'ok': {
-            yield {
-              [item.action]: {
-                data: item.file ?? item.data,
-                status: item.status,
-              },
-            } as ResultForWithActionResult<
-              RouterType,
-              Params
-            >
-            break
-          }
-          case 'error': {
-            yield {
-              [item.action]: {
-                error: item.error,
-                status: item.status,
-              },
-            } as ResultForWithActionResult<
-              RouterType,
-              Params
-            >
-            break
-          }
-        }
-        if (controller) {
+          isControllerClosed = true
           ;(controller as { close: () => void }).close()
         }
+
+        return result
+      }
+
+      const closeDuplexController = (): void => {
+        if (controller && !isControllerClosed) {
+          try {
+            isControllerClosed = true
+            ;(controller as { close: () => void }).close()
+          } catch {
+            // Controller might already be closed
+          }
+        }
+      }
+
+      try {
+        for await (const item of stream) {
+          const result = await processDuplexStreamItem(item)
+          if (result) {
+            yield result
+          }
+        }
+      } catch (error) {
+        if (
+          error instanceof DOMException &&
+          error.name === 'AbortError'
+        ) {
+          // Stream was closed, but we might have already processed the error
+          // Let the error propagate if we haven't yielded anything
+        } else {
+          throw error
+        }
+      } finally {
+        closeDuplexController()
       }
     },
 
@@ -306,191 +566,637 @@ export function createRouterClient<
         ...maybeClientActions,
       }
       if (!websocketURL) {
-        throw new Error('websocketURL is required')
+        throwClientError(
+          new Error('websocketURL is required'),
+        )
       }
       const encoder = new TextEncoder()
-      const ws = new WebSocket(websocketURL)
+      const ws = new WebSocket(websocketURL!)
       const numberOfActions = Object.keys(params).length
       let actionsResolved = 0
 
       const parser = new Parser()
       let isControllerClosed = false
-      const stream = new ReadableStream({
+
+      const sendMessage = (message: Uint8Array) => {
+        ws.send(message)
+      }
+
+      const handleWebSocketError = (
+        error: unknown,
+        controller: ReadableStreamDefaultController<
+          ResultForLocal<Params>
+        >,
+      ): void => {
+        if (!isControllerClosed) {
+          isControllerClosed = true
+          controller.error(error as Error)
+          ws.close()
+        }
+      }
+
+      const processWebSocketMessageItem = async (
+        item: StreamMessage,
+        controller: ReadableStreamDefaultController<
+          ResultForLocal<Params>
+        >,
+      ): Promise<boolean> => {
+        if (isControllerClosed) {
+          return false
+        }
+
+        try {
+          const handled = await handleClientActionCall(
+            item,
+            clientActions as Record<
+              string,
+              (params: unknown) => Promise<unknown>
+            >,
+            encoder,
+            sendMessage,
+            state.onError,
+          )
+          if (handled) {
+            return true
+          }
+        } catch (error) {
+          handleWebSocketError(error, controller)
+          return false
+        }
+
+        if (
+          item.type ===
+          StreamMessageType.CLIENT_ACTION_CALL_RESULT
+        ) {
+          return true
+        }
+
+        const result = streamMessageToResult<Params>(item)
+        if (result && !isControllerClosed) {
+          controller.enqueue(result)
+          if (item.isLast) {
+            actionsResolved++
+          }
+        }
+
+        return true
+      }
+
+      const checkAndCloseIfComplete = (
+        controller: ReadableStreamDefaultController<
+          ResultForLocal<Params>
+        >,
+      ): void => {
+        if (
+          actionsResolved === numberOfActions &&
+          !isControllerClosed
+        ) {
+          isControllerClosed = true
+          controller.close()
+        }
+      }
+
+      const createWebSocketMessageHandler = (
+        controller: ReadableStreamDefaultController<
+          ResultForLocal<Params>
+        >,
+      ) => {
+        return async ({ data }: { data: unknown }) => {
+          if (isControllerClosed) {
+            return
+          }
+          if (!(data instanceof Uint8Array)) {
+            return
+          }
+
+          const messages = await parser.feed(data)
+          for (const item of messages) {
+            const shouldContinue =
+              await processWebSocketMessageItem(
+                item,
+                controller,
+              )
+            if (!shouldContinue) {
+              return
+            }
+          }
+
+          checkAndCloseIfComplete(controller)
+        }
+      }
+
+      const createWebSocketOpenHandler = () => {
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        return async () => {
+          await sendInitialParams(
+            params,
+            files,
+            encoder,
+            sendMessage,
+          )
+        }
+      }
+
+      const createWebSocketCloseHandler = (
+        controller: ReadableStreamDefaultController<
+          ResultForLocal<Params>
+        >,
+      ) => {
+        return () => {
+          if (isControllerClosed) {
+            return
+          }
+          const tail = parser.finalize({
+            allowUploadHeaderWithoutFile: true,
+          })
+          for (const item of tail) {
+            if (isControllerClosed) {
+              break
+            }
+            switch (item.status) {
+              case 'ok': {
+                if (!isControllerClosed) {
+                  controller.enqueue({
+                    [item.action]: {
+                      data: item.file ?? item.data,
+                      status: item.status,
+                    },
+                  } as ResultForWithActionResult<
+                    RouterType,
+                    Params
+                  >)
+                }
+                break
+              }
+              case 'error': {
+                if (!isControllerClosed) {
+                  controller.enqueue({
+                    [item.action]: {
+                      error: item.error,
+                      status: item.status,
+                    },
+                  } as ResultForWithActionResult<
+                    RouterType,
+                    Params
+                  >)
+                }
+                break
+              }
+            }
+          }
+          if (!isControllerClosed) {
+            isControllerClosed = true
+            controller.close()
+          }
+          ws.close()
+        }
+      }
+
+      const stream = readable({
         async start(controller) {
           ws.addEventListener(
             'message',
-            async ({ data }) => {
-              if (isControllerClosed) {
-                return
-              }
-              if (!(data instanceof Uint8Array)) {
-                return
-              }
-              const messages = await parser.feed(data)
-              for (const item of messages) {
-                if (isControllerClosed) {
-                  return
-                }
-                if (!hasStreamData(item)) {
-                  continue
-                }
-                if (
-                  item.type ===
-                  StreamMessageType.CLIENT_ACTION_CALL
-                ) {
-                  const clientAction =
-                    clientActions[item.action]
-                  if (!clientAction) {
-                    throw new Error(
-                      `Client action ${item.action} not found`,
-                    )
-                  }
-                  const result = await clientAction(
-                    item.data,
-                  )
-                  await handleStreamResponse({
-                    actionName: item.action,
-                    actionResult: result,
-                    id: item.id,
-                    encoder,
-                    type: StreamMessageType.CLIENT_ACTION_CALL_RESULT,
-                    send: (message) => ws.send(message),
-                  })
-                  continue
-                }
-                if (
-                  item.type ===
-                  StreamMessageType.CLIENT_ACTION_CALL_RESULT
-                ) {
-                  // Client action call results are internal protocol messages,
-                  // consumed by the server, not yielded to the user
-                  continue
-                }
-                switch (item.status) {
-                  case 'ok': {
-                    if (!isControllerClosed) {
-                      controller.enqueue({
-                        [item.action]: {
-                          data: item.file ?? item.data,
-                          status: item.status,
-                        },
-                      } as ResultForWithActionResult<
-                        RouterType,
-                        Params
-                      >)
-                      if (item.isLast) {
-                        actionsResolved++
-                      }
-                    }
-                    break
-                  }
-                  case 'error': {
-                    if (!isControllerClosed) {
-                      controller.enqueue({
-                        [item.action]: {
-                          error: item.error,
-                          status: item.status,
-                        },
-                      } as ResultForWithActionResult<
-                        RouterType,
-                        Params
-                      >)
-                      if (item.isLast) {
-                        actionsResolved++
-                      }
-                    }
-                    break
-                  }
-                }
-              }
-
-              if (
-                actionsResolved === numberOfActions &&
-                !isControllerClosed
-              ) {
-                isControllerClosed = true
-                controller.close()
-              }
-            },
+            createWebSocketMessageHandler(controller),
           )
-          ws.addEventListener('open', async () => {
-            for (const file of files) {
-              await handleStreamResponse({
-                actionName: UPLOAD_FILE,
-                actionResult: file,
-                encoder,
-                send: (message) => ws.send(message),
-                id: createId(),
-                type: StreamMessageType.UPLOAD_FILE,
-              })
-            }
-            for (const actionName in params) {
-              const actionParams = params[actionName]
-              await handleStreamResponse({
-                actionName,
-                actionResult: actionParams,
-                encoder,
-                send: (message) => ws.send(message),
-                id: createId(),
-                type: StreamMessageType.WS_SEND_FROM_CLIENT,
-              })
-            }
-          })
-          ws.addEventListener('close', () => {
-            if (isControllerClosed) {
-              return
-            }
-            const tail = parser.finalize({
-              allowUploadHeaderWithoutFile: true,
-            })
-            for (const item of tail) {
-              if (isControllerClosed) {
-                break
-              }
-              switch (item.status) {
-                case 'ok': {
-                  if (!isControllerClosed) {
-                    controller.enqueue({
-                      [item.action]: {
-                        data: item.file ?? item.data,
-                        status: item.status,
-                      },
-                    } as ResultForWithActionResult<
-                      RouterType,
-                      Params
-                    >)
-                  }
-                  break
-                }
-                case 'error': {
-                  if (!isControllerClosed) {
-                    controller.enqueue({
-                      [item.action]: {
-                        error: item.error,
-                        status: item.status,
-                      },
-                    } as ResultForWithActionResult<
-                      RouterType,
-                      Params
-                    >)
-                  }
-                  break
-                }
-              }
-            }
-            if (!isControllerClosed) {
-              isControllerClosed = true
-              controller.close()
-            }
-            ws.close()
-          })
-          ws.addEventListener('error', (event) => {
+          ws.addEventListener(
+            'open',
+            createWebSocketOpenHandler(),
+          )
+          ws.addEventListener(
+            'close',
+            createWebSocketCloseHandler(controller),
+          )
+          ws.addEventListener('error', (_event) => {
             ws.close()
           })
         },
       })
-      for await (const item of stream) {
+      const streamGenerator = createStreamGenerator(
+        stream as ReadableStream<
+          ResultForWithActionResult<RouterType, Params>
+        >,
+      )
+      for await (const item of streamGenerator) {
         yield item
+      }
+    },
+
+    startWebsocket(
+      websocketOptions?: WebsocketOptions<RouterType>,
+    ): BidirectionalConnection<RouterType> {
+      const {
+        defineClientActions: maybeClientActions,
+        files = [],
+      } = websocketOptions ?? {}
+
+      const clientActions = {
+        ...defineClientActions,
+        ...maybeClientActions,
+      }
+      if (!websocketURL) {
+        throwClientError(
+          new Error('websocketURL is required'),
+        )
+      }
+
+      const encoder = new TextEncoder()
+      const ws = new WebSocket(websocketURL!)
+      const parser = new Parser()
+      let isClosed = false
+      let isOpen = false
+      const openPromise = new Promise<void>((resolve) => {
+        ws.addEventListener('open', () => {
+          isOpen = true
+          resolve()
+        })
+      })
+      const messageQueue: ResultForWithActionResult<
+        RouterType,
+        ParamsIt<RouterType>
+      >[] = []
+      const streamControllerRef: {
+        current: ReadableStreamDefaultController<
+          ResultForWithActionResult<
+            RouterType,
+            ParamsIt<RouterType>
+          >
+        > | null
+      } = { current: null }
+      const streamResolverRef: {
+        current: (() => void) | null
+      } = { current: null }
+
+      const stream = readable<
+        ResultForWithActionResult<
+          RouterType,
+          ParamsIt<RouterType>
+        >
+      >({
+        start(controller) {
+          streamControllerRef.current = controller
+          if (streamResolverRef.current) {
+            streamResolverRef.current()
+          }
+        },
+      })
+
+      const processMessage = async (
+        item: StreamMessage,
+      ): Promise<void> => {
+        if (isClosed) {
+          return
+        }
+
+        try {
+          if (
+            await handleClientActionCall(
+              item,
+              clientActions as Record<
+                string,
+                (params: unknown) => Promise<unknown>
+              >,
+              encoder,
+              (message: Uint8Array) => {
+                ws.send(message)
+              },
+              state.onError,
+            )
+          ) {
+            return
+          }
+        } catch (error) {
+          if (!isClosed) {
+            isClosed = true
+            if (streamControllerRef.current) {
+              streamControllerRef.current.error(
+                error as Error,
+              )
+            }
+            ws.close()
+          }
+          return
+        }
+
+        if (
+          item.type ===
+          StreamMessageType.CLIENT_ACTION_CALL_RESULT
+        ) {
+          return
+        }
+
+        const result =
+          streamMessageToResult<ParamsIt<RouterType>>(item)
+        if (result) {
+          if (streamControllerRef.current) {
+            streamControllerRef.current.enqueue(result)
+          } else {
+            messageQueue.push(result)
+          }
+        }
+      }
+
+      ws.addEventListener('message', async ({ data }) => {
+        if (isClosed || !(data instanceof Uint8Array)) {
+          return
+        }
+
+        const messages = await parser.feed(data)
+        for (const item of messages) {
+          await processMessage(item)
+        }
+      })
+
+      ws.addEventListener('open', async () => {
+        isOpen = true
+        if (files.length > 0) {
+          await sendInitialParams(
+            {} as ParamsIt<RouterType>,
+            files,
+            encoder,
+            (message) => ws.send(message),
+          )
+        }
+      })
+
+      ws.addEventListener('close', () => {
+        if (isClosed) {
+          return
+        }
+        isOpen = false
+        const tail = parser.finalize({
+          allowUploadHeaderWithoutFile: true,
+        })
+        for (const item of tail) {
+          const result =
+            streamMessageToResult<ParamsIt<RouterType>>(
+              item,
+            )
+          if (result && streamControllerRef.current) {
+            streamControllerRef.current.enqueue(result)
+          }
+        }
+        if (streamControllerRef.current) {
+          streamControllerRef.current.close()
+        }
+        isClosed = true
+      })
+
+      ws.addEventListener('error', () => {
+        isOpen = false
+        if (!isClosed) {
+          ws.close()
+        }
+      })
+
+      const send = async <
+        Params extends ParamsIt<RouterType>,
+      >(
+        sendParams: Params,
+      ): Promise<void> => {
+        if (isClosed) {
+          throwClientError(
+            new Error('Connection is closed'),
+          )
+        }
+        if (!isOpen) {
+          await openPromise
+        }
+        if (ws.readyState !== WebSocket.OPEN) {
+          throwClientError(
+            new Error('WebSocket is not open'),
+          )
+        }
+        await sendInitialParams(
+          sendParams,
+          [],
+          encoder,
+          (message) => ws.send(message),
+        )
+      }
+
+      const close = (): void => {
+        if (isClosed) {
+          return
+        }
+        isClosed = true
+        ws.close()
+        if (streamControllerRef.current) {
+          streamControllerRef.current.close()
+        }
+      }
+
+      const waitForStream = createWaitForStreamFunction(
+        streamControllerRef,
+        streamResolverRef,
+      )
+      processQueueAfterStreamReady(
+        waitForStream,
+        streamControllerRef.current,
+        messageQueue,
+      )
+
+      return {
+        stream: createStreamGenerator(stream),
+        send,
+        close,
+      }
+    },
+
+    startDuplex(
+      duplexOptions?: DuplexOptions<RouterType>,
+    ): BidirectionalConnection<RouterType> {
+      const {
+        defineClientActions: maybeClientActions,
+        files = [],
+      } = duplexOptions ?? {}
+
+      const clientActions = {
+        ...defineClientActions,
+        ...maybeClientActions,
+      }
+      if (!halfDuplexUrl) {
+        throwClientError(
+          new Error('halfDuplexUrl is required'),
+        )
+      }
+
+      const url = new URL(halfDuplexUrl!)
+      const encoder = new TextEncoder()
+      let isClosed = false
+      let requestController:
+        | ReadableStreamDefaultController<unknown>
+        | undefined
+      let responseReader: ReadableStreamDefaultReader<Uint8Array> | null =
+        null
+
+      const messageQueue: ResultForWithActionResult<
+        RouterType,
+        ParamsIt<RouterType>
+      >[] = []
+      const streamControllerRef: {
+        current: ReadableStreamDefaultController<
+          ResultForWithActionResult<
+            RouterType,
+            ParamsIt<RouterType>
+          >
+        > | null
+      } = { current: null }
+      const streamResolverRef: {
+        current: (() => void) | null
+      } = { current: null }
+
+      const stream = readable<
+        ResultForWithActionResult<
+          RouterType,
+          ParamsIt<RouterType>
+        >
+      >({
+        start(controller) {
+          streamControllerRef.current = controller
+          if (streamResolverRef.current) {
+            streamResolverRef.current()
+          }
+        },
+      })
+
+      const readableStream = readable({
+        async start(controller) {
+          requestController = controller
+          await sendInitialParams(
+            {} as ParamsIt<RouterType>,
+            files,
+            encoder,
+            (message) =>
+              requestController?.enqueue(message),
+          )
+        },
+      })
+
+      const processMessage = async (
+        item: StreamMessage,
+      ): Promise<void> => {
+        if (isClosed) {
+          return
+        }
+        if (
+          await handleClientActionCall(
+            item,
+            clientActions as Record<
+              string,
+              (params: unknown) => Promise<unknown>
+            >,
+            encoder,
+            (message) => {
+              if (!requestController) {
+                throwClientError(
+                  new Error('Controller is not available'),
+                )
+              }
+              // TypeScript: requestController is defined after the check above
+              requestController!.enqueue(message)
+            },
+            state.onError,
+          )
+        ) {
+          return
+        }
+
+        const result =
+          streamMessageToResult<ParamsIt<RouterType>>(item)
+        if (result) {
+          if (streamControllerRef.current) {
+            streamControllerRef.current.enqueue(result)
+          } else {
+            messageQueue.push(result)
+          }
+        }
+      }
+
+      const startReading = async (): Promise<void> => {
+        const headers = new Headers(state.defaultHeaders)
+        const response = await fetch(url, {
+          method: 'POST',
+          body: readableStream,
+          headers,
+        })
+
+        const reader = response.body?.getReader()
+        if (!reader) {
+          throwClientError(
+            new Error('Reader is not available'),
+          )
+        }
+        responseReader =
+          reader as ReadableStreamDefaultReader<Uint8Array>
+        const typedReader =
+          reader as ReadableStreamDefaultReader<Uint8Array>
+
+        const parsedStream =
+          parseStreamResponse(typedReader)
+        for await (const item of parsedStream) {
+          if (isClosed) {
+            break
+          }
+          await processMessage(item)
+        }
+      }
+
+      startReading().catch((error) => {
+        if (streamControllerRef.current && !isClosed) {
+          streamControllerRef.current.error(error)
+        }
+      })
+
+      const send = async <
+        Params extends ParamsIt<RouterType>,
+      >(
+        sendParams: Params,
+      ): Promise<void> => {
+        if (isClosed || !requestController) {
+          throwClientError(
+            new Error('Connection is closed'),
+          )
+        }
+        await sendInitialParams(
+          sendParams,
+          [],
+          encoder,
+          (message) => requestController?.enqueue(message),
+        )
+      }
+
+      const close = (): void => {
+        if (isClosed) {
+          return
+        }
+        isClosed = true
+        if (requestController) {
+          ;(
+            requestController as { close: () => void }
+          ).close()
+        }
+        if (responseReader) {
+          responseReader.cancel()
+        }
+        if (streamControllerRef.current) {
+          streamControllerRef.current.close()
+        }
+      }
+
+      const waitForStream = createWaitForStreamFunction(
+        streamControllerRef,
+        streamResolverRef,
+      )
+      processQueueAfterStreamReady(
+        waitForStream,
+        streamControllerRef.current,
+        messageQueue,
+      )
+
+      return {
+        stream: createStreamGenerator(stream),
+        send,
+        close,
       }
     },
   }

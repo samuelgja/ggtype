@@ -4,6 +4,20 @@ import type {
 } from '../router.client.types'
 import type { Router } from '../router.type'
 
+function stringifyParams(params: unknown): string {
+  // Convert undefined to null for optional params
+  const serialized = JSON.stringify(
+    params,
+    (_key, value) => {
+      if (value === undefined) {
+        return null
+      }
+      return value
+    },
+  )
+  return serialized ?? 'null'
+}
+
 export async function handleHttpClient<
   RouterType extends Router,
   Params extends ParamsIt<RouterType>,
@@ -11,19 +25,40 @@ export async function handleHttpClient<
   httpURL: string | URL,
   params: Params,
   fetchOptions?: FetchOptions<RouterType>,
+  defaultHeaders?: Headers,
 ) {
-  const { files, method = 'GET' } = fetchOptions || {}
+  const { files, method } = fetchOptions ?? {}
+  const hasFiles = Boolean(files?.length)
+  const resolvedMethod =
+    method ?? (hasFiles ? 'POST' : 'GET')
+  const serializedParams = stringifyParams(params)
+
+  const buildHeaders = (
+    shouldSetJsonContentType: boolean,
+  ): Headers => {
+    const headers = new Headers(defaultHeaders)
+    if (
+      shouldSetJsonContentType &&
+      !headers.has('Content-Type')
+    ) {
+      headers.set('Content-Type', 'application/json')
+    }
+    return headers
+  }
 
   let request: Request | undefined
-  switch (method) {
+  switch (resolvedMethod) {
     case 'GET': {
+      if (hasFiles) {
+        throw new Error(
+          'GET requests cannot include files. Use POST instead.',
+        )
+      }
       const url = new URL(httpURL)
-      url.searchParams.set('q', JSON.stringify(params))
+      url.searchParams.set('q', serializedParams)
       request = new Request(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: resolvedMethod,
+        headers: buildHeaders(true),
       })
       break
     }
@@ -31,24 +66,32 @@ export async function handleHttpClient<
     case 'DELETE':
     case 'PATCH':
     case 'POST': {
-      if (files?.length) {
+      if (hasFiles) {
         const formData = new FormData()
-        for (const file of files) {
+        for (const file of files ?? []) {
           formData.append('file', file)
         }
         const url = new URL(httpURL)
-        url.searchParams.set('q', JSON.stringify(params))
+        url.searchParams.set('q', serializedParams)
         request = new Request(url, {
-          method,
+          method: resolvedMethod,
           body: formData,
+          headers: buildHeaders(false),
         })
       } else {
+        const headers = buildHeaders(true)
         request = new Request(httpURL, {
-          method,
-          body: JSON.stringify(params),
+          method: resolvedMethod,
+          body: serializedParams,
+          headers,
         })
       }
       break
+    }
+    default: {
+      throw new Error(
+        `Unsupported HTTP method: ${resolvedMethod}`,
+      )
     }
   }
 

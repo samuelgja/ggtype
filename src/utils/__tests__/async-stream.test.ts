@@ -1,9 +1,10 @@
 import { AsyncStream } from '../async-stream'
+import { readable } from '../readable'
 
 describe('async-stream', () => {
   it('should test async stream', async () => {
     const count = 10
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         for (let index = 0; index < count; index++) {
           controlled.enqueue(index)
@@ -18,7 +19,7 @@ describe('async-stream', () => {
 
   it('should iterate through all values', async () => {
     const count = 10
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         for (let index = 0; index < count; index++) {
           controlled.enqueue(index)
@@ -39,7 +40,7 @@ describe('async-stream', () => {
   })
 
   it('should handle empty stream', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         controlled.close()
       },
@@ -56,7 +57,7 @@ describe('async-stream', () => {
   })
 
   it('should support manual iteration with next()', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         controlled.enqueue(1)
         controlled.enqueue(2)
@@ -86,7 +87,7 @@ describe('async-stream', () => {
   })
 
   it('should handle errors during iteration', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       async start(controlled) {
         controlled.enqueue(1)
         controlled.enqueue(2)
@@ -118,7 +119,7 @@ describe('async-stream', () => {
   })
 
   it('should stop and throw on error', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       async start(controlled) {
         controlled.error(new Error('test error'))
       },
@@ -175,7 +176,7 @@ describe('async-stream', () => {
   })
 
   it('should handle disposal when already disposed', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         controlled.close()
       },
@@ -248,7 +249,7 @@ describe('async-stream', () => {
 
   it('should handle large streams', async () => {
     const count = 1000
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         for (let index = 0; index < count; index++) {
           controlled.enqueue(index)
@@ -270,7 +271,7 @@ describe('async-stream', () => {
   })
 
   it('should handle partial consumption with disposal', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         for (let index = 0; index < 10; index++) {
           controlled.enqueue(index)
@@ -302,7 +303,7 @@ describe('async-stream', () => {
   })
 
   it('should handle string values', async () => {
-    const stream = new ReadableStream<string>({
+    const stream = readable<string>({
       start(controlled) {
         controlled.enqueue('hello')
         controlled.enqueue('world')
@@ -327,7 +328,7 @@ describe('async-stream', () => {
       readonly name: string
     }
 
-    const stream = new ReadableStream<TestObject>({
+    const stream = readable<TestObject>({
       start(controlled) {
         controlled.enqueue({ id: 1, name: 'first' })
         controlled.enqueue({ id: 2, name: 'second' })
@@ -348,7 +349,7 @@ describe('async-stream', () => {
   })
 
   it('should not allow multiple concurrent iterations', async () => {
-    const stream = new ReadableStream<number>({
+    const stream = readable<number>({
       start(controlled) {
         controlled.enqueue(1)
         controlled.enqueue(2)

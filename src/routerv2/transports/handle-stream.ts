@@ -1,5 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
+/* eslint-disable prefer-destructuring */
 import {
   fromArrayBuffer,
   ID_LENGTH,
@@ -8,6 +7,7 @@ import {
 } from '../../utils/array-buffer-handler'
 import type { AsyncStream } from '../../utils/async-stream'
 import { isStream } from '../../utils/is'
+import { readable } from '../../utils/readable'
 import { JSONL } from '../../utils/stream-helpers'
 import {
   StreamMessageType,
@@ -29,6 +29,121 @@ interface Options {
  * - File result: JSON header + raw [ID (ID_LENGTH) + file bytes]
  * - Async stream: JSONL per item
  */
+
+async function handleFileStreamResponse(
+  file: File,
+  actionName: string,
+  id: string,
+  type: StreamMessageType,
+  encoder: TextEncoder,
+  stringify: (message: unknown) => string,
+  send: (message: Uint8Array) => void,
+): Promise<void> {
+  const message: StreamMessage = {
+    action: actionName,
+    id,
+    status: 'ok',
+    withFile: true,
+    fileSize: file.size,
+    type,
+    isLast: true,
+  }
+
+  const rawMessage = stringify(message)
+  const encodedMessage = encoder.encode(rawMessage)
+
+  const fileBufferWithId = await toArrayBuffer(id, file)
+
+  // Send JSON header, then [ID + file bytes]
+  send(encodedMessage)
+  send(new Uint8Array(fileBufferWithId))
+}
+
+async function handleAsyncStreamResponse(
+  asyncStream: AsyncStream<unknown>,
+  actionName: string,
+  id: string,
+  type: StreamMessageType,
+  encoder: TextEncoder,
+  stringify: (message: unknown) => string,
+  send: (message: Uint8Array) => void,
+): Promise<void> {
+  const iterator = asyncStream[Symbol.asyncIterator]()
+  let previousItem: unknown | null = null
+  let done = false
+
+  while (!done) {
+    const result = await iterator.next()
+    done = result.done ?? false
+
+    if (!done && result.value !== undefined) {
+      if (previousItem !== null) {
+        // Send previous item (not the last one) - recursively call handleStreamResponse
+        // but we need to mark it as not last
+        const message: StreamMessage = {
+          action: actionName,
+          id,
+          status: 'ok',
+          data: previousItem,
+          type,
+          isLast: false,
+        }
+        const rawMessage = stringify(message)
+        const encodedMessage = encoder.encode(rawMessage)
+        send(encodedMessage)
+      }
+      previousItem = result.value
+    } else if (done && previousItem !== null) {
+      // This is the last item, mark it with isLast: true
+      const lastItemMessage: StreamMessage = {
+        action: actionName,
+        id,
+        status: 'ok',
+        data: previousItem,
+        type,
+        isLast: true,
+      }
+      const rawMessage = stringify(lastItemMessage)
+      const encodedMessage = encoder.encode(rawMessage)
+      send(encodedMessage)
+    } else if (done && previousItem === null) {
+      // Empty stream, send a last message
+      const lastMessage: StreamMessage = {
+        action: actionName,
+        id,
+        status: 'ok',
+        type,
+        isLast: true,
+      }
+      const rawMessage = stringify(lastMessage)
+      const encodedMessage = encoder.encode(rawMessage)
+      send(encodedMessage)
+    }
+  }
+}
+
+function handleNormalStreamResponse(
+  actionResult: unknown,
+  actionName: string,
+  id: string,
+  type: StreamMessageType,
+  encoder: TextEncoder,
+  stringify: (message: unknown) => string,
+  send: (message: Uint8Array) => void,
+): void {
+  const message: StreamMessage = {
+    action: actionName,
+    id,
+    status: 'ok',
+    data: actionResult,
+    type,
+    isLast: true,
+  }
+  const rawMessage = stringify(message)
+  const encodedMessage = encoder.encode(rawMessage)
+  send(encodedMessage)
+}
+
 export async function handleStreamResponse(
   options: Options,
 ) {
@@ -45,94 +160,42 @@ export async function handleStreamResponse(
 
   // 1) File result
   if (isFile(actionResult)) {
-    const file = actionResult as File
-    const message: StreamMessage = {
-      action: actionName,
+    await handleFileStreamResponse(
+      actionResult as File,
+      actionName,
       id,
-      status: 'ok',
-      withFile: true,
-      fileSize: file.size,
       type,
-      isLast: true,
-    }
-
-    const rawMessage = stringify(message)
-    const encodedMessage = encoder.encode(rawMessage)
-
-    const fileBufferWithId = await toArrayBuffer(id, file)
-
-    // Send JSON header, then [ID + file bytes]
-    send(encodedMessage)
-    send(new Uint8Array(fileBufferWithId))
+      encoder,
+      stringify,
+      send,
+    )
     return
   }
 
   // 2) Async stream result
   if (isStream(actionResult)) {
-    const asyncStream = actionResult as AsyncStream<unknown>
-    const iterator = asyncStream[Symbol.asyncIterator]()
-    let previousItem: unknown | null = null
-    let done = false
-
-    while (!done) {
-      const result = await iterator.next()
-      done = result.done ?? false
-
-      if (!done && result.value !== undefined) {
-        if (previousItem !== null) {
-          // Send previous item (not the last one)
-          await handleStreamResponse({
-            send,
-            actionResult: previousItem,
-            actionName,
-            id,
-            encoder,
-            type,
-          })
-        }
-        previousItem = result.value
-      } else if (done && previousItem !== null) {
-        // This is the last item, mark it with isLast: true
-        const lastItemMessage: StreamMessage = {
-          action: actionName,
-          id,
-          status: 'ok',
-          data: previousItem,
-          type,
-          isLast: true,
-        }
-        const rawMessage = stringify(lastItemMessage)
-        const encodedMessage = encoder.encode(rawMessage)
-        send(encodedMessage)
-      } else if (done && previousItem === null) {
-        // Empty stream, send a last message
-        const lastMessage: StreamMessage = {
-          action: actionName,
-          id,
-          status: 'ok',
-          type,
-          isLast: true,
-        }
-        const rawMessage = stringify(lastMessage)
-        const encodedMessage = encoder.encode(rawMessage)
-        send(encodedMessage)
-      }
-    }
+    await handleAsyncStreamResponse(
+      actionResult as AsyncStream<unknown>,
+      actionName,
+      id,
+      type,
+      encoder,
+      stringify,
+      send,
+    )
     return
   }
 
   // 3) Normal result
-  const message: StreamMessage = {
-    action: actionName,
+  handleNormalStreamResponse(
+    actionResult,
+    actionName,
     id,
-    status: 'ok',
-    data: actionResult,
     type,
-    isLast: true,
-  }
-  const rawMessage = stringify(message)
-  const encodedMessage = encoder.encode(rawMessage)
-  send(encodedMessage)
+    encoder,
+    stringify,
+    send,
+  )
 }
 
 type FileModeState = {
@@ -159,6 +222,220 @@ function concatBuffers(
  * - Reads newline-delimited JSON headers
  * - For withFile: true messages, enters "file mode" and consumes raw bytes for [ID + file]
  */
+
+function processFileMode(
+  currentPending: Uint8Array,
+  currentFileMode: FileModeState,
+  onMessage: (message: StreamMessage) => void,
+): Promise<{
+  pending: Uint8Array
+  fileMode: FileModeState | null
+  consumed: boolean
+}> {
+  return (async () => {
+    if (currentPending.length === 0) {
+      return {
+        pending: currentPending,
+        fileMode: currentFileMode,
+        consumed: false,
+      }
+    }
+
+    const toConsume = Math.min(
+      currentFileMode.remaining,
+      currentPending.length,
+    )
+    const part = currentPending.slice(0, toConsume)
+    const newPending = currentPending.subarray(toConsume)
+
+    currentFileMode.chunks.push(part)
+    currentFileMode.remaining -= toConsume
+
+    // Need more bytes
+    if (currentFileMode.remaining > 0) {
+      return {
+        pending: newPending,
+        fileMode: currentFileMode,
+        consumed: true,
+      }
+    }
+
+    // We have full [ID + file] payload
+    let totalLength = 0
+    for (const chunk of currentFileMode.chunks) {
+      totalLength += chunk.length
+    }
+    const merged = new Uint8Array(totalLength)
+    let offset = 0
+    for (const chunk of currentFileMode.chunks) {
+      merged.set(chunk, offset)
+      offset += chunk.length
+    }
+
+    const arrayBuffer = merged.buffer.slice(
+      merged.byteOffset,
+      merged.byteOffset + merged.byteLength,
+    )
+    const { id, input } = await fromArrayBuffer(arrayBuffer)
+
+    const result: StreamMessage = {
+      ...currentFileMode.header,
+      id,
+      file: input, // Blob
+    }
+
+    onMessage(result)
+    return {
+      pending: newPending,
+      fileMode: null,
+      consumed: true,
+    }
+  })()
+}
+
+function processJsonMode(
+  currentPending: Uint8Array,
+  textDecoder: TextDecoder,
+  NEWLINE: number,
+  onMessage: (message: StreamMessage) => void,
+  onError: (error: Error) => void,
+): {
+  pending: Uint8Array
+  fileMode: FileModeState | null
+  hasError: boolean
+} {
+  const newlineIndex = currentPending.indexOf(NEWLINE)
+  if (newlineIndex === -1) {
+    // no full line yet
+    return {
+      pending: currentPending,
+      fileMode: null,
+      hasError: false,
+    }
+  }
+
+  const lineBytes = currentPending.slice(0, newlineIndex)
+  const newPending = currentPending.subarray(
+    newlineIndex + 1,
+  )
+
+  const line = textDecoder.decode(lineBytes).trim()
+  if (!line) {
+    return {
+      pending: newPending,
+      fileMode: null,
+      hasError: false,
+    }
+  }
+
+  let message: StreamMessage
+  try {
+    message = JSON.parse(line) as StreamMessage
+  } catch (error) {
+    onError(
+      new Error(
+        `Failed to parse stream message: ${
+          (error as Error).message
+        }`,
+      ),
+    )
+    return {
+      pending: newPending,
+      fileMode: null,
+      hasError: true,
+    }
+  }
+
+  // Normal JSON-only message
+  if (!message.withFile) {
+    onMessage(message)
+    return {
+      pending: newPending,
+      fileMode: null,
+      hasError: false,
+    }
+  }
+
+  if (typeof message.fileSize !== 'number') {
+    onError(
+      new Error(
+        'Stream message with file must contain fileSize',
+      ),
+    )
+    return {
+      pending: newPending,
+      fileMode: null,
+      hasError: true,
+    }
+  }
+
+  // Enter file mode: expect [ID_LENGTH + fileSize] raw bytes
+  const fileMode: FileModeState = {
+    header: message as StreamMessage & {
+      fileSize: number
+    },
+    remaining: message.fileSize + ID_LENGTH,
+    chunks: [],
+  }
+
+  return {
+    pending: newPending,
+    fileMode,
+    hasError: false,
+  }
+}
+
+function processAllJsonMessages(
+  currentPending: Uint8Array,
+  textDecoder: TextDecoder,
+  NEWLINE: number,
+  onMessage: (message: StreamMessage) => void,
+  onError: (error: Error) => void,
+): {
+  pending: Uint8Array
+  fileMode: FileModeState | null
+  hasError: boolean
+} {
+  let pending = currentPending
+
+  while (true) {
+    const previousPendingLength = pending.length
+    const jsonResult = processJsonMode(
+      pending,
+      textDecoder,
+      NEWLINE,
+      onMessage,
+      onError,
+    )
+    pending = jsonResult.pending
+    if (jsonResult.hasError) {
+      return {
+        pending,
+        fileMode: null,
+        hasError: true,
+      }
+    }
+    if (jsonResult.fileMode) {
+      return {
+        pending,
+        fileMode: jsonResult.fileMode,
+        hasError: false,
+      }
+    }
+    // Check if we processed a message and if there are more newlines
+    const processedMessage =
+      pending.length < previousPendingLength
+    const hasMoreNewlines = pending.includes(NEWLINE)
+    if (!processedMessage || !hasMoreNewlines) {
+      return {
+        pending,
+        fileMode: null,
+        hasError: false,
+      }
+    }
+  }
+}
+
 async function parseBufferChunk(
   buffer: Uint8Array,
   textDecoder: TextDecoder,
@@ -178,117 +455,41 @@ async function parseBufferChunk(
   while (true) {
     // 1) File mode – collect raw bytes for [ID + file]
     if (currentFileMode) {
-      if (currentPending.length === 0) {
+      const fileResult = await processFileMode(
+        currentPending,
+        currentFileMode,
+        onMessage,
+      )
+      currentPending = fileResult.pending
+      currentFileMode = fileResult.fileMode
+      if (!fileResult.consumed) {
         break
       }
-
-      const toConsume = Math.min(
-        currentFileMode.remaining,
-        currentPending.length,
-      )
-      const part = currentPending.slice(0, toConsume)
-      currentPending = currentPending.subarray(toConsume)
-
-      currentFileMode.chunks.push(part)
-      currentFileMode.remaining -= toConsume
-
-      // Need more bytes
-      if (currentFileMode.remaining > 0) {
-        continue
-      }
-
-      // We have full [ID + file] payload
-      let totalLength = 0
-      for (const chunk of currentFileMode.chunks) {
-        totalLength += chunk.length
-      }
-      const merged = new Uint8Array(totalLength)
-      let offset = 0
-      for (const chunk of currentFileMode.chunks) {
-        merged.set(chunk, offset)
-        offset += chunk.length
-      }
-
-      const arrayBuffer = merged.buffer.slice(
-        merged.byteOffset,
-        merged.byteOffset + merged.byteLength,
-      )
-      const { id, input } =
-        await fromArrayBuffer(arrayBuffer)
-
-      const result: StreamMessage = {
-        ...currentFileMode.header,
-        id,
-        file: input, // Blob
-      }
-
-      onMessage(result)
-      currentFileMode = null
       continue
     }
 
     // 2) JSON mode – read newline-delimited JSON
-    const newlineIndex = currentPending.indexOf(NEWLINE)
-    if (newlineIndex === -1) {
-      // no full line yet
-      break
-    }
-
-    const lineBytes = currentPending.slice(0, newlineIndex)
-    currentPending = currentPending.subarray(
-      newlineIndex + 1,
+    const jsonResult = processAllJsonMessages(
+      currentPending,
+      textDecoder,
+      NEWLINE,
+      onMessage,
+      onError,
     )
-
-    const line = textDecoder.decode(lineBytes).trim()
-    if (!line) {
-      continue
-    }
-
-    let message: StreamMessage
-    try {
-      message = JSON.parse(line) as StreamMessage
-    } catch (error) {
-      onError(
-        new Error(
-          `Failed to parse stream message: ${
-            (error as Error).message
-          }`,
-        ),
-      )
+    currentPending = jsonResult.pending
+    if (jsonResult.hasError) {
       return {
         pending: currentPending,
         fileMode: currentFileMode,
         hasError: true,
       }
     }
-
-    // Normal JSON-only message
-    if (!message.withFile) {
-      onMessage(message)
+    if (jsonResult.fileMode) {
+      currentFileMode = jsonResult.fileMode
       continue
     }
-
-    if (typeof message.fileSize !== 'number') {
-      onError(
-        new Error(
-          'Stream message with file must contain fileSize',
-        ),
-      )
-      return {
-        pending: currentPending,
-        fileMode: currentFileMode,
-        hasError: true,
-      }
-    }
-
-    // Enter file mode: expect [ID_LENGTH + fileSize] raw bytes
-    currentFileMode = {
-      header: message as StreamMessage & {
-        fileSize: number
-      },
-      remaining: message.fileSize + ID_LENGTH,
-      chunks: [],
-    }
+    // No more data to process
+    break
   }
 
   return {
@@ -450,7 +651,7 @@ export class Parser {
 export function parseStreamResponse(
   reader: ReadableStreamDefaultReader<Uint8Array>,
 ): AsyncIterable<StreamMessage> {
-  return new ReadableStream<StreamMessage>({
+  return readable<StreamMessage>({
     async start(controller) {
       const parser = new Parser()
 
