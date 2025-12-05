@@ -183,7 +183,7 @@ describe('router', () => {
     },
   })
   type Router = typeof router
-  const PORT = 10
+  const PORT = 3000
   const server = new Elysia()
     .get('/http', ({ request }) => {
       return router.onRequest({
@@ -234,8 +234,16 @@ describe('router', () => {
     })
     .listen(PORT)
 
-  afterAll(() => {
-    server.stop()
+  afterAll(async () => {
+    router.dispose()
+    try {
+      await Promise.race([
+        server.stop(),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ])
+    } catch {
+      // Ignore errors when stopping server
+    }
   })
 
   // ==========================================================================

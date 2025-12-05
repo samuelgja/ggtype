@@ -89,7 +89,15 @@ describe('Router Client Proxy', () => {
   })
 
   afterAll(async () => {
-    await server.stop()
+    router.dispose()
+    try {
+      await Promise.race([
+        server.stop(),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ])
+    } catch {
+      // Ignore errors when stopping server
+    }
   })
 
   const client = createRouterClient<Router>({

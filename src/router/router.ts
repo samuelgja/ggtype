@@ -95,5 +95,8 @@ export function createRouter<
     },
 
     onWebsocketCleanUp() {},
+    dispose() {
+      pendingClientActionCalls.dispose()
+    },
   }
 }

@@ -445,6 +445,10 @@ export interface Router<
    * Cleanup function called when WebSocket connection closes
    */
   readonly onWebsocketCleanUp: () => void
+  /**
+   * Disposes of the router and cleans up internal resources (e.g., intervals)
+   */
+  readonly dispose: () => void
 }
 
 /**
