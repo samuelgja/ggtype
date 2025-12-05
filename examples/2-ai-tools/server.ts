@@ -137,3 +137,4 @@ Bun.serve({
 })
 
 console.log('AI Server running on http://localhost:4001')
+

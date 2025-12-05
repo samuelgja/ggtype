@@ -18,3 +18,4 @@ bun run examples/2-ai-tools/client.ts
 - Client action validation: Client responses are validated
 - Type safety on both sides
 - Real-world AI agent pattern where server requests tools from client
+

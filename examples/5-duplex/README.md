@@ -19,3 +19,4 @@ bun run examples/5-duplex/client.ts
 - Server calling client actions during streaming
 - Real-time collaborative features
 - Using startDuplex for bidirectional connections
+

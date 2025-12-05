@@ -18,3 +18,4 @@ bun run examples/3-streaming/client.ts
 - Real-time data updates
 - Using streamActions proxy for automatic type narrowing
 - Handling streaming results
+

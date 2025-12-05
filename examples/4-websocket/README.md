@@ -19,3 +19,4 @@ bun run examples/4-websocket/client.ts
 - Server calling client actions with validation
 - Real-time chat-like communication
 - Using startWebsocket for bidirectional connections
+
