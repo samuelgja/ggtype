@@ -9,6 +9,7 @@ import {
   ErrorWithCode,
   ValidationError,
 } from '../../utils/errors'
+import { getTestPort } from './test-utils'
 
 const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
@@ -183,66 +184,74 @@ describe('router', () => {
     },
   })
   type Router = typeof router
-  const PORT = 3000
-  const server = new Elysia()
-    .get('/http', ({ request }) => {
-      return router.onRequest({
-        request,
-        ctx: {},
-        type: 'http',
+  const PORT = getTestPort()
+  let server: ReturnType<typeof Elysia.prototype.listen>
+
+  beforeAll(async () => {
+    server = new Elysia()
+      .get('/http', ({ request }) => {
+        return router.onRequest({
+          request,
+          ctx: {},
+          type: 'http',
+        })
       })
-    })
-    .post('/http', ({ request }) => {
-      return router.onRequest({
-        request,
-        ctx: {},
-        type: 'http',
+      .post('/http', ({ request }) => {
+        return router.onRequest({
+          request,
+          ctx: {},
+          type: 'http',
+        })
       })
-    })
-    .get('/stream', ({ request }) => {
-      return router.onRequest({
-        request,
-        ctx: {},
-        type: 'stream',
+      .get('/stream', ({ request }) => {
+        return router.onRequest({
+          request,
+          ctx: {},
+          type: 'stream',
+        })
       })
-    })
-    .post('/stream', ({ request }) => {
-      return router.onRequest({
-        request,
-        ctx: {},
-        type: 'stream',
+      .post('/stream', ({ request }) => {
+        return router.onRequest({
+          request,
+          ctx: {},
+          type: 'stream',
+        })
       })
-    })
-    .post('/duplex', ({ request }) => {
-      return router.onRequest({
-        request,
-        ctx: {},
-        type: 'duplex',
-        onError: (error) => {
-          return error
+      .post('/duplex', ({ request }) => {
+        return router.onRequest({
+          request,
+          ctx: {},
+          type: 'duplex',
+          onError: (error) => {
+            return error
+          },
+        })
+      })
+      .ws('/ws', {
+        message(ws, message) {
+          return router.onWebSocketMessage({
+            ws: ws.raw as ServerWebSocket<unknown>,
+            message,
+            ctx: {},
+          })
         },
       })
-    })
-    .ws('/ws', {
-      message(ws, message) {
-        return router.onWebSocketMessage({
-          ws: ws.raw as ServerWebSocket<unknown>,
-          message,
-          ctx: {},
-        })
-      },
-    })
-    .listen(PORT)
+      .listen(PORT)
+    // Wait a bit for server to be ready
+    await new Promise((resolve) => setTimeout(resolve, 10))
+  })
 
   afterAll(async () => {
     router.dispose()
-    try {
-      await Promise.race([
-        server.stop(),
-        new Promise((resolve) => setTimeout(resolve, 1000)),
-      ])
-    } catch {
-      // Ignore errors when stopping server
+    if (server) {
+      try {
+        await Promise.race([
+          server.stop(),
+          new Promise((resolve) => setTimeout(resolve, 40)),
+        ])
+      } catch {
+        // Ignore errors when stopping server
+      }
     }
   })
 

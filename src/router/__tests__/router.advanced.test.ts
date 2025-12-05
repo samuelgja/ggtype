@@ -10,7 +10,9 @@ import { createRouterClient } from '../router.client'
 import { action } from '../../action/action'
 import { m } from '../..'
 import { Elysia } from 'elysia'
-const PORT = 3001
+import { getTestPort } from './test-utils'
+
+const PORT = getTestPort()
 
 describe('Router Advanced Tests', () => {
   const router = createRouter({

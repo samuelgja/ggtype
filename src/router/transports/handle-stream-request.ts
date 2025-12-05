@@ -57,17 +57,20 @@ export async function handleStreamRequest(
             })
           } catch (rawError) {
             const error = handleError(onError, rawError)
-            const message: StreamMessage = {
-              action: actionName,
-              id,
-              status: 'error',
-              error: error?.error,
-              type: StreamMessageType.SERVER_ACTION_RESULT,
+            if (error) {
+              const message: StreamMessage = {
+                action: actionName,
+                id,
+                status: 'error',
+                error: error.error,
+                type: StreamMessageType.SERVER_ACTION_RESULT,
+                isLast: true,
+              }
+              const rawMessage = JSONL(message)
+              const encodedMessage =
+                encoder.encode(rawMessage)
+              controller.enqueue(encodedMessage)
             }
-            const rawMessage = JSONL(message)
-            const encodedMessage =
-              encoder.encode(rawMessage)
-            controller.enqueue(encodedMessage)
             closeController()
           }
         }

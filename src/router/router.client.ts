@@ -1241,16 +1241,17 @@ function createFetchActionsProxy<
         if (typeof actionName !== 'string') {
           return
         }
-        return (
+        return async (
           params: unknown,
           options?: FetchOptions<RouterType>,
         ) => {
-          return executeFetch(
+          const wrapped = await executeFetch(
             {
               [actionName]: params,
             } as unknown as ParamsIt<RouterType>,
             options,
           )
+          return wrapped[actionName]
         }
       },
     },
@@ -1281,12 +1282,14 @@ function createStreamActionsProxy<
           params: unknown,
           options?: FetchOptions<RouterType>,
         ) {
-          yield* streamFn(
+          for await (const wrapped of streamFn(
             {
               [actionName]: params,
             } as unknown as ParamsIt<RouterType>,
             options,
-          )
+          )) {
+            yield wrapped[actionName]
+          }
         }
       },
     },
@@ -1317,12 +1320,14 @@ function createDuplexActionsProxy<
           params: unknown,
           options?: DuplexOptions<RouterType>,
         ) {
-          yield* duplexFn(
+          for await (const wrapped of duplexFn(
             {
               [actionName]: params,
             } as unknown as ParamsIt<RouterType>,
             options,
-          )
+          )) {
+            yield wrapped[actionName]
+          }
         }
       },
     },

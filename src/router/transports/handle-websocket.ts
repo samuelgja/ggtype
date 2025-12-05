@@ -139,17 +139,19 @@ async function executeServerAction(
       onError ?? NOOP_ON_ERROR,
       rawError,
     )
-    const newMessage: StreamMessage = {
-      action: item.action,
-      id: item.id,
-      status: 'error',
-      error: error?.error,
-      type: StreamMessageType.SERVER_ACTION_RESULT,
-      isLast: true,
+    if (error) {
+      const newMessage: StreamMessage = {
+        action: item.action,
+        id: item.id,
+        status: 'error',
+        error: error.error,
+        type: StreamMessageType.SERVER_ACTION_RESULT,
+        isLast: true,
+      }
+      const rawMessage = JSONL(newMessage)
+      const encodedMessage = encoder.encode(rawMessage)
+      ws.send(encodedMessage)
     }
-    const rawMessage = JSONL(newMessage)
-    const encodedMessage = encoder.encode(rawMessage)
-    ws.send(encodedMessage)
   }
 }
 

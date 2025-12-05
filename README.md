@@ -55,34 +55,50 @@ const client = createRouterClient<Router>({
 // Call the action using proxy (recommended - automatic type narrowing)
 const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result.getUser)) {
-  console.log('User:', result.getUser.data) // Fully typed! Result only has getUser
+if (isSuccess(result)) {
+  console.log('User:', result.data) // Fully typed! Direct ActionResult
 }
 ```
 
 **That's it!** You get automatic validation, full TypeScript types, and a simple HTTP API.
 
+### 📚 Complete Examples
+
+For more comprehensive examples, check out the [`examples/`](./examples/) folder:
+
+- **[1. Hello World](./examples/1-hello-world/)** - Basic type-safe client-server communication
+- **[2. AI Tools](./examples/2-ai-tools/)** - Bidirectional RPC where server (AI) calls client actions (tools)
+- **[3. Streaming](./examples/3-streaming/)** - Server-to-client streaming with real-time updates
+- **[4. WebSocket](./examples/4-websocket/)** - Bidirectional WebSocket communication
+- **[5. Duplex](./examples/5-duplex/)** - Bidirectional duplex streaming over HTTP
+
+Each example includes runnable server and client code with detailed explanations.
+
 ### More Examples
 
 **Using proxy methods (recommended - automatic type narrowing):**
 ```typescript
-// Single action with narrowed type
+// Single action with direct ActionResult (not wrapped)
 const result = await client.fetchActions.getUser({ id: '1' })
-// result only has .getUser property, not other actions
+// result is ActionResult directly, not wrapped in { getUser: ActionResult }
+
+if (isSuccess(result)) {
+  console.log('User:', result.data) // Direct access to data
+}
 
 // Streaming with proxy
 for await (const item of client.streamActions.getUser({ id: '1' })) {
-  // item only has .getUser property
-  if (isSuccess(item.getUser)) {
-    console.log('User:', item.getUser.data)
+  // item is ActionResult directly
+  if (isSuccess(item)) {
+    console.log('User:', item.data)
   }
 }
 
 // Duplex streaming with proxy
 for await (const item of client.duplexActions.getUser({ id: '1' })) {
-  // item only has .getUser property
-  if (isSuccess(item.getUser)) {
-    console.log('User:', item.getUser.data)
+  // item is ActionResult directly
+  if (isSuccess(item)) {
+    console.log('User:', item.data)
   }
 }
 ```
@@ -106,13 +122,20 @@ if (isSuccess(results.getPosts)) {
 
 ## What is ggtype?
 
-ggtype is a library for building bidirectional communication between client and server with full type safety. All types are automatically shared between client and server, making it easy to build typed APIs where the server can call client actions and vice versa.
+ggtype is a high-performance TypeScript library for building **bidirectional RPC** between client and server with full type safety and automatic validation. 
+
+**Two Main Powers:**
+
+1. **Type-Safe API Communication** - Build REST-like APIs with automatic validation and full TypeScript inference
+2. **Bidirectional RPC with Validation** - Server can call client actions (and vice versa) with full type safety and validation on both sides
 
 **How it works:**
-- **Backend** defines `serverActions` and optionally `clientActions`
-- The server can call client actions on its own behalf (bidirectional RPC)
+- **Backend** defines `serverActions` (what clients can call) and optionally `clientActions` (what server can call on clients)
+- **Client** implements `clientActions` handlers
+- The server can call client actions during request processing (bidirectional RPC)
 - All types are automatically inferred and shared between client and server
-- Automatic validation ensures type safety at runtime
+- **Automatic validation** ensures type safety at runtime for both server→client and client→server calls
+- Validation errors are properly propagated with detailed error information
 
 ---
 
@@ -138,9 +161,9 @@ Everything is fully typed. Types are automatically shared between client and ser
 
 Parameters are validated automatically before your action runs. Invalid data throws `ValidationError` with detailed messages. Uses AJV for fast, efficient validation.
 
-### 🔄 Bidirectional RPC
+### 🔄 Bidirectional RPC with Validation
 
-Server can call client actions (like notifications, UI updates). Client can call server actions. Full bidirectional communication with type safety on both sides.
+**Server can call client actions** (like notifications, UI updates) with full type safety and validation. Client can call server actions. Full bidirectional communication with automatic validation on both sides - when the server calls a client action, the client's response is validated against the schema, ensuring type safety end-to-end.
 
 ### 📡 Streaming Support
 
@@ -231,19 +254,19 @@ for await (const result of stream) {
 }
 ```
 
-### Bidirectional RPC
+### Bidirectional RPC with Validation
 
-Server can call client actions (like notifications, UI updates):
+**The second main power of ggtype:** Server can call client actions (like notifications, UI updates) with full type safety and **automatic validation**. When the server calls a client action, the client's response is validated against the schema you define, ensuring type safety end-to-end.
 
 ```typescript
 // server.ts
 import { defineClientActionsSchema } from 'ggtype'
 
-// Define client actions schema
+// Define client actions schema with validation
 const clientActions = defineClientActionsSchema({
   showNotification: {
     params: m.object({ message: m.string() }),
-    return: m.object({ acknowledged: m.boolean() }),
+    return: m.object({ acknowledged: m.boolean() }), // Client response is validated!
   },
 })
 
@@ -252,7 +275,7 @@ type ClientActions = typeof clientActions
 
 const router = createRouter({
   serverActions: { getUser, createUser },
-  clientActions, // Enable bidirectional RPC
+  clientActions, // Enable bidirectional RPC with validation
 })
 
 // Server action calling client
@@ -261,9 +284,14 @@ const updateUser = action(userParams, async ({ params, clientActions }) => {
   
   // Call client action with type parameter for full type safety
   const { showNotification } = clientActions<ClientActions>()
-  await showNotification?.({
+  const result = await showNotification?.({
     message: 'User updated!',
   })
+  
+  // result is validated! If client returns wrong type, ValidationError is thrown
+  if (result?.status === 'ok') {
+    console.log('Client acknowledged:', result.data.acknowledged)
+  }
   
   return { success: true }
 })
@@ -272,15 +300,25 @@ const updateUser = action(userParams, async ({ params, clientActions }) => {
 ```typescript
 // client.ts
 const client = createRouterClient<Router>({
-  streamURL: 'http://localhost:3000',
+  streamURL: 'http://localhost:3000', // Use stream or websocket for bidirectional RPC
   defineClientActions: {
     showNotification: async (params) => {
+      // params is validated automatically (must be { message: string })
       alert(params.message) // Handle notification from server
+      
+      // Return value is validated against schema!
+      // Must return { acknowledged: boolean }
       return { acknowledged: true }
     },
   },
 })
 ```
+
+**Key Benefits:**
+- ✅ **Type Safety**: Full TypeScript inference on both sides
+- ✅ **Validation**: Client responses are validated against the schema
+- ✅ **Error Handling**: Validation errors are properly propagated
+- ✅ **Works with Stream/WebSocket/Duplex**: Bidirectional RPC requires persistent connections
 
 ### Advanced Capabilities
 
@@ -417,17 +455,17 @@ const client = createRouterClient<Router>({
 // Single action call with proxy (automatic type narrowing)
 const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result.getUser)) {
-  console.log('User:', result.getUser.data)
+if (isSuccess(result)) {
+  console.log('User:', result.data) // Direct ActionResult
 }
 
 // Streaming action with proxy
 const stream = client.streamActions.searchUsers({ query: 'john' })
 
 for await (const chunk of stream) {
-  // chunk only has .searchUsers property
-  if (isSuccess(chunk.searchUsers)) {
-    console.log('Result:', chunk.searchUsers.data)
+  // chunk is ActionResult directly
+  if (isSuccess(chunk)) {
+    console.log('Result:', chunk.data)
   }
 }
 ```
@@ -530,17 +568,17 @@ const client = createRouterClient<Router>({
 // Call server action with proxy (automatic type narrowing)
 const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result.getUser)) {
-  console.log('User:', result.getUser.data)
+if (isSuccess(result)) {
+  console.log('User:', result.data) // Direct ActionResult
 }
 
 // Stream updates with proxy
 const stream = client.streamActions.subscribeToUpdates({ userId: '1' })
 
 for await (const chunk of stream) {
-  // chunk only has .subscribeToUpdates property
-  if (isSuccess(chunk.subscribeToUpdates)) {
-    console.log('Update:', chunk.subscribeToUpdates.data)
+  // chunk is ActionResult directly
+  if (isSuccess(chunk)) {
+    console.log('Update:', chunk.data)
   }
 }
 ```
@@ -652,8 +690,8 @@ const client = createRouterClient<Router>({
 // Use the client the same way as the Bun example above
 const result = await client.fetchActions.getUser({ id: '1' })
 
-if (isSuccess(result.getUser)) {
-  console.log('User:', result.getUser.data)
+if (isSuccess(result)) {
+  console.log('User:', result.data) // Direct ActionResult
 }
 ```
 
@@ -750,8 +788,8 @@ const getFile = action(
 
 // Client: Receive file
 const result = await client.fetchActions.getFile({ id: '123' })
-if (isSuccess(result.getFile)) {
-  const file = result.getFile.data // File object
+if (isSuccess(result)) {
+  const file = result.data // File object (direct ActionResult)
   // Use the file (download, display, etc.)
   const url = URL.createObjectURL(file)
 }

@@ -249,11 +249,11 @@ type ActionProxy<
 > = (
   params: R['infer']['serverActions'][ActionName]['params'],
   options?: FetchOptions<R>,
-) => Promise<{
-  [K in ActionName]: ActionResult<
+) => Promise<
+  ActionResult<
     R['infer']['serverActions'][ActionName]['result']
   >
-}>
+>
 
 type StreamActionProxy<
   R extends Router<ServerActionsBase, ClientActionsBase>,
@@ -261,11 +261,11 @@ type StreamActionProxy<
 > = (
   params: R['infer']['serverActions'][ActionName]['params'],
   options?: FetchOptions<R>,
-) => AsyncGenerator<{
-  [K in ActionName]: ActionResult<
+) => AsyncGenerator<
+  ActionResult<
     R['infer']['serverActions'][ActionName]['result']
   >
-}>
+>
 
 type DuplexActionProxy<
   R extends Router<ServerActionsBase, ClientActionsBase>,
@@ -273,11 +273,11 @@ type DuplexActionProxy<
 > = (
   params: R['infer']['serverActions'][ActionName]['params'],
   options?: DuplexOptions<R>,
-) => AsyncGenerator<{
-  [K in ActionName]: ActionResult<
+) => AsyncGenerator<
+  ActionResult<
     R['infer']['serverActions'][ActionName]['result']
   >
-}>
+>
 
 export type FetchActionsProxyType<
   R extends Router<ServerActionsBase, ClientActionsBase>,

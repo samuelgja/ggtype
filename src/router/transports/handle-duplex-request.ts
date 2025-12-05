@@ -119,18 +119,20 @@ export async function handleDuplexRequest(
                 })
               } catch (rawError) {
                 const error = handleError(onError, rawError)
-                const message: StreamMessage = {
-                  action: actionName,
-                  id,
-                  status: 'error',
-                  error: error?.error,
-                  type: StreamMessageType.RESPONSE,
-                  isLast: true,
+                if (error) {
+                  const message: StreamMessage = {
+                    action: actionName,
+                    id,
+                    status: 'error',
+                    error: error.error,
+                    type: StreamMessageType.RESPONSE,
+                    isLast: true,
+                  }
+                  const rawMessage = JSONL(message)
+                  const encodedMessage =
+                    encoder.encode(rawMessage)
+                  controller.enqueue(encodedMessage)
                 }
-                const rawMessage = JSONL(message)
-                const encodedMessage =
-                  encoder.encode(rawMessage)
-                controller.enqueue(encodedMessage)
                 // Don't close immediately - let it close naturally after all responses
               }
             }

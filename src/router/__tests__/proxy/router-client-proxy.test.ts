@@ -10,8 +10,9 @@ import * as m from '../../../model'
 import { createRouter } from '../../router'
 import { createRouterClient } from '../../router.client'
 import { Elysia } from 'elysia'
+import { getTestPort } from '../test-utils'
 
-const PORT = 3010
+const PORT = getTestPort()
 
 describe('Router Client Proxy', () => {
   const router = createRouter({
@@ -117,40 +118,30 @@ describe('Router Client Proxy', () => {
       )
     })
 
-    it('should fetch getUser action and return only getUser in result', async () => {
+    it('should fetch getUser action and return ActionResult directly', async () => {
       const result = await client.fetchActions.getUser({
         id: 'test-123',
       })
 
       expect(result).toBeDefined()
-      expect(result.getUser).toBeDefined()
-      expect(result.getUser.status).toBe('ok')
-      expect(result.getUser.data).toEqual({
+      expect(result.status).toBe('ok')
+      expect(result.data).toEqual({
         id: 'test-123',
         name: 'User test-123',
       })
-
-      // Type check: result should only have getUser, not createUser
-      // TypeScript should error if trying to access createUser on getUser result
-      // result.createUser // This would cause a TypeScript error
     })
 
-    it('should fetch createUser action and return only createUser in result', async () => {
+    it('should fetch createUser action and return ActionResult directly', async () => {
       const result = await client.fetchActions.createUser({
         name: 'John Doe',
       })
 
       expect(result).toBeDefined()
-      expect(result.createUser).toBeDefined()
-      expect(result.createUser.status).toBe('ok')
-      expect(result.createUser.data).toEqual({
+      expect(result.status).toBe('ok')
+      expect(result.data).toEqual({
         id: '123',
         name: 'John Doe',
       })
-
-      // Type check: result should only have createUser, not getUser
-      // TypeScript should error if trying to access getUser on createUser result
-      // result.getUser // This would cause a TypeScript error
     })
 
     it('should handle errors correctly', async () => {
@@ -159,12 +150,9 @@ describe('Router Client Proxy', () => {
       })
 
       expect(result).toBeDefined()
-      expect(result.getError).toBeDefined()
-      expect(result.getError.status).toBe('error')
-      expect(result.getError.error).toBeDefined()
-      expect(result.getError.error?.message).toContain(
-        'Test error',
-      )
+      expect(result.status).toBe('error')
+      expect(result.error).toBeDefined()
+      expect(result.error?.message).toContain('Test error')
     })
   })
 
@@ -179,7 +167,7 @@ describe('Router Client Proxy', () => {
       )
     })
 
-    it('should stream getUser action and return only getUser in result', async () => {
+    it('should stream getUser action and return ActionResult directly', async () => {
       const streamGen = client.streamActions.getUser({
         id: 'stream-123',
       })
@@ -189,39 +177,37 @@ describe('Router Client Proxy', () => {
       )
 
       const results: Array<{
-        getUser: { status: string; data?: unknown }
+        status: string
+        data?: unknown
       }> = []
       for await (const item of streamGen) {
         results.push(item)
-        expect(item.getUser).toBeDefined()
-        expect(item.getUser.status).toBe('ok')
-        // TypeScript ensures item only has getUser, not createUser
+        expect(item.status).toBe('ok')
       }
 
       expect(results.length).toBeGreaterThan(0)
-      expect(results[0]?.getUser.data).toEqual({
+      expect(results[0]?.data).toEqual({
         id: 'stream-123',
         name: 'User stream-123',
       })
     })
 
-    it('should stream createUser action and return only createUser in result', async () => {
+    it('should stream createUser action and return ActionResult directly', async () => {
       const streamGen = client.streamActions.createUser({
         name: 'Stream User',
       })
 
       const results: Array<{
-        createUser: { status: string; data?: unknown }
+        status: string
+        data?: unknown
       }> = []
       for await (const item of streamGen) {
         results.push(item)
-        expect(item.createUser).toBeDefined()
-        expect(item.createUser.status).toBe('ok')
-        // TypeScript ensures item only has createUser, not getUser
+        expect(item.status).toBe('ok')
       }
 
       expect(results.length).toBeGreaterThan(0)
-      expect(results[0]?.createUser.data).toEqual({
+      expect(results[0]?.data).toEqual({
         id: '123',
         name: 'Stream User',
       })
@@ -239,7 +225,7 @@ describe('Router Client Proxy', () => {
       )
     })
 
-    it('should duplex getUser action and return only getUser in result', async () => {
+    it('should duplex getUser action and return ActionResult directly', async () => {
       const duplexGen = client.duplexActions.getUser({
         id: 'duplex-123',
       })
@@ -249,39 +235,37 @@ describe('Router Client Proxy', () => {
       )
 
       const results: Array<{
-        getUser: { status: string; data?: unknown }
+        status: string
+        data?: unknown
       }> = []
       for await (const item of duplexGen) {
         results.push(item)
-        expect(item.getUser).toBeDefined()
-        expect(item.getUser.status).toBe('ok')
-        // TypeScript ensures item only has getUser, not createUser
+        expect(item.status).toBe('ok')
       }
 
       expect(results.length).toBeGreaterThan(0)
-      expect(results[0]?.getUser.data).toEqual({
+      expect(results[0]?.data).toEqual({
         id: 'duplex-123',
         name: 'User duplex-123',
       })
     })
 
-    it('should duplex createUser action and return only createUser in result', async () => {
+    it('should duplex createUser action and return ActionResult directly', async () => {
       const duplexGen = client.duplexActions.createUser({
         name: 'Duplex User',
       })
 
       const results: Array<{
-        createUser: { status: string; data?: unknown }
+        status: string
+        data?: unknown
       }> = []
       for await (const item of duplexGen) {
         results.push(item)
-        expect(item.createUser).toBeDefined()
-        expect(item.createUser.status).toBe('ok')
-        // TypeScript ensures item only has createUser, not getUser
+        expect(item.status).toBe('ok')
       }
 
       expect(results.length).toBeGreaterThan(0)
-      expect(results[0]?.createUser.data).toEqual({
+      expect(results[0]?.data).toEqual({
         id: '123',
         name: 'Duplex User',
       })
