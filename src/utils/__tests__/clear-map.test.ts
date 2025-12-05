@@ -8,32 +8,38 @@ describe('clear-map', () => {
       checkIntervalMs: wait / 2,
       expiresMs: wait,
     })
-    map.add('a', 1, () => {
-      call('a')
-    })
-    map.add('b', 2, () => {
-      call('b')
-    })
-    map.add('c', 3, () => {
-      // this should not be called, because, we are going to clear it with overwrite
-      call('c')
-    })
-    map.add('c', 3, () => {
-      call('x')
-    })
 
-    map.add('d', 4, () => {
-      // this should not be called, because, we are going to clear it with delete
-      call('d')
-    })
-    map.delete('d')
+    try {
+      map.add('a', 1, () => {
+        call('a')
+      })
+      map.add('b', 2, () => {
+        call('b')
+      })
+      map.add('c', 3, () => {
+        // this should not be called, because, we are going to clear it with overwrite
+        call('c')
+      })
+      map.add('c', 3, () => {
+        call('x')
+      })
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, wait + 10),
-    )
-    expect(call).toHaveBeenCalledTimes(3)
-    expect(call).toHaveBeenCalledWith('a')
-    expect(call).toHaveBeenCalledWith('b')
-    expect(call).toHaveBeenCalledWith('x')
+      map.add('d', 4, () => {
+        // this should not be called, because, we are going to clear it with delete
+        call('d')
+      })
+      map.delete('d')
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, wait + 10),
+      )
+      expect(call).toHaveBeenCalledTimes(3)
+      expect(call).toHaveBeenCalledWith('a')
+      expect(call).toHaveBeenCalledWith('b')
+      expect(call).toHaveBeenCalledWith('x')
+    } finally {
+      // Clean up the interval to prevent it from running after test completes
+      map.dispose()
+    }
   })
 })
