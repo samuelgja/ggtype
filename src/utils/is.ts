@@ -8,7 +8,7 @@ import type {
 } from '../types'
 import type { ModelNotGeneric } from '../model'
 import { AsyncStream } from './async-stream'
-import type { StreamMessage } from '../routerv2/router.type'
+import type { StreamMessage } from '../router/router.type'
 /**
  * Type guard to check if a value is a plain object (not null, not array).
  * @group Utils

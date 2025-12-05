@@ -5,6 +5,10 @@ export * from './utils/compile-model'
 export * from './utils/errors'
 export * from './utils/is'
 export * from './utils/handle-error'
+export * from './router/router'
+export * from './router/router.client'
+export * from './router/router.type'
+export * from './router/router.client.types'
 /**
  * Extracts the inferred TypeScript type from a model.
  * This utility type extracts the runtime type that a model validates.
