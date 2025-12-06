@@ -366,7 +366,15 @@ export function createWebsocketHandler<
           'close',
           createWebSocketCloseHandler(controller),
         )
-        ws.addEventListener('error', (_event) => {
+        ws.addEventListener('error', (event) => {
+          if (!isControllerClosed) {
+            isControllerClosed = true
+            controller.error(
+              new Error(
+                `WebSocket error: ${'message' in event ? event.message : 'Unknown error'}`,
+              ),
+            )
+          }
           if (!isWebSocketClosed) {
             isWebSocketClosed = true
             ws.close()

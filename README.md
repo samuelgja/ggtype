@@ -1,6 +1,6 @@
 # ggtype
 
-[![Build](https://github.com/samuelgja/ggtype/actions/workflows/build.yml/badge.svg)](https://github.com/samuelgja/ggtype/actions/workflows/build.yml) [![Code Quality Check](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml/badge.svg)](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml)
+[![Build](https://github.com/samuelgja/ggtype/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/samuelgja/ggtype/actions/workflows/build.yml) [![Code Quality Check](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml/badge.svg?branch=main)](https://github.com/samuelgja/ggtype/actions/workflows/code-check.yml)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/ggtype?label=Bundle%20size)](https://bundlephobia.com/result?p=ggtype)
 
 > **Type-safe bidirectional RPC with automatic validation and full TypeScript inference.**

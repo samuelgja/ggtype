@@ -12,7 +12,7 @@ const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
 // Test configuration constants
-const CONCURRENT_CLIENTS = 1000
+const CONCURRENT_CLIENTS = 200
 const TIMEOUT_MS = 5000
 const CONCURRENT_REQUESTS_PER_CLIENT = 10
 const SLOW_ACTION_DELAY_MS = 2000

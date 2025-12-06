@@ -234,9 +234,16 @@ export function createWebsocketPersistent<
       isClosed = true
     })
 
-    ws.addEventListener('error', () => {
+    ws.addEventListener('error', (event) => {
       isOpen = false
       if (!isClosed) {
+        if (streamControllerRef.current) {
+          streamControllerRef.current.error(
+            new Error(
+              `WebSocket error: ${'message' in event ? event.message : 'Unknown error'}`,
+            ),
+          )
+        }
         ws.close()
       }
     })
