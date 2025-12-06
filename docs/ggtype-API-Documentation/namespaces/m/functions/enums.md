@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **enums**\<`T`\>(...`enumParameters`): [`Enum`](../interfaces/Enum.md)\<`T`, `true`\>
 
-Defined in: [src/model/enums.ts:98](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/enums.ts#L98)
+Defined in: [src/model/enums.ts:98](https://github.com/samuelgja/ggtype/blob/main/src/model/enums.ts#L98)
 
 Creates an enum model for validation and type inference.
 Returns a model that validates string values against a set of allowed enum values.

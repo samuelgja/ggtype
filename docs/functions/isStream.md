@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **isStream**\<`T`\>(`object`): object is ReadableStream\<any\> \| AsyncStream\<T\> \| AsyncIterable\<T, any, any\>
 
-Defined in: [src/utils/is.ts:221](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/utils/is.ts#L221)
+Defined in: [src/utils/is.ts:221](https://github.com/samuelgja/ggtype/blob/main/src/utils/is.ts#L221)
 
 ## Type Parameters
 

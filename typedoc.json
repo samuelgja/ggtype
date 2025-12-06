@@ -30,5 +30,6 @@
     "Variable"
   ],
   "plugin": ["typedoc-plugin-markdown"],
-  "hideBreadcrumbs": true
+  "hideBreadcrumbs": true,
+  "gitRevision": "main"
 }

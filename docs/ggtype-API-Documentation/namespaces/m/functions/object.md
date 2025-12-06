@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **object**\<`T`, `R`\>(`properties`): [`Object`](../interfaces/Object.md)\<`T`, `R`\>
 
-Defined in: [src/model/object.ts:148](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/object.ts#L148)
+Defined in: [src/model/object.ts:148](https://github.com/samuelgja/ggtype/blob/main/src/model/object.ts#L148)
 
 Creates an object model for validation and type inference.
 Returns a model that validates objects with specified properties, where each property

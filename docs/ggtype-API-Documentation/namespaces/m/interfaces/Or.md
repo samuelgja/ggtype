@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
 # Interface: Or\<M, R\>
 
-Defined in: [src/model/or.ts:13](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L13)
+Defined in: [src/model/or.ts:13](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L13)
 
 ## Extends
 
@@ -26,7 +26,7 @@ Defined in: [src/model/or.ts:13](https://github.com/samuelgja/ggtype/blob/6b3789
 
 > **$internals**: [`ModelInternals`](ModelInternals.md)\<`R`\>
 
-Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L181)
+Defined in: [src/model/model.ts:181](https://github.com/samuelgja/ggtype/blob/main/src/model/model.ts#L181)
 
 Internal model configuration and metadata with type-safe required flag
 
@@ -40,7 +40,7 @@ Internal model configuration and metadata with type-safe required flag
 
 > `readonly` **description**: (`description`) => `Or`\<`M`, `R`\>
 
-Defined in: [src/model/or.ts:45](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L45)
+Defined in: [src/model/or.ts:45](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L45)
 
 Sets a human-readable description for the model
 
@@ -68,7 +68,7 @@ A new Or instance with the updated description
 
 > **getSchema**: (`options?`) => `JSONSchema7`
 
-Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L146)
+Defined in: [src/model/model.ts:146](https://github.com/samuelgja/ggtype/blob/main/src/model/model.ts#L146)
 
 Gets the JSON Schema representation of the model
 
@@ -96,7 +96,7 @@ The JSON Schema object
 
 > **getSchemaRef**: () => `JSONSchema7`
 
-Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L151)
+Defined in: [src/model/model.ts:151](https://github.com/samuelgja/ggtype/blob/main/src/model/model.ts#L151)
 
 Gets the JSON Schema with references (compact form)
 
@@ -116,7 +116,7 @@ The JSON Schema object with $defs for referenced models
 
 > `readonly` **infer**: `M`\[`number`\]\[`"infer"`\]
 
-Defined in: [src/model/or.ts:20](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L20)
+Defined in: [src/model/or.ts:20](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L20)
 
 Inferred TypeScript type for the union model (union of all model inferred types)
 
@@ -130,7 +130,7 @@ Inferred TypeScript type for the union model (union of all model inferred types)
 
 > `readonly` **isOptional**: () => `Or`\<`M`, `false`\>
 
-Defined in: [src/model/or.ts:25](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L25)
+Defined in: [src/model/or.ts:25](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L25)
 
 Marks the union model as optional
 
@@ -150,7 +150,7 @@ A new Or instance marked as optional
 
 > `readonly` **onParse**: (`data`) => `M`\[`number`\]
 
-Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L177)
+Defined in: [src/model/model.ts:177](https://github.com/samuelgja/ggtype/blob/main/src/model/model.ts#L177)
 
 Function to parse and validate data according to the model, returning typed result
 
@@ -178,7 +178,7 @@ The parsed and validated data of type T
 
 > `optional` **onStringify**: (`data`) => `unknown`
 
-Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/model.ts#L157)
+Defined in: [src/model/model.ts:157](https://github.com/samuelgja/ggtype/blob/main/src/model/model.ts#L157)
 
 Optional function to transform data when stringifying (for serialization)
 
@@ -202,7 +202,7 @@ Optional function to transform data when stringifying (for serialization)
 
 > `readonly` **title**: (`name`) => `Or`\<`M`, `R`\>
 
-Defined in: [src/model/or.ts:39](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L39)
+Defined in: [src/model/or.ts:39](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L39)
 
 Sets a human-readable title for the model
 
@@ -230,7 +230,7 @@ A new Or instance with the updated title
 
 > `readonly` **validate**: (`onValidate`) => `Or`\<`M`, `R`\>
 
-Defined in: [src/model/or.ts:31](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L31)
+Defined in: [src/model/or.ts:31](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L31)
 
 Adds custom validation logic to the model
 

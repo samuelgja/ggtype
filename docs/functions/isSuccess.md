@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **isSuccess**\<`T`\>(`result`): `result is ActionResultOk<T>`
 
-Defined in: [src/utils/is.ts:135](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/utils/is.ts#L135)
+Defined in: [src/utils/is.ts:135](https://github.com/samuelgja/ggtype/blob/main/src/utils/is.ts#L135)
 
 Type guard to check if a router result is a success result.
 

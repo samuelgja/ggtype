@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **file**(): [`File`](../interfaces/File.md)\<`true`\>
 
-Defined in: [src/model/file.ts:60](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/file.ts#L60)
+Defined in: [src/model/file.ts:60](https://github.com/samuelgja/ggtype/blob/main/src/model/file.ts#L60)
 
 Creates a file model for validation and type inference.
 Returns a model that validates File values, automatically converting Blob and ArrayBuffer

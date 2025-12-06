@@ -46,16 +46,19 @@
   "types": "dist/esm/index.d.ts",
   "typescript": "src/index.ts",
   "scripts": {
-    "test": "bun test",
+    "test": "bun test src --ignore \"e2e/**\"",
+    "test:e2e": "bun test --preload ./happydom.ts e2e",
     "lint": "bun eslint",
     "typecheck": "bun tsc --noEmit",
     "code-check": "bun typecheck && bun lint && bun test && bun format",
     "format": "bun prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
     "build": "bun tsc --project tsconfig.build.json && bun tsc --project tsconfig.build.module.json",
     "build:web-types": "bun tsc --project tsconfig.web.types.json && bun run build:web-types:bundle",
-    "build:web-types:bundle": "node scripts/bundle-web-types.mjs"
+    "build:web-types:bundle": "node scripts/bundle-web-types.mjs",
+    "docs": "typedoc"
   },
   "dependencies": {
+    "@happy-dom/global-registrator": "^20.0.11",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "fast-copy": "4.0.0",

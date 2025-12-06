@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **getCtx**\<`T`\>(`ctx`): `T`
 
-Defined in: [src/action/action.ts:39](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/action/action.ts#L39)
+Defined in: [src/action/action.ts:39](https://github.com/samuelgja/ggtype/blob/main/src/action/action.ts#L39)
 
 Extracts and types the context object from an unknown value.
 This is a type-safe way to access the context passed to actions.

@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **or**\<`M`\>(...`models`): [`Or`](../interfaces/Or.md)\<`M`, `true`\>
 
-Defined in: [src/model/or.ts:72](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/or.ts#L72)
+Defined in: [src/model/or.ts:72](https://github.com/samuelgja/ggtype/blob/main/src/model/or.ts#L72)
 
 Creates a union model that accepts any of the provided models.
 Validates data against each model in sequence, returning the first successful match.

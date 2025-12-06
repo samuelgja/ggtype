@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **Infer**\<`T`\> = `T`\[`"infer"`\]
 
-Defined in: [src/index.ts:28](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/index.ts#L28)
+Defined in: [src/index.ts:32](https://github.com/samuelgja/ggtype/blob/main/src/index.ts#L32)
 
 Extracts the inferred TypeScript type from a model.
 This utility type extracts the runtime type that a model validates.

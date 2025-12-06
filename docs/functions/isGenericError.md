@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **isGenericError**(`error`): `error is OutputErrorGeneric`
 
-Defined in: [src/utils/is.ts:165](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/utils/is.ts#L165)
+Defined in: [src/utils/is.ts:165](https://github.com/samuelgja/ggtype/blob/main/src/utils/is.ts#L165)
 
 Type guard to check if an error is a generic error.
 

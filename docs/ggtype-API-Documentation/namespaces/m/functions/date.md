@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **date**(): [`Date`](../interfaces/Date.md)\<`true`\>
 
-Defined in: [src/model/date.ts:133](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/date.ts#L133)
+Defined in: [src/model/date.ts:133](https://github.com/samuelgja/ggtype/blob/main/src/model/date.ts#L133)
 
 Creates a date model for validation and type inference.
 Returns a model that validates Date values with optional custom validation.

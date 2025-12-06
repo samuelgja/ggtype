@@ -1,10 +1,10 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
 # Interface: ActionResultBase\<T\>
 
-Defined in: [src/types.ts:157](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L157)
+Defined in: [src/types.ts:157](https://github.com/samuelgja/ggtype/blob/main/src/types.ts#L157)
 
 Base interface for action results.
 
@@ -31,7 +31,7 @@ The result type
 
 > `readonly` `optional` **data**: [`UnwrapStreamType`](../type-aliases/UnwrapStreamType.md)\<`T`\>
 
-Defined in: [src/types.ts:163](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L163)
+Defined in: [src/types.ts:163](https://github.com/samuelgja/ggtype/blob/main/src/types.ts#L163)
 
 Success data with unwrapped stream types (present when status is 'ok')
 
@@ -45,7 +45,7 @@ Success data with unwrapped stream types (present when status is 'ok')
 
 > `readonly` `optional` **error**: [`OutputError`](../type-aliases/OutputError.md)
 
-Defined in: [src/types.ts:167](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L167)
+Defined in: [src/types.ts:167](https://github.com/samuelgja/ggtype/blob/main/src/types.ts#L167)
 
 Error information (present when status is 'error')
 
@@ -59,7 +59,7 @@ Error information (present when status is 'error')
 
 > `readonly` **status**: [`ResultStatus`](../type-aliases/ResultStatus.md)
 
-Defined in: [src/types.ts:124](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/types.ts#L124)
+Defined in: [src/types.ts:124](https://github.com/samuelgja/ggtype/blob/main/src/types.ts#L124)
 
 Result status: 'ok' for success, 'error' for failure
 

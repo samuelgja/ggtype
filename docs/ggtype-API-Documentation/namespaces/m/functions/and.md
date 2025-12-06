@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **and**\<`M`\>(...`models`): [`And`](../interfaces/And.md)\<`M`, `true`\>
 
-Defined in: [src/model/and.ts:75](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/and.ts#L75)
+Defined in: [src/model/and.ts:75](https://github.com/samuelgja/ggtype/blob/main/src/model/and.ts#L75)
 
 Creates an intersection model that combines multiple object models.
 Merges all properties from the provided models into a single object model,

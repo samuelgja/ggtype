@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../README.md)
+[**ggtype API Documentation v0.6.0**](../README.md)
 
 ***
 
@@ -6,13 +6,13 @@
 
 > **hasStreamData**(`message`): `boolean`
 
-Defined in: [src/utils/is.ts:234](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/utils/is.ts#L234)
+Defined in: [src/utils/is.ts:234](https://github.com/samuelgja/ggtype/blob/main/src/utils/is.ts#L234)
 
 ## Parameters
 
 ### message
 
-`StreamMessage`
+[`StreamMessage`](../interfaces/StreamMessage.md)
 
 ## Returns
 

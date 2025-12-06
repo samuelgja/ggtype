@@ -18,3 +18,5 @@ web-build/
 bunfig.toml
 web/.next
 web/public/_pagefind
+playwright-report
+test-results/

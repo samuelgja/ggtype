@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **number**(): [`Number`](../interfaces/Number.md)\<`true`\>
 
-Defined in: [src/model/number.ts:96](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/number.ts#L96)
+Defined in: [src/model/number.ts:96](https://github.com/samuelgja/ggtype/blob/main/src/model/number.ts#L96)
 
 Creates a number model for validation and type inference.
 Returns a model that validates number values with optional constraints like

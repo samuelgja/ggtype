@@ -1,4 +1,4 @@
-[**ggtype API Documentation v0.5.1**](../../../../README.md)
+[**ggtype API Documentation v0.6.0**](../../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 > **record**\<`M`\>(`item`): [`Record`](../interfaces/Record.md)\<`M`, `true`\>
 
-Defined in: [src/model/record.ts:84](https://github.com/samuelgja/ggtype/blob/6b3789cc61c56ec21e320bad94929a3a13255abb/src/model/record.ts#L84)
+Defined in: [src/model/record.ts:84](https://github.com/samuelgja/ggtype/blob/main/src/model/record.ts#L84)
 
 Creates a record model for validating objects with dynamic keys.
 Returns a model that validates objects where all values match the provided item model,
