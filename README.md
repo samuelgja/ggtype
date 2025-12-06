@@ -383,12 +383,6 @@ if (isSuccess(result)) {
 
 ## Why ggtype vs alternatives?
 
-### vs tRPC
-- ✅ **Bidirectional RPC** — Server can call client actions with validation
-- ✅ **Multiple transports** — HTTP, streaming, WebSocket, half-duplex
-- ✅ **No code generation** — Pure TypeScript inference
-- ✅ **Works with any server** — Just plug in `onRequest` or `onMessage`
-
 ### vs REST/GraphQL
 - ✅ **Full type safety** — End-to-end TypeScript inference
 - ✅ **Automatic validation** — Runtime validation matches your types

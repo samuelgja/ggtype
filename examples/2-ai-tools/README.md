@@ -19,3 +19,6 @@ bun run examples/2-ai-tools/client.ts
 - Type safety on both sides
 - Real-world AI agent pattern where server requests tools from client
 
+
+
+

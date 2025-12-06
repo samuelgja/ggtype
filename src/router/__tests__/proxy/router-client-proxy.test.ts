@@ -8,7 +8,7 @@ import {
 import { action } from '../../../action/action'
 import * as m from '../../../model'
 import { createRouter } from '../../router'
-import { createRouterClient } from '../../router.client'
+import { createRouterClient } from '../../../router-client/router-client'
 import { Elysia } from 'elysia'
 import { getTestPort } from '../test-utils'
 

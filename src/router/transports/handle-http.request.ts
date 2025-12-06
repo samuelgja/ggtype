@@ -69,6 +69,8 @@ export async function handleHttpRequest(
   const { params, files } = await getParams(request)
   const result: Record<string, RouterResultNotGeneric> = {}
   const promises: Promise<void>[] = []
+  let maxStatusCode = 200
+
   for (const actionName in params) {
     const actionParams = params[actionName]
     const run = async () => {
@@ -93,6 +95,17 @@ export async function handleHttpRequest(
         const actionError = handleError(onError, rawError)
         if (actionError) {
           result[actionName] = actionError
+          // Use the error code as the HTTP status code if available
+          if (
+            actionError.status === 'error' &&
+            actionError.error?.code
+          ) {
+            const errorCode = actionError.error.code
+            // Use the highest error code if multiple actions have errors
+            if (errorCode > maxStatusCode) {
+              maxStatusCode = errorCode
+            }
+          }
         }
       }
     }
@@ -100,5 +113,5 @@ export async function handleHttpRequest(
     promises.push(promise)
   }
   await Promise.all(promises)
-  return Response.json(result)
+  return Response.json(result, { status: maxStatusCode })
 }

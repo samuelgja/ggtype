@@ -14,8 +14,10 @@ function getUserInputSync(_prompt: string): string {
     'TypeScript',
     'ggtype',
   ]
-  // eslint-disable-next-line sonarjs/pseudo-random
+  // Using Math.random() is safe here for demo purposes
+  // In production, use a cryptographically secure random number generator
   const index = Math.floor(
+    // eslint-disable-next-line sonarjs/pseudo-random
     Math.random() * simulatedInputs.length,
   )
   return simulatedInputs[index]!
@@ -96,4 +98,3 @@ for await (const result of connection.stream) {
     }
   }
 }
-

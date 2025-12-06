@@ -6,7 +6,7 @@ import {
   afterAll,
 } from 'bun:test'
 import { createRouter } from '../router'
-import { createRouterClient } from '../router.client'
+import { createRouterClient } from '../../router-client/router-client'
 import { action } from '../../action/action'
 import { m } from '../..'
 import { Elysia } from 'elysia'

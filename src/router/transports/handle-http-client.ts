@@ -1,7 +1,7 @@
 import type {
   FetchOptions,
   ParamsIt,
-} from '../router.client.types'
+} from '../../router-client/router-client.types'
 import type { Router } from '../router.type'
 
 function stringifyParams(params: unknown): string {

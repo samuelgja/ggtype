@@ -4,7 +4,7 @@ import type { AsyncStream } from './utils/async-stream'
 import type {
   ClientAction,
   ClientCallableActions,
-} from './router/router.client.types'
+} from './router-client/router-client.types'
 
 // ============================================================================
 // Constants

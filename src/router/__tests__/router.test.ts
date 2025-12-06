@@ -2,9 +2,9 @@ import type { ServerWebSocket } from 'bun'
 import { m } from '../..'
 import { action } from '../../action/action'
 import { createRouter } from '../router'
-import { createRouterClient } from '../router.client'
+import { createRouterClient } from '../../router-client/router-client'
 import { Elysia } from 'elysia'
-import { defineClientActionsSchema } from '../router.client.types'
+import { defineClientActionsSchema } from '../../router-client/router-client.types'
 import {
   ErrorWithCode,
   ValidationError,

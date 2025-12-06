@@ -8,7 +8,7 @@ import type {
   AppError,
   RouterResultNotGeneric,
 } from '../types'
-import type { ClientAction } from './router.client.types'
+import type { ClientAction } from '../router-client/router-client.types'
 import type { CallableActions } from './router.utils'
 
 import type { ClearMap } from '../utils/clear-map'

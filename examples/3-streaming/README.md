@@ -19,3 +19,6 @@ bun run examples/3-streaming/client.ts
 - Using streamActions proxy for automatic type narrowing
 - Handling streaming results
 
+
+
+

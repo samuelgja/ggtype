@@ -16,4 +16,5 @@ web-build/
 # macOS
 .DS_Store
 bunfig.toml
-
+web/.next
+web/public/_pagefind

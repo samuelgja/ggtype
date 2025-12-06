@@ -1,6 +1,6 @@
 {
   "name": "ggtype",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "High-performance TypeScript library for type-safe data validation and client-server communication with bidirectional RPC, streaming support, and multiple transport options",
   "keywords": [
     "typescript",
@@ -21,6 +21,15 @@
     "data-validation",
     "real-time",
     "async-generator"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "tsconfig.json"
   ],
   "license": "MIT",
   "author": "samuelgja",
@@ -43,7 +52,8 @@
     "code-check": "bun typecheck && bun lint && bun test && bun format",
     "format": "bun prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
     "build": "bun tsc --project tsconfig.build.json && bun tsc --project tsconfig.build.module.json",
-    "docs": "typedoc"
+    "build:web-types": "bun tsc --project tsconfig.web.types.json && bun run build:web-types:bundle",
+    "build:web-types:bundle": "node scripts/bundle-web-types.mjs"
   },
   "dependencies": {
     "ajv": "8.17.1",

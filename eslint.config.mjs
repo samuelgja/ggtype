@@ -17,6 +17,9 @@ export default [
       '**/api-definitions.ts',
       '**/.expo/**/*.ts*',
       '**/dist',
+      '**/.next/**',
+      '**/node_modules/**',
+      '**/web/public/ggtype.d.ts', // Generated file
     ],
   },
   js.configs.recommended,
@@ -108,6 +111,7 @@ export default [
 
       'no-console': 'error',
       'no-unneeded-ternary': 'error',
+      'no-undef': 'off', // TypeScript handles this
 
       'unicorn/prefer-module': 'off',
       'unicorn/no-null': 'off',
@@ -121,6 +125,7 @@ export default [
         'error',
         {
           replacements: {
+            doc: false,
             utils: false,
             refs: false,
             fn: false,
@@ -153,6 +158,29 @@ export default [
       'jsdoc/require-param': 'off',
       'jsdoc/require-returns': 'off',
       'jsdoc/valid-types': 'off',
+    },
+  },
+  {
+    files: [
+      'scripts/**/*.mjs',
+      '**/*.mjs',
+      'web/scripts/**/*.mjs',
+    ],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off',
+      'no-undef': 'off',
+      'unicorn/no-process-exit': 'off',
+      'jsdoc/require-jsdoc': 'off',
+      'sonarjs/os-command': 'off',
+      'sonarjs/no-os-command-from-path': 'off',
     },
   },
 ]

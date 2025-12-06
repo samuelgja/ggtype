@@ -19,3 +19,6 @@ bun run examples/1-hello-world/client.ts
 - Using proxy actions for automatic type narrowing
 - Error handling with validation errors
 
+
+
+

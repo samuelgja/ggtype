@@ -1,16 +1,15 @@
 /**
  * Test utility for getting unique ports for test servers.
- * Each call increments the port number to avoid conflicts.
  * @internal
  */
-let testPortCounter = 3000
 
 /**
  * Gets a unique port number for test servers.
- * Each call returns the next available port, starting from 3000.
+ * Returns a random port between 20000 and 50000 to minimize collisions.
  * @returns A unique port number
  */
 export function getTestPort(): number {
-  testPortCounter += 1
-  return testPortCounter
+  // eslint-disable-next-line sonarjs/pseudo-random
+  const random = Math.random()
+  return Math.floor(random * (50_000 - 20_000) + 20_000)
 }

@@ -48,4 +48,3 @@ if (!isSuccess(invalidResult)) {
     )
   }
 }
-

@@ -9,7 +9,7 @@ import type {
   ClientActionsBase,
   Router,
   ServerActionsBase,
-} from './router.type'
+} from '../router/router.type'
 export const UPLOAD_FILE = '__uploadFile'
 /**
  * Type representing the parameters object for router client fetch/stream calls.
@@ -218,6 +218,10 @@ export interface RouterClientOptions<
    * Can modify the response or throw an error to retry.
    * @param options - Response options with json (result), statusCode, and runAgain method. See the inline type definition for property details.
    * @returns The modified response JSON, or undefined to use the original
+   *
+   * Note: For HTTP transport, runAgain returns a Promise.
+   * For stream, websocket, and duplex transports, runAgain returns an AsyncGenerator.
+   * When returning the result of runAgain(), you may need to await it for HTTP transport.
    */
   onResponse?: <Params extends ParamsIt<R>>(options: {
     readonly json: ResultForWithActionResult<R, Params>
@@ -226,8 +230,11 @@ export interface RouterClientOptions<
       NewParams extends ParamsIt<R> = Params,
     >(
       newParams?: NewParams,
-      newOptions?: FetchOptions<R>,
-    ) => Promise<ResultForWithActionResult<R, NewParams>>
+      newOptions?:
+        | FetchOptions<R>
+        | DuplexOptions<R>
+        | WebsocketOptions<R>,
+    ) => unknown
   }) =>
     | ResultForWithActionResult<R, ParamsIt<R>>
     | void
@@ -235,6 +242,7 @@ export interface RouterClientOptions<
         R,
         ParamsIt<R>
       > | void>
+    | unknown
   /**
    * Optional error handler invoked whenever the client encounters a transport
    * error or client action failure before propagation. Should return the error

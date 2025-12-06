@@ -3,7 +3,7 @@ import {
   compileModelAndCheck,
   type ValidationResult,
 } from '../utils/compile-model'
-import type { ClientCallableActions } from './router.client.types'
+import type { ClientCallableActions } from '../router-client/router-client.types'
 import type {
   ClientActionsBase,
   ServerActionsBase,
