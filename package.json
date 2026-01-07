@@ -1,6 +1,6 @@
 {
   "name": "ggtype",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "High-performance TypeScript library for type-safe data validation and client-server communication with bidirectional RPC, streaming support, and multiple transport options",
   "keywords": [
     "typescript",
