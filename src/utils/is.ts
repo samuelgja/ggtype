@@ -238,3 +238,48 @@ export function hasStreamData(message: StreamMessage) {
     'error' in message
   return hasData
 }
+
+/**
+ * Checks if any action result in the response has a specific HTTP status code.
+ * Useful in onResponse callbacks to check for specific error codes like 401 (Unauthorized).
+ * @group Utils
+ * @param json - The response object containing action results (from onResponse callback)
+ * @param statusCode - The HTTP status code to check for
+ * @returns True if any action result has an error with the specified status code
+ * @example
+ * ```ts
+ * import { createRouterClient, hasStatusCode } from 'ggtype'
+ *
+ * const client = createRouterClient<Router>({
+ *   httpURL: 'http://localhost:3000',
+ *   async onResponse({ json, runAgain }) {
+ *     const isUnauthorized = hasStatusCode(json, 401)
+ *     if (isUnauthorized) {
+ *       // Handle unauthorized error
+ *       // e.g., refresh token and retry
+ *       return runAgain()
+ *     }
+ *   },
+ * })
+ * ```
+ */
+export function hasStatusCode(
+  json: Record<string, RouterResultNotGeneric>,
+  statusCode: number,
+): boolean {
+  if (!isObject(json)) {
+    return false
+  }
+
+  for (const result of Object.values(json)) {
+    if (
+      result &&
+      result.status === 'error' &&
+      result.error?.code === statusCode
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
