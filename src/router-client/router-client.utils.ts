@@ -1,14 +1,31 @@
-import { type RouterResultNotGeneric } from '../types'
-import { createId } from '../utils/create-id'
+import type { RouterResultNotGeneric } from '../types'
+import { UPLOAD_FILE } from './router-client.types'
+import type { StreamMessage } from '../router/router.type'
+import { StreamMessageType } from '../router/router.type'
 import { handleError } from '../utils/handle-error'
 import { hasStreamData } from '../utils/is'
 import { JSONL } from '../utils/stream-helpers'
-import { UPLOAD_FILE } from './router-client.types'
-import {
-  StreamMessageType,
-  type StreamMessage,
-} from '../router/router.type'
+import { createId } from '../utils/create-id'
+import { reconstructFileFromStreamMessage } from '../router/router.utils'
 import { handleStreamResponse } from '../router/transports/handle-stream'
+
+export function isAsyncGenerator<T>(
+  value: unknown,
+): value is AsyncGenerator<T> {
+  if (
+    value === null ||
+    (typeof value !== 'object' &&
+      typeof value !== 'function')
+  ) {
+    return false
+  }
+  const asyncIterator = (
+    value as {
+      readonly [Symbol.asyncIterator]?: () => AsyncIterator<T>
+    }
+  )[Symbol.asyncIterator]
+  return typeof asyncIterator === 'function'
+}
 
 export async function* createStreamGenerator<T>(
   stream: ReadableStream<T>,
@@ -20,7 +37,7 @@ export async function* createStreamGenerator<T>(
       if (done) {
         break
       }
-      if (value !== undefined) {
+      if (value != undefined) {
         yield value
       }
     }
@@ -204,7 +221,7 @@ export function streamMessageToResult<
   if (item.status === 'ok') {
     return {
       [item.action]: {
-        data: item.file ?? item.data,
+        data: reconstructFileFromStreamMessage(item),
         status: item.status,
       },
     } as {
@@ -262,4 +279,32 @@ export async function sendInitialParams(
       type: StreamMessageType.WS_SEND_FROM_CLIENT,
     })
   }
+}
+
+/**
+ * Checks if headers object has any keys
+ * @param headers Headers object to check
+ * @returns true if headers has keys
+ */
+export function hasHeaders(headers: Headers): boolean {
+  const iterable = headers as unknown as Iterable<unknown>
+  const iterator = iterable[Symbol.iterator]()
+  return !iterator.next().done
+}
+
+/**
+ * Converts Headers object to Record<string, string>
+ * @param headers Headers object to convert
+ * @returns Record of header key-values
+ */
+export function headersToObject(
+  headers: Headers,
+): Record<string, string> {
+  const result: Record<string, string> = {}
+  for (const [key, value] of headers as unknown as Iterable<
+    [string, string]
+  >) {
+    result[key] = value
+  }
+  return result
 }

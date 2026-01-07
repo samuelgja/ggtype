@@ -1,7 +1,9 @@
+import { QUERY_PARAM_NAME } from '../../consts'
 import type {
   FetchOptions,
   ParamsIt,
 } from '../../router-client/router-client.types'
+import { getHeaders } from '../../utils/get-headers'
 import type { Router } from '../router.type'
 
 function stringifyParams(params: unknown): string {
@@ -35,8 +37,11 @@ export async function handleHttpClient<
 
   const buildHeaders = (
     shouldSetJsonContentType: boolean,
+    request?: Request,
   ): Headers => {
-    const headers = new Headers(defaultHeaders)
+    const headers = request
+      ? getHeaders(request, defaultHeaders)
+      : new Headers(defaultHeaders)
     if (
       shouldSetJsonContentType &&
       !headers.has('Content-Type')
@@ -55,7 +60,10 @@ export async function handleHttpClient<
         )
       }
       const url = new URL(httpURL)
-      url.searchParams.set('q', serializedParams)
+      url.searchParams.set(
+        QUERY_PARAM_NAME,
+        serializedParams,
+      )
       request = new Request(url, {
         method: resolvedMethod,
         headers: buildHeaders(true),
@@ -72,7 +80,10 @@ export async function handleHttpClient<
           formData.append('file', file)
         }
         const url = new URL(httpURL)
-        url.searchParams.set('q', serializedParams)
+        url.searchParams.set(
+          QUERY_PARAM_NAME,
+          serializedParams,
+        )
         request = new Request(url, {
           method: resolvedMethod,
           body: formData,

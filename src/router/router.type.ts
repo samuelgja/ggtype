@@ -486,6 +486,10 @@ export interface StreamMessage extends RouterResultNotGeneric {
    */
   readonly fileSize?: number
   /**
+   * File name (preserved when sending files)
+   */
+  readonly fileName?: string
+  /**
    * Client-side hydrated file/blob
    */
   readonly file?: Blob

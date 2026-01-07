@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/consistent-function-scoping */
+import { HEADER_PARAM_NAME } from '../../consts'
 import {
   StreamMessageType,
   type ClientActionsBase,
@@ -19,6 +20,9 @@ import {
   createErrorProcessor,
   createStreamGenerator,
   handleClientActionCall,
+  hasHeaders,
+  headersToObject,
+  isAsyncGenerator,
   mergeClientActions,
   sendInitialParams,
   streamMessageToResult,
@@ -137,15 +141,44 @@ export function createWebsocketHandler<
     }
 
     const encoder = new TextEncoder()
-    const headers: Record<string, string> = {}
-    // eslint-disable-next-line unicorn/no-array-for-each
-    state.defaultHeaders.forEach((value, key) => {
-      headers[key] = value
-    })
-    const ws = new WebSocket(websocketURL!, {
-      headers,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    const enqueueModifiedResult = async (
+      modifiedResult:
+        | ResultForLocal<Params>
+        | AsyncGenerator<ResultForLocal<Params>>,
+      controller: ReadableStreamDefaultController<
+        ResultForLocal<Params>
+      >,
+    ): Promise<void> => {
+      if (
+        isAsyncGenerator<ResultForLocal<Params>>(
+          modifiedResult,
+        )
+      ) {
+        for await (const rerunResult of modifiedResult) {
+          controller.enqueue(rerunResult)
+        }
+        return
+      }
+      controller.enqueue(modifiedResult)
+    }
+
+    // Browser WebSocket API doesn't support custom headers
+    // Headers can only be set via URL query params or in the first message
+    // Append headers to the WebSocket URL as query parameters
+    const url = new URL(websocketURL!)
+    if (
+      state.defaultHeaders &&
+      hasHeaders(state.defaultHeaders)
+    ) {
+      const headersObject = headersToObject(
+        state.defaultHeaders,
+      )
+      url.searchParams.set(
+        HEADER_PARAM_NAME,
+        JSON.stringify(headersObject),
+      )
+    }
+    const ws = new WebSocket(url)
     const numberOfActions = Object.keys(params).length
     let actionsResolved = 0
 
@@ -227,8 +260,11 @@ export function createWebsocketHandler<
             runAgain,
           })
           if (modifiedResult !== undefined) {
-            controller.enqueue(
-              modifiedResult as ResultForLocal<Params>,
+            await enqueueModifiedResult(
+              modifiedResult as
+                | ResultForLocal<Params>
+                | AsyncGenerator<ResultForLocal<Params>>,
+              controller,
             )
             if (item.isLast) {
               actionsResolved++
@@ -268,11 +304,21 @@ export function createWebsocketHandler<
         if (isControllerClosed) {
           return
         }
-        if (!(data instanceof Uint8Array)) {
+
+        // Convert different data types to Uint8Array
+        let uint8Data: Uint8Array
+        if (data instanceof Uint8Array) {
+          uint8Data = data
+        } else if (data instanceof ArrayBuffer) {
+          uint8Data = new Uint8Array(data)
+        } else if (data instanceof Blob) {
+          const arrayBuffer = await data.arrayBuffer()
+          uint8Data = new Uint8Array(arrayBuffer)
+        } else {
           return
         }
 
-        const messages = await parser.feed(data)
+        const messages = await parser.feed(uint8Data)
         for (const item of messages) {
           const shouldContinue =
             await processWebSocketMessageItem(
@@ -328,8 +374,13 @@ export function createWebsocketHandler<
                 runAgain,
               })
               if (modifiedResult !== undefined) {
-                controller.enqueue(
-                  modifiedResult as ResultForLocal<Params>,
+                await enqueueModifiedResult(
+                  modifiedResult as
+                    | ResultForLocal<Params>
+                    | AsyncGenerator<
+                        ResultForLocal<Params>
+                      >,
+                  controller,
                 )
                 continue
               }
@@ -380,6 +431,15 @@ export function createWebsocketHandler<
             ws.close()
           }
         })
+        // Handle race condition: if WebSocket is already open, send params immediately
+        if (ws.readyState === WebSocket.OPEN) {
+          await sendInitialParams(
+            params,
+            files,
+            encoder,
+            sendMessage,
+          )
+        }
       },
     })
     const streamGenerator = createStreamGenerator(

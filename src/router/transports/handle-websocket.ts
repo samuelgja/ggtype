@@ -1,4 +1,5 @@
 import type { ServerWebSocket } from 'bun'
+import { HEADER_PARAM_NAME } from '../../consts'
 import {
   NOOP_ON_ERROR,
   type RouterResultNotGeneric,
@@ -16,6 +17,7 @@ import {
   handleStreamResponse,
   Parser,
 } from './handle-stream'
+import { reconstructFileFromStreamMessage } from '../router.utils'
 
 function isDataWithParser(data: unknown): data is {
   parser?: Parser
@@ -57,7 +59,7 @@ function handleClientActionCallResult(
     item.status === 'ok'
       ? {
           status: 'ok',
-          data: item.file ?? item.data,
+          data: reconstructFileFromStreamMessage(item),
         }
       : {
           status: 'error',
@@ -128,7 +130,9 @@ async function executeServerAction(
     })
     await handleStreamResponse({
       actionResult: result,
-      send: (newMessage) => ws.send(newMessage),
+      send: (newMessage) => {
+        ws.send(newMessage)
+      },
       actionName: item.action,
       id: item.id,
       encoder,
@@ -155,6 +159,57 @@ async function executeServerAction(
   }
 }
 
+/**
+ * Extracts headers from WebSocket URL query parameters and creates a Request-like object
+ */
+function createRequestFromWebSocket(
+  ws: ServerWebSocket<unknown>,
+): Request | undefined {
+  // Try to get URL from ws.remoteAddress or ws.data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const wsData = ws.data as any
+  let url: string | undefined
+
+  // Check if URL is stored in ws.data
+  if (wsData?.url) {
+    // eslint-disable-next-line prefer-destructuring
+    url = wsData.url
+  } else if (ws.remoteAddress) {
+    // Construct URL from remoteAddress if available
+    // Note: remoteAddress might not include query params, so we check ws.data first
+    url = `ws://${ws.remoteAddress}`
+  }
+
+  if (!url) {
+    return undefined
+  }
+
+  try {
+    const urlObject = new URL(url)
+    const headerParameter = urlObject.searchParams.get(
+      HEADER_PARAM_NAME,
+    )
+    if (!headerParameter) {
+      return undefined
+    }
+
+    const headersObject = JSON.parse(
+      headerParameter,
+    ) as Record<string, string>
+    const headers = new Headers()
+    for (const [key, value] of Object.entries(
+      headersObject,
+    )) {
+      headers.set(key, value)
+    }
+
+    // Create a Request-like object with headers
+    return new Request(url, { headers })
+  } catch {
+    return undefined
+  }
+}
+
 export async function handleWebSocket(
   options: OnWebSocketMessageInternal,
 ) {
@@ -174,6 +229,13 @@ export async function handleWebSocket(
   if (!data.parser) {
     data.parser = new Parser()
   }
+
+  // Extract headers from WebSocket URL and merge with existing ctx
+  const wsRequest = createRequestFromWebSocket(ws)
+  const mergedCtx =
+    wsRequest && isObject(ctx)
+      ? { ...ctx, request: wsRequest }
+      : ctx
 
   const { parser } = data
   if (!(message instanceof Uint8Array)) {
@@ -209,7 +271,7 @@ export async function handleWebSocket(
     const promise = executeServerAction(
       item,
       callableActions,
-      ctx,
+      mergedCtx,
       files,
       encoder,
       ws,

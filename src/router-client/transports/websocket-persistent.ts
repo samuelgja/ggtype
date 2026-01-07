@@ -1,3 +1,4 @@
+import { HEADER_PARAM_NAME } from '../../consts'
 import {
   StreamMessageType,
   type ClientActionsBase,
@@ -19,6 +20,8 @@ import {
   createStreamGenerator,
   createWaitForStreamFunction,
   handleClientActionCall,
+  hasHeaders,
+  headersToObject,
   mergeClientActions,
   processQueueAfterStreamReady,
   sendInitialParams,
@@ -65,15 +68,23 @@ export function createWebsocketPersistent<
     }
 
     const encoder = new TextEncoder()
-    const headers: Record<string, string> = {}
-    // eslint-disable-next-line unicorn/no-array-for-each
-    state.defaultHeaders.forEach((value, key) => {
-      headers[key] = value
-    })
-    const ws = new WebSocket(websocketURL!, {
-      headers,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    // Browser WebSocket API doesn't support custom headers
+    // Headers can only be set via URL query params or in the first message
+    // Append headers to the WebSocket URL as query parameters
+    const url = new URL(websocketURL!)
+    if (
+      state.defaultHeaders &&
+      hasHeaders(state.defaultHeaders)
+    ) {
+      const headersObject = headersToObject(
+        state.defaultHeaders,
+      )
+      url.searchParams.set(
+        HEADER_PARAM_NAME,
+        JSON.stringify(headersObject),
+      )
+    }
+    const ws = new WebSocket(url)
     const parser = new Parser()
     let isClosed = false
     let isOpen = false
@@ -186,11 +197,24 @@ export function createWebsocketPersistent<
     }
 
     ws.addEventListener('message', async ({ data }) => {
-      if (isClosed || !(data instanceof Uint8Array)) {
+      if (isClosed) {
         return
       }
 
-      const messages = await parser.feed(data)
+      // Convert different data types to Uint8Array
+      let uint8Data: Uint8Array
+      if (data instanceof Uint8Array) {
+        uint8Data = data
+      } else if (data instanceof ArrayBuffer) {
+        uint8Data = new Uint8Array(data)
+      } else if (data instanceof Blob) {
+        const arrayBuffer = await data.arrayBuffer()
+        uint8Data = new Uint8Array(arrayBuffer)
+      } else {
+        return
+      }
+
+      const messages = await parser.feed(uint8Data)
       for (const item of messages) {
         await processMessage(item)
       }

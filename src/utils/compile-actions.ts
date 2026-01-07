@@ -33,6 +33,7 @@ function compileSchemaAndCheck(
   const validate = AJV.compile(schema)
   if (compilePath) {
     const code = Standalone(AJV, validate)
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     fs.writeFileSync(compilePath, code)
   }
   return validate

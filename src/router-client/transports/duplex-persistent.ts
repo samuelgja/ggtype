@@ -173,17 +173,31 @@ export function createDuplexPersistent<
 
     const startReading = async (): Promise<void> => {
       const headers = new Headers(state.defaultHeaders)
-      const response = await fetch(url, {
-        method: 'POST',
-        body: readableStream,
-        headers,
-      })
+      let response: Response
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          body: readableStream,
+          headers,
+          duplex: 'half',
+        })
+      } catch (error) {
+        throwClientError(
+          error instanceof Error
+            ? error
+            : new Error(
+                `Failed to fetch: ${String(error)}`,
+              ),
+        )
+        return
+      }
 
       const reader = response.body?.getReader()
       if (!reader) {
         throwClientError(
           new Error('Reader is not available'),
         )
+        return
       }
       responseReader =
         reader as ReadableStreamDefaultReader<Uint8Array>

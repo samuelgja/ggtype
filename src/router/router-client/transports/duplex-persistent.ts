@@ -175,6 +175,7 @@ export function createDuplexPersistent<
         method: 'POST',
         body: readableStream,
         headers,
+        duplex: 'half',
       })
 
       const reader = response.body?.getReader()

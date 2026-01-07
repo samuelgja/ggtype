@@ -3,6 +3,7 @@ import type {
   ClientAction,
   ClientCallableActions,
 } from '../router-client/router-client.types'
+import { NOOP_CLIENT_ACTIONS } from '../types'
 import { compileModelAndCheck } from '../utils/compile-model'
 import { ValidationError } from '../utils/errors'
 
@@ -90,6 +91,23 @@ export type ActionFn<
 ) => Awaited<ReturnValue>
 
 /**
+ * Parameters for calling action.run() - clientActions is optional for testing convenience.
+ * @group Router
+ * @template M - The model type for parameters
+ */
+export type ActionRunParameters<
+  M extends ModelNotGeneric = ModelNotGeneric,
+> = Omit<ActionCbParameters<M>, 'clientActions'> & {
+  /**
+   * Optional function to get client actions for bidirectional communication.
+   * If not provided, defaults to NOOP_CLIENT_ACTIONS (returns empty object).
+   */
+  readonly clientActions?: <
+    ClientActions extends Record<string, ClientAction>,
+  >() => ClientCallableActions<ClientActions>
+}
+
+/**
  * Action definition with model and execution function.
  * @group Router
  * @template M - The model type for parameters
@@ -104,9 +122,12 @@ export type Action<
    */
   readonly model: M
   /**
-   * The action execution function
+   * The action execution function.
+   * Accepts ActionRunParameters where clientActions is optional for testing.
    */
-  readonly run: F
+  readonly run: (
+    parameters: ActionRunParameters<M>,
+  ) => ReturnType<F>
 }
 
 /**
@@ -116,8 +137,11 @@ export type Action<
  * @group Router
  * @internal
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ActionNotGeneric = Action<ModelNotGeneric, any>
+export type ActionNotGeneric = {
+  readonly model: ModelNotGeneric
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly run: (parameters: any) => any
+}
 type InferActionRun<Run> = Run extends (
   parameters: ActionCbParameters<infer M>,
 ) => infer R
@@ -187,9 +211,13 @@ export function action<
   const actionFunction = (({
     params,
     ctx,
-    clientActions: clientActions,
+    clientActions,
     files,
-  }: ActionCbParameters<Model>) => {
+  }: ActionRunParameters<Model>) => {
+    // Use NOOP_CLIENT_ACTIONS if clientActions is not provided
+    const resolvedClientActions =
+      clientActions ?? NOOP_CLIENT_ACTIONS
+
     // Handle null/undefined for optional models
     if (
       (params === null || params === undefined) &&
@@ -202,7 +230,7 @@ export function action<
       return run({
         params: parsedParams,
         ctx,
-        clientActions,
+        clientActions: resolvedClientActions,
         files,
       })
     }
@@ -217,10 +245,12 @@ export function action<
     return run({
       params: parsedParams,
       ctx,
-      clientActions,
+      clientActions: resolvedClientActions,
       files,
     })
-  }) as InferActionRun<Run>
+  }) as (
+    parameters: ActionRunParameters<Model>,
+  ) => ReturnType<InferActionRun<Run>>
   return {
     run: actionFunction,
     model: parameterModel,

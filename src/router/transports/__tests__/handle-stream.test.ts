@@ -62,6 +62,7 @@ describe('handleStreamResponse', () => {
     expect(headerParsed).toEqual({
       action: 'testAction',
       fileSize: 12,
+      fileName: 'test.txt',
       id: '1234567890123456',
       status: 'ok',
       type: StreamMessageType.SERVER_ACTION_RESULT,

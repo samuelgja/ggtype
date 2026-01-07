@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     include: ['e2e/**/*.{test,spec}.{ts,js}'],
     globalSetup: './e2e/teardown.ts',
+    testTimeout: 5000,
     browser: {
       headless: true,
       enabled: true,

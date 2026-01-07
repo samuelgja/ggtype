@@ -82,7 +82,7 @@ export function createStreamActionsProxy<
           )) {
             const actionResult =
               result[actionName as keyof typeof result]
-            if (actionResult !== undefined) {
+            if (actionResult != undefined) {
               yield actionResult
             }
           }
@@ -124,7 +124,7 @@ export function createDuplexActionsProxy<
           )) {
             const actionResult =
               result[actionName as keyof typeof result]
-            if (actionResult !== undefined) {
+            if (actionResult != undefined) {
               yield actionResult
             }
           }

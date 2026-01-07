@@ -93,6 +93,49 @@ describe('onResponse Authorization Tests', () => {
       })
     })
     .ws('/ws', {
+      upgrade({ request }) {
+        // Store the request URL in ws.data during upgrade
+        // The request object contains the full URL with query parameters
+        // Construct full URL if it's relative
+        const url = request.url.startsWith('http')
+          ? request.url
+          : `ws://localhost:${PORT}${request.url}`
+        return {
+          url,
+        }
+      },
+      open(ws) {
+        // Extract headers from WebSocket URL query parameters
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const wsData = ws.data as any
+        const url =
+          wsData?.url || `ws://localhost:${PORT}/ws`
+        try {
+          const urlObject = new URL(url)
+          const headerParameter =
+            urlObject.searchParams.get('h')
+          if (headerParameter) {
+            const headersObject = JSON.parse(
+              headerParameter,
+            ) as Record<string, string>
+            const headers = new Headers()
+            for (const [key, value] of Object.entries(
+              headersObject,
+            )) {
+              headers.set(key, value)
+            }
+            wsData.request = new Request(url, { headers })
+            wsData.url = url
+          } else {
+            wsData.request = new Request(url)
+            wsData.url = url
+          }
+        } catch {
+          // If URL parsing fails, create request without headers
+          wsData.request = new Request(url)
+          wsData.url = url
+        }
+      },
       message(ws, message) {
         // console.log('WS Data keys:', Object.keys(ws.data as object))
         if (router.onWebSocketMessage) {

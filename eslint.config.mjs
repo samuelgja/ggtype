@@ -1,14 +1,13 @@
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
-import stylisticJsx from '@stylistic/eslint-plugin-jsx'
-import stylisticTs from '@stylistic/eslint-plugin-ts'
 import unicorn from 'eslint-plugin-unicorn'
 import jest from 'eslint-plugin-jest'
 import stylistic from '@stylistic/eslint-plugin'
 import sonarjs from 'eslint-plugin-sonarjs'
 import * as depend from 'eslint-plugin-depend'
 import jsdoc from 'eslint-plugin-jsdoc'
-
+import pluginSecurity from 'eslint-plugin-security'
+const tsParser = await import('@typescript-eslint/parser')
 export default [
   depend.configs['flat/recommended'],
   {
@@ -22,6 +21,7 @@ export default [
       '**/web/public/ggtype.d.ts', // Generated file
     ],
   },
+  pluginSecurity.configs.recommended,
   js.configs.recommended,
   ...tseslint.configs.recommended,
   sonarjs.configs.recommended,
@@ -33,9 +33,14 @@ export default [
       jest,
       ts: tseslint,
       '@stylistic': stylistic,
-      '@stylistic/ts': stylisticTs,
-      '@stylistic/jsx': stylisticJsx,
       jsdoc,
+    },
+    languageOptions: {
+      parser: tsParser.default,
+      parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
       'sonarjs/new-cap': 'off',
@@ -108,7 +113,7 @@ export default [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
-
+      'security/detect-object-injection': 'off',
       'no-console': 'error',
       'no-unneeded-ternary': 'error',
       'no-undef': 'off', // TypeScript handles this

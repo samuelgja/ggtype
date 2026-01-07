@@ -56,8 +56,9 @@ const aiAssistant = action(
     // Simulate AI deciding which tools to use
     if (params.question.includes('weather')) {
       const location =
-        params.question.match(/weather in (.+)/i)?.[1] ||
-        'NYC'
+        new RegExp(/weather in (.+)/i).exec(
+          params.question,
+        )?.[1] || 'NYC'
       const weatherResult = await getWeather?.({ location })
       if (
         weatherResult?.status === 'ok' &&
@@ -87,9 +88,9 @@ const aiAssistant = action(
     }
 
     if (params.question.includes('email')) {
-      const emailMatch = params.question.match(
+      const emailMatch = new RegExp(
         /send email to (.+?) with subject (.+?) and body (.+)/i,
-      )
+      ).exec(params.question)
       if (emailMatch) {
         const emailResult = await sendEmail?.({
           to: emailMatch[1]!,

@@ -3,17 +3,20 @@
   "compilerOptions": {
     "strict": true,
     "outDir": "dist/cjs",
+    "rootDir": "src",
     "lib": ["ESNext", "DOM"],
     "module": "CommonJS", // Output to CommonJS module format
     "target": "ES2015", // Specify ECMAScript target version
     "verbatimModuleSyntax": false
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": [
     "node_modules",
     "dist",
     "examples",
+    "e2e",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "**/__tests__/**"
   ]
 }

@@ -8,6 +8,7 @@ import {
   StreamMessageType,
   type StreamMessage,
 } from '../router.type'
+import { reconstructFileFromStreamMessage } from '../router.utils'
 import { handleStreamResponse } from '../transports/handle-stream'
 
 export async function* createStreamGenerator<T>(
@@ -20,7 +21,7 @@ export async function* createStreamGenerator<T>(
       if (done) {
         break
       }
-      if (value !== undefined) {
+      if (value != undefined) {
         yield value
       }
     }
@@ -204,7 +205,7 @@ export function streamMessageToResult<
   if (item.status === 'ok') {
     return {
       [item.action]: {
-        data: item.file ?? item.data,
+        data: reconstructFileFromStreamMessage(item),
         status: item.status,
       },
     } as {

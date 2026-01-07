@@ -1,7 +1,10 @@
+import { QUERY_PARAM_NAME } from '../../consts'
 import {
   NOOP_ON_ERROR,
   type RouterResultNotGeneric,
 } from '../../types'
+import { isFile } from '../../utils/array-buffer-handler'
+import { getHeaders } from '../../utils/get-headers'
 import { handleError } from '../../utils/handle-error'
 import { isStream } from '../../utils/is'
 import type { OnRequestInternal } from '../router.type'
@@ -11,7 +14,7 @@ export function getParamsFromQuery(
   strict: boolean = false,
 ) {
   const url = new URL(request.url)
-  const query = url.searchParams.get('q')
+  const query = url.searchParams.get(QUERY_PARAM_NAME)
   const hasQuery = query && query.length > 0
   let params: Record<string, unknown> = {}
   if (hasQuery) {
@@ -19,14 +22,17 @@ export function getParamsFromQuery(
     params = json
   }
   if (strict && !hasQuery) {
-    throw new Error('Query param "q" is required')
+    throw new Error(
+      `Query param "${QUERY_PARAM_NAME}" is required`,
+    )
   }
   return params
 }
 
 export async function getParams(request: Request) {
   let params = getParamsFromQuery(request)
-  const { body, headers } = request
+  const { body } = request
+  const headers = getHeaders(request)
   if (!(body instanceof ReadableStream)) {
     return { params, files: new Map() }
   }
@@ -38,20 +44,22 @@ export async function getParams(request: Request) {
     const formData = await request.formData()
     const files: Map<string, File> = new Map()
 
-    // Convert FormData to a plain object, keeping Files as-is
+    // Convert FormData to a Map, handling multiple files with same key
+    let fileIndex = 0
     for (const [key, v] of formData.entries()) {
       const value = v as unknown
       if (value instanceof File) {
-        files.set(key, value)
+        const fileKey = files.has(key)
+          ? `file-${fileIndex}`
+          : key
+        files.set(fileKey, value)
+        fileIndex++
       }
     }
     return { params, files }
   }
 
-  const arrayBuffer = await body.getReader().read()
-  const json = JSON.parse(
-    new TextDecoder().decode(arrayBuffer.value),
-  )
+  const json = await request.json()
   params = json
   return { params }
 }
@@ -85,6 +93,16 @@ export async function handleHttpRequest(
           throw new Error(
             'Stream results are not supported for HTTP transport',
           )
+        }
+
+        if (isFile(actionResult)) {
+          // Files cannot be JSON serialized, convert to Blob-like object
+          const file = actionResult as File
+          result[actionName] = {
+            status: 'ok',
+            data: new Blob([file], { type: file.type }),
+          }
+          return
         }
 
         result[actionName] = {

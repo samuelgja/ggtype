@@ -16,6 +16,7 @@ import {
   handleStreamResponse,
   parseStreamResponse,
 } from './handle-stream'
+import { reconstructFileFromStreamMessage } from '../router.utils'
 
 export async function handleDuplexRequest(
   options: OnRequestInternal,
@@ -156,7 +157,9 @@ export async function handleDuplexRequest(
               item.status === 'ok'
                 ? {
                     status: 'ok',
-                    data: item.file ?? item.data,
+                    data: reconstructFileFromStreamMessage(
+                      item,
+                    ),
                   }
                 : {
                     status: 'error',

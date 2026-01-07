@@ -82,6 +82,66 @@ export async function fromArrayBuffer(
   return { id, input: new Blob([input]) }
 }
 
+export function fromChunks(chunks: Uint8Array[]): {
+  id: string
+  input: Input
+} {
+  const decoder = new TextDecoder()
+  const idBuffer = new Uint8Array(ID_LENGTH)
+  let copied = 0
+  let chunkIndex = 0
+  let chunkOffset = 0
+
+  while (copied < ID_LENGTH && chunkIndex < chunks.length) {
+    const chunk = chunks[chunkIndex]!
+    const remaining = ID_LENGTH - copied
+    const toCopy = Math.min(
+      remaining,
+      chunk.length - chunkOffset,
+    )
+
+    idBuffer.set(
+      chunk.subarray(chunkOffset, chunkOffset + toCopy),
+      copied,
+    )
+    copied += toCopy
+    chunkOffset += toCopy
+
+    if (chunkOffset >= chunk.length) {
+      chunkIndex++
+      chunkOffset = 0
+    }
+  }
+
+  const id = decoder.decode(idBuffer)
+  if (id.length !== ID_LENGTH) {
+    throw new Error(
+      `Invalid id length. Expected ${ID_LENGTH} characters.`,
+    )
+  }
+
+  const blobChunks: BlobPart[] = []
+
+  if (chunkIndex < chunks.length) {
+    if (chunkOffset > 0) {
+      const chunk = chunks[chunkIndex]!
+      blobChunks.push(
+        chunk.subarray(chunkOffset) as unknown as BlobPart,
+      )
+      chunkIndex++
+    }
+    for (
+      let index = chunkIndex;
+      index < chunks.length;
+      index++
+    ) {
+      blobChunks.push(chunks[index]! as unknown as BlobPart)
+    }
+  }
+
+  return { id, input: new Blob(blobChunks) }
+}
+
 export function isArrayBuffer(
   input: unknown,
 ): input is ArrayBuffer {

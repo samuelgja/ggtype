@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import type {
   ClientActionsBase,
   Router,
@@ -15,6 +16,7 @@ import { parseStreamResponse } from '../../router/transports/handle-stream'
 import {
   createErrorProcessor,
   handleClientActionCall,
+  isAsyncGenerator,
   mergeClientActions,
   sendInitialParams,
   streamMessageToResult,
@@ -124,9 +126,9 @@ export function createDuplexHandler<
     const url = new URL(halfDuplexUrl!)
     const encoder = new TextEncoder()
     let controller:
-      | ReadableStreamDefaultController<unknown>
+      | ReadableStreamDefaultController<Uint8Array>
       | undefined = undefined
-    const readableStream = readable({
+    const readableStream = readable<Uint8Array>({
       async start(c) {
         controller = c
         await sendInitialParams(
@@ -144,9 +146,14 @@ export function createDuplexHandler<
         method: 'POST',
         body: readableStream,
         headers,
+        duplex: 'half',
       })
     } catch (error) {
-      throwClientError(error)
+      throwClientError(
+        error instanceof Error
+          ? error
+          : new Error(JSON.stringify(error)),
+      )
     }
     // TypeScript: response is definitely assigned because throwClientError never returns
     const finalResponse = response!
@@ -219,7 +226,11 @@ export function createDuplexHandler<
     const processStreamResult = async (
       result: ResultForLocal<Params>,
       isLast: boolean,
-    ): Promise<ResultForLocal<Params> | null> => {
+    ): Promise<
+      | ResultForLocal<Params>
+      | AsyncGenerator<ResultForLocal<Params>>
+      | null
+    > => {
       if (!onResponse || !isLast) {
         return result
       }
@@ -231,10 +242,19 @@ export function createDuplexHandler<
         statusCode: 200,
         runAgain,
       })
-      if (modifiedResult !== undefined) {
-        return modifiedResult as ResultForLocal<Params>
+      if (modifiedResult === undefined) {
+        return result
       }
-      return result
+
+      if (
+        isAsyncGenerator<ResultForLocal<Params>>(
+          modifiedResult,
+        )
+      ) {
+        return modifiedResult
+      }
+
+      return modifiedResult as ResultForLocal<Params>
     }
 
     try {
@@ -246,9 +266,22 @@ export function createDuplexHandler<
             result,
             isLast,
           )
-          if (finalResult) {
-            yield finalResult
+          if (!finalResult) {
+            continue
           }
+
+          if (
+            isAsyncGenerator<ResultForLocal<Params>>(
+              finalResult,
+            )
+          ) {
+            for await (const rerunResult of finalResult) {
+              yield rerunResult
+            }
+            continue
+          }
+
+          yield finalResult
         }
       }
     } catch (error) {

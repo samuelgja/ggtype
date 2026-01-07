@@ -86,6 +86,7 @@ export function createDuplexHandler<
         method: 'POST',
         body: readableStream,
         headers,
+        duplex: 'half',
       })
     } catch (error) {
       throwClientError(error)

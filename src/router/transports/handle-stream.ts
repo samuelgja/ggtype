@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 import {
-  fromArrayBuffer,
+  fromChunks,
   ID_LENGTH,
   isFile,
   toArrayBuffer,
@@ -50,6 +50,7 @@ async function handleFileStreamResponse(
     status: 'ok',
     withFile: true,
     fileSize: file.size,
+    fileName: file.name,
     type,
     isLast: true,
   }
@@ -77,42 +78,57 @@ async function handleAsyncStreamResponse(
   let previousItem: unknown | null = null
   let done = false
 
+  const sendItem = async (
+    item: unknown,
+    isLastItem: boolean,
+  ): Promise<void> => {
+    if (isFile(item)) {
+      const fileMessage: StreamMessage = {
+        action: actionName,
+        id,
+        status: 'ok',
+        withFile: true,
+        fileSize: (item as File).size,
+        fileName: (item as File).name,
+        type,
+        isLast: isLastItem,
+      }
+      const rawMessage = stringify(fileMessage)
+      const encodedMessage = encoder.encode(rawMessage)
+      const fileBufferWithId = await toArrayBuffer(
+        id,
+        item as File,
+      )
+      send(encodedMessage)
+      send(new Uint8Array(fileBufferWithId))
+      return
+    }
+
+    const message: StreamMessage = {
+      action: actionName,
+      id,
+      status: 'ok',
+      data: item,
+      type,
+      isLast: isLastItem,
+    }
+    const rawMessage = stringify(message)
+    const encodedMessage = encoder.encode(rawMessage)
+    send(encodedMessage)
+  }
+
   while (!done) {
     const result = await iterator.next()
     done = result.done ?? false
 
     if (!done && result.value !== undefined) {
       if (previousItem !== null) {
-        // Send previous item (not the last one) - recursively call handleStreamResponse
-        // but we need to mark it as not last
-        const message: StreamMessage = {
-          action: actionName,
-          id,
-          status: 'ok',
-          data: previousItem,
-          type,
-          isLast: false,
-        }
-        const rawMessage = stringify(message)
-        const encodedMessage = encoder.encode(rawMessage)
-        send(encodedMessage)
+        await sendItem(previousItem, false)
       }
       previousItem = result.value
     } else if (done && previousItem !== null) {
-      // This is the last item, mark it with isLast: true
-      const lastItemMessage: StreamMessage = {
-        action: actionName,
-        id,
-        status: 'ok',
-        data: previousItem,
-        type,
-        isLast: true,
-      }
-      const rawMessage = stringify(lastItemMessage)
-      const encodedMessage = encoder.encode(rawMessage)
-      send(encodedMessage)
+      await sendItem(previousItem, true)
     } else if (done && previousItem === null) {
-      // Empty stream, send a last message
       const lastMessage: StreamMessage = {
         action: actionName,
         id,
@@ -279,27 +295,12 @@ function processFileMode(
     }
 
     // We have full [ID + file] payload
-    let totalLength = 0
-    for (const chunk of currentFileMode.chunks) {
-      totalLength += chunk.length
-    }
-    const merged = new Uint8Array(totalLength)
-    let offset = 0
-    for (const chunk of currentFileMode.chunks) {
-      merged.set(chunk, offset)
-      offset += chunk.length
-    }
-
-    const arrayBuffer = merged.buffer.slice(
-      merged.byteOffset,
-      merged.byteOffset + merged.byteLength,
-    )
-    const { id, input } = await fromArrayBuffer(arrayBuffer)
+    const { id, input } = fromChunks(currentFileMode.chunks)
 
     const result: StreamMessage = {
       ...currentFileMode.header,
       id,
-      file: input, // Blob
+      file: input as Blob,
     }
 
     onMessage(result)

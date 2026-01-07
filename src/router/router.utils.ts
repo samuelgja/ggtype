@@ -7,6 +7,7 @@ import type { ClientCallableActions } from '../router-client/router-client.types
 import type {
   ClientActionsBase,
   ServerActionsBase,
+  StreamMessage,
 } from './router.type'
 import {
   isAsyncIterable,
@@ -175,4 +176,23 @@ export async function collectStreamValues(
   }
 
   return collectedValues
+}
+
+/**
+ * Reconstructs a File from a Blob when fileName is present in the stream message.
+ * If fileName is not present, returns the original file/blob or data.
+ * @group Router
+ * @internal
+ * @param item - The stream message containing file/blob and optional fileName
+ * @returns The reconstructed File, original Blob, or data
+ */
+export function reconstructFileFromStreamMessage(
+  item: StreamMessage,
+): File | Blob | unknown {
+  if (item.file && item.fileName) {
+    return new File([item.file], item.fileName, {
+      type: item.file.type,
+    })
+  }
+  return item.file ?? item.data
 }

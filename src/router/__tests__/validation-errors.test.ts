@@ -54,7 +54,7 @@ describe('Validation Error Handling', () => {
         m.object({ id: m.string() }),
         async ({ params, clientActions }) => {
           const { showNotification } =
-            clientActions<ClientActions>()
+            clientActions?.<ClientActions>() ?? {}
           await showNotification?.({
             message: `Fetching user ${params.id}`,
           })

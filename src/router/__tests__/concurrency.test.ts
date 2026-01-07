@@ -306,7 +306,7 @@ describe('Concurrency and Timeout Tests', () => {
               )
             }
           }
-          if (results[0] === undefined) {
+          if (results[0] == undefined) {
             throw new Error(
               `No result received for clientId: ${clientId}`,
             )
@@ -481,7 +481,7 @@ describe('Concurrency and Timeout Tests', () => {
               )
             }
           }
-          if (results[0] === undefined) {
+          if (results[0] == undefined) {
             throw new Error(
               `No result received for clientId: ${clientId}, requestId: ${requestId}`,
             )
@@ -692,7 +692,7 @@ describe('Concurrency and Timeout Tests', () => {
               )
             }
           }
-          if (results[0] === undefined) {
+          if (results[0] == undefined) {
             throw new Error(
               `No result received for clientId: ${clientId}, requestId: ${requestId}`,
             )

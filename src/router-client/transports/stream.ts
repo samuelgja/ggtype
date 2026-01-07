@@ -13,6 +13,7 @@ import { handleHttpClient } from '../../router/transports/handle-http-client'
 import { parseStreamResponse } from '../../router/transports/handle-stream'
 import {
   createErrorProcessor,
+  isAsyncGenerator,
   streamMessageToResult,
 } from '../router-client.utils'
 
@@ -131,22 +132,38 @@ export function createStreamHandler<
     )
     for await (const item of stream) {
       const result = streamMessageToResult<Params>(item)
-      if (result) {
-        const resultTyped = result as ResultForLocal<Params>
-        // Only call onResponse for final results (when isLast is true)
-        if (onResponse && item.isLast) {
-          const modifiedResult = await onResponse({
-            json: resultTyped,
-            statusCode: finalResponse.status,
-            runAgain,
-          })
-          if (modifiedResult !== undefined) {
-            yield modifiedResult as ResultForLocal<Params>
-            continue
-          }
-        }
-        yield resultTyped
+      if (!result) {
+        continue
       }
+
+      const resultTyped = result as ResultForLocal<Params>
+      if (!onResponse || !item.isLast) {
+        yield resultTyped
+        continue
+      }
+
+      const modifiedResult = await onResponse({
+        json: resultTyped,
+        statusCode: finalResponse.status,
+        runAgain,
+      })
+      if (modifiedResult === undefined) {
+        yield resultTyped
+        continue
+      }
+
+      if (
+        isAsyncGenerator<ResultForLocal<Params>>(
+          modifiedResult,
+        )
+      ) {
+        for await (const rerunResult of modifiedResult) {
+          yield rerunResult
+        }
+        continue
+      }
+
+      yield modifiedResult as ResultForLocal<Params>
     }
   }
 }
