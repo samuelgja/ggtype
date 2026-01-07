@@ -470,6 +470,7 @@ client.startDuplex()                  // Duplex connection
 ```typescript
 action(model, callback)
   - callback receives: { params, ctx, clientActions, files }
+  - action.run(params) - Test actions directly (clientActions is optional)
 
 defineClientActionsSchema(schema)
 ```
@@ -533,6 +534,39 @@ const getUser = action(
 const router = createRouter({
   serverActions: { getUser },
   responseTimeout: 30000, // 30 seconds
+})
+```
+
+### Testing Actions
+
+You can test actions directly using `action.run()`. The `clientActions` parameter is optional—if not provided, it defaults to an empty object:
+
+```typescript
+import { action, m } from 'ggtype'
+
+const getUser = action(
+  m.object({ id: m.string() }),
+  async ({ params, ctx, clientActions }) => {
+    // clientActions() is always available, even when not provided in tests
+    const actions = clientActions()
+    return { id: params.id, name: 'John' }
+  }
+)
+
+// Test without clientActions (optional)
+const result = await getUser.run({
+  params: { id: '123' },
+  ctx: { userId: 'user-1' },
+  // clientActions is optional - defaults to empty object
+})
+
+// Test with custom clientActions
+const resultWithClientActions = await getUser.run({
+  params: { id: '123' },
+  ctx: { userId: 'user-1' },
+  clientActions: () => ({
+    showNotification: async () => ({ status: 'ok', data: { acknowledged: true } }),
+  }),
 })
 ```
 
