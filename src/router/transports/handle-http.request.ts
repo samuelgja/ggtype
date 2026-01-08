@@ -29,18 +29,10 @@ export function getParamsFromQuery(
   return params
 }
 
-export async function getParams(request: Request) {
-  let params = getParamsFromQuery(request)
-  const { body } = request
-  const headers = getHeaders(request)
-  if (!(body instanceof ReadableStream)) {
-    return { params, files: new Map() }
-  }
-
-  // we must detect if the body is a JSON object or a file or multipart form data
-  const contentType = headers.get('Content-Type')
-
-  if (contentType?.includes('multipart/form-data')) {
+async function parseFormData(
+  request: Request,
+): Promise<Map<string, File>> {
+  try {
     const formData = await request.formData()
     const files: Map<string, File> = new Map()
 
@@ -56,11 +48,54 @@ export async function getParams(request: Request) {
         fileIndex++
       }
     }
+    return files
+  } catch {
+    // If FormData parsing fails, return empty map
+    // This prevents falling through to JSON parsing which would fail
+    return new Map()
+  }
+}
+
+async function parseJsonBody(
+  request: Request,
+): Promise<Record<string, unknown>> {
+  try {
+    return await request.json()
+  } catch {
+    // If JSON parsing fails, return empty object
+    // Params from query are already set, so this is just a fallback
+    return {}
+  }
+}
+
+export async function getParams(request: Request) {
+  let params = getParamsFromQuery(request)
+  const { body } = request
+  const headers = getHeaders(request)
+  if (!(body instanceof ReadableStream)) {
+    return { params, files: new Map() }
+  }
+
+  // we must detect if the body is a JSON object or a file or multipart form data
+  const contentType = headers.get('Content-Type')
+
+  if (contentType?.includes('multipart/form-data')) {
+    const files = await parseFormData(request)
     return { params, files }
   }
 
-  const json = await request.json()
-  params = json
+  // Only try to parse as JSON if Content-Type suggests it's JSON
+  // or if there's no Content-Type (might be empty body)
+  const shouldParseAsJson =
+    !contentType ||
+    contentType.includes('application/json') ||
+    contentType.includes('text/json')
+
+  if (shouldParseAsJson) {
+    const jsonParams = await parseJsonBody(request)
+    params = { ...params, ...jsonParams }
+  }
+
   return { params }
 }
 
@@ -96,11 +131,12 @@ export async function handleHttpRequest(
         }
 
         if (isFile(actionResult)) {
-          // Files cannot be JSON serialized, convert to Blob-like object
-          const file = actionResult as File
+          // Files cannot be JSON serialized via HTTP transport
+          // Return empty object {} to maintain backward compatibility
+          // Files should be returned via stream/websocket transports
           result[actionName] = {
             status: 'ok',
-            data: new Blob([file], { type: file.type }),
+            data: {},
           }
           return
         }
